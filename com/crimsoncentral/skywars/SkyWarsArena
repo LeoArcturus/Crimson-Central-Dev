@@ -1,11 +1,49 @@
-package com.crimsoncentral.skywars.SkyWarsArena
+package com.crimsoncentral.skywars.SkyWarsArena;
+
+import org.bukkit.location.Location;
+import org.bukkit.world.World;
+
+import java.util.List;
+import java.util.ArrayList;
 
 public class SkyWarsArena
 {
     public int id;
+    public World world;
+    List<Location> spawnLocations = new ArrayList<Location>();
+    List<Location> chestLocations = new ArrayList<Location>();
+    public boolean weather;
+    public int time;
     
-    public int getId
+    List<Player> players = new ArrayList<Player>();
+    
+    public int getId()
     {
-        return this.id
+        return this.id;
+    }
+    
+    public World getWorld()
+    {
+        return this.world;
+    }
+    
+    public List<Location> getSpawns()
+    {
+        return this.spawnLocations;
+    }
+    
+    public List<Location> getChestLocations()
+    {
+        return this.chestLocations;
+    }
+    
+    public List<PLayer> getPlayers()
+    {
+        return this.players;
+    }
+    
+    public SkyWarsArena()
+    {
+        
     }
 }
