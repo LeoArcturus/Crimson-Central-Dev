@@ -1,0 +1,11 @@
+package com.crimsoncentral.skywars.SkyWarsArena
+
+public class SkyWarsArena
+{
+    public int id;
+    
+    public int getId
+    {
+        return this.id
+    }
+}
