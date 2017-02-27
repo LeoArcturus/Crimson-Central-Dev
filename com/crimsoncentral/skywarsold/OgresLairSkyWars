@@ -1,0 +1,2343 @@
+package com.crimsoncentral.skywars;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
+import org.bukkit.FireworkEffect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
+
+import com.crimsoncentral.main.CrimsonCentralMain;
+import com.crimsoncentral.main.MainLobby;
+import com.crimsoncentral.util.ChestManagerAPI;
+import com.crimsoncentral.util.ScoreboardWrapper;
+
+import net.minecraft.server.v1_10_R1.IChatBaseComponent;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutTitle;
+
+public class OgresLairSkyWars implements Listener
+{
+	public static List<Player> olDeadPlayers =  new ArrayList<Player>();
+	public static List<Player> olPlayers = new ArrayList<Player>();
+	public ChestManagerAPI cm = new ChestManagerAPI();
+	
+	public static int olPlayerCounter = 0;
+	public static int olPGVars = 1;
+	public static int olGVars = 0;
+	public static int olPGTimer = 15;
+	public static int olGTimer = 600;
+	public static int olGFinal = 10;
+	
+	public static Player olplayer1 = null;
+	public static Player olplayer2 = null;
+	public static Player olplayer3 = null;
+	public static Player olplayer4 = null;
+	public static Player olplayer5 = null;
+	public static Player olplayer6 = null;
+	public static Player olplayer7 = null;
+	public static Player olplayer8 = null;
+	public static Player olplayer9 = null;
+	public static Player olplayer10 = null;
+	public static Player olplayer11 = null;
+	public static Player olplayer12 = null;
+	public static Player reWinner = null;
+	
+	public static CrimsonCentralMain plugin;
+
+	public OgresLairSkyWars(CrimsonCentralMain instance) 
+	{
+		plugin = instance;
+	}
+
+	@EventHandler
+	public void blockChestInterract(PlayerInteractEvent event) {
+		Player p = event.getPlayer();
+		if(olDeadPlayers.contains(p))
+		{
+	    	if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+	    		if(event.getClickedBlock().getType().equals(Material.CHEST))
+	    		{
+	    			event.setCancelled(true);
+	    		}
+	    	}
+		}
+	}
+	
+	public OgresLairSkyWars() {
+	}
+
+	public void cageDelete()
+	{
+		World world = Bukkit.getWorld("OgresLair");
+		Location loc1 = new Location(world, -60, 74, 22);
+		Location loc2 = new Location(world, -79, 74, -3);
+		Location loc3 = new Location(world, -66, 74, -21);
+		Location loc4 = new Location(world, -22, 74, -60);
+		Location loc5 = new Location(world, 3, 74, -79);
+		Location loc6 = new Location(world, 21, 74, -66);
+		Location loc7 = new Location(world, 60, 74, -22);
+		Location loc8 = new Location(world, 79, 74, 3);
+		Location loc9 = new Location(world, 66, 74, 21);
+		Location loc10 = new Location(world, 22, 74, 60);
+		Location loc11 = new Location(world, -3, 74, 79);
+		Location loc12 = new Location(world, -21, 74, 66);
+		
+		Block block1 = Bukkit.getWorld("OgresLair").getBlockAt(loc1);
+		block1.setType(Material.AIR);
+		Block block2 = Bukkit.getWorld("OgresLair").getBlockAt(loc2);
+		block2.setType(Material.AIR);
+		Block block3 = Bukkit.getWorld("OgresLair").getBlockAt(loc3);
+		block3.setType(Material.AIR);
+		Block block4 = Bukkit.getWorld("OgresLair").getBlockAt(loc4);
+		block4.setType(Material.AIR);
+		Block block5 = Bukkit.getWorld("OgresLair").getBlockAt(loc5);
+		block5.setType(Material.AIR);
+		Block block6 = Bukkit.getWorld("OgresLair").getBlockAt(loc6);
+		block6.setType(Material.AIR);
+		Block block7 = Bukkit.getWorld("OgresLair").getBlockAt(loc7);
+		block7.setType(Material.AIR);
+		Block block8 = Bukkit.getWorld("OgresLair").getBlockAt(loc8);
+		block8.setType(Material.AIR);
+		Block block9 = Bukkit.getWorld("OgresLair").getBlockAt(loc9);
+		block9.setType(Material.AIR);
+		Block block10 = Bukkit.getWorld("OgresLair").getBlockAt(loc10);
+		block10.setType(Material.AIR);
+		Block block11 = Bukkit.getWorld("OgresLair").getBlockAt(loc11);
+		block11.setType(Material.AIR);
+		Block block12 = Bukkit.getWorld("OgresLair").getBlockAt(loc12);
+		block12.setType(Material.AIR);
+	}
+	
+	public void cageRedo()
+	{
+		World world = Bukkit.getWorld("OgresLair");
+		Location loc1 = new Location(world, -60, 74, 22);
+		Location loc2 = new Location(world, -79, 74, -3);
+		Location loc3 = new Location(world, -66, 74, -21);
+		Location loc4 = new Location(world, -22, 74, -60);
+		Location loc5 = new Location(world, 3, 74, -79);
+		Location loc6 = new Location(world, 21, 74, -66);
+		Location loc7 = new Location(world, 60, 74, -22);
+		Location loc8 = new Location(world, 79, 74, 3);
+		Location loc9 = new Location(world, 66, 74, 21);
+		Location loc10 = new Location(world, 22, 74, 60);
+		Location loc11 = new Location(world, -3, 74, 79);
+		Location loc12 = new Location(world, -21, 74, 66);
+		
+		Block block1 = Bukkit.getWorld("OgresLair").getBlockAt(loc1);
+		block1.setType(Material.GLASS);
+		Block block2 = Bukkit.getWorld("OgresLair").getBlockAt(loc2);
+		block2.setType(Material.GLASS);
+		Block block3 = Bukkit.getWorld("OgresLair").getBlockAt(loc3);
+		block3.setType(Material.GLASS);
+		Block block4 = Bukkit.getWorld("OgresLair").getBlockAt(loc4);
+		block4.setType(Material.GLASS);
+		Block block5 = Bukkit.getWorld("OgresLair").getBlockAt(loc5);
+		block5.setType(Material.GLASS);
+		Block block6 = Bukkit.getWorld("OgresLair").getBlockAt(loc6);
+		block6.setType(Material.GLASS);
+		Block block7 = Bukkit.getWorld("OgresLair").getBlockAt(loc7);
+		block7.setType(Material.GLASS);
+		Block block8 = Bukkit.getWorld("OgresLair").getBlockAt(loc8);
+		block8.setType(Material.GLASS);
+		Block block9 = Bukkit.getWorld("OgresLair").getBlockAt(loc9);
+		block9.setType(Material.GLASS);
+		Block block10 = Bukkit.getWorld("OgresLair").getBlockAt(loc10);
+		block10.setType(Material.GLASS);
+		Block block11 = Bukkit.getWorld("OgresLair").getBlockAt(loc11);
+		block11.setType(Material.GLASS);
+		Block block12 = Bukkit.getWorld("OgresLair").getBlockAt(loc12);
+		block12.setType(Material.GLASS);
+	}
+	
+	@SuppressWarnings("unused")
+	public void chestRefil()
+	{
+		World world = Bukkit.getWorld("OgresLair");
+		
+		//Player Islands
+		Location loc = new Location(world, -62, 62, 27);
+		Location loc1 = new Location(world, -62, 66, 28);
+		Location loc2 = new Location(world, -63, 58, 29);
+		Location loc3 = new Location(world, -81, 62, 2);
+		Location loc4 = new Location(world, -81, 66, 3);
+		Location loc5 = new Location(world, -82, 58, 4);
+		Location loc6 = new Location(world, -64, 62, -26);
+		Location loc7 = new Location(world, -64, 66, -27);
+		Location loc8 = new Location(world, -63, 58, -28);
+		Location loc9 = new Location(world, -27, 61, -62);
+		Location loc10 = new Location(world, -28, 65, -62);
+		Location loc11 = new Location(world, -29, 57, -63);
+		Location loc12 = new Location(world, -2, 61, -81);
+		Location loc13 = new Location(world, -3, 65, -81);
+		Location loc14 = new Location(world, -4, 57, -82);
+		Location loc15 = new Location(world, 26, 61, -64);
+		Location loc16 = new Location(world, 27, 65, -64);
+		Location loc17 = new Location(world, 28, 57, -63);
+		Location loc18 = new Location(world, 62, 62, -27);
+		Location loc19 = new Location(world, 62, 66, -28);
+		Location loc20 = new Location(world, 63, 58, -29);
+		Location loc21 = new Location(world, 29, 58, 63);
+		Location loc22 = new Location(world, 81, 62, -2);
+		Location loc23 = new Location(world, 81, 66, -3);
+		Location loc24 = new Location(world, 82, 58, -4);
+		Location loc25 = new Location(world, 64, 62, 26);
+		Location loc26 = new Location(world, 64, 66, -27);
+		Location loc27 = new Location(world, 63, 58, 28);
+		Location loc28 = new Location(world, 27, 62, 62);
+		Location loc29 = new Location(world, 28, 66, 62);
+		Location loc30 = new Location(world, 2, 62, 81);
+		Location loc31 = new Location(world, 3, 66, 81);
+		Location loc32 = new Location(world, 4, 58, 82);
+		Location loc33 = new Location(world, -26, 62, 64);
+		Location loc34 = new Location(world, -27, 66, 64);
+		Location loc35 = new Location(world, -28, 58, 63);
+		
+		//Pre-center Islands
+		Location loc36 = new Location(world, -3, 61, 62);
+		Location loc37 = new Location(world, -2, 58, 63);
+		Location loc38 = new Location(world, -62, 61, -3);
+		Location loc39 = new Location(world, -63, 58, -2);
+		Location loc40 = new Location(world, 3, 60, -62);
+		Location loc41 = new Location(world, 2, 57, -63);
+		Location loc42 = new Location(world, 62, 61, 3);
+		Location loc43 = new Location(world, 63, 58, 2);
+		
+		//Center Island
+		Location loc44 = new Location(world, 16, 62, 0);
+		Location loc45 = new Location(world, -1, 62, -21);
+		Location loc46 = new Location(world, -22, 62, 0);
+		Location loc47 = new Location(world, 0, 62, 16);
+		Location loc48 = new Location(world, 11, 63, -14);
+		Location loc49 = new Location(world, 9, 64, 10);
+		Location loc50 = new Location(world, -13, 66, 7);
+		Location loc51 = new Location(world, -11, 62, 0);
+		
+		//Player Islands
+		ItemStack woodenSword = new ItemStack(Material.WOOD_SWORD, 1);
+		ItemStack chainHelm = new ItemStack(Material.CHAINMAIL_HELMET, 1);
+		ItemStack chainChest = new ItemStack(Material.CHAINMAIL_CHESTPLATE, 1);
+		ItemStack apple1 = new ItemStack(Material.APPLE, 2);
+		ItemStack stoneSword = new ItemStack(Material.STONE_SWORD, 1);
+		ItemStack wood1 = new ItemStack(Material.WOOD, 16);
+		ItemStack pork1 = new ItemStack(Material.GRILLED_PORK, 4);
+		ItemStack lava = new ItemStack(Material.LAVA_BUCKET, 1);
+		ItemStack ironAxe = new ItemStack(Material.STONE_AXE, 1);
+		ItemStack sand1 = new ItemStack(Material.SAND, 24);
+		ItemStack bread1 = new ItemStack(Material.BREAD, 10);
+		ItemStack ironSword = new ItemStack(Material.IRON_SWORD, 1);
+		ItemStack bow = new ItemStack(Material.BOW, 1);
+		ItemStack arrows1 = new ItemStack(Material.ARROW, 16);
+		ItemStack log1 = new ItemStack(Material.LOG, 16);
+		ItemStack wood2 = new ItemStack(Material.WOOD, 8);
+		ItemStack leatherChest = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+		ItemStack chainBoots = new ItemStack(Material.CHAINMAIL_BOOTS, 1);
+		ItemStack leatherLeg = new ItemStack(Material.LEATHER_LEGGINGS, 1);
+		ItemStack cobble1 = new ItemStack(Material.COBBLESTONE, 16);
+		ItemStack snow1 = new ItemStack(Material.SNOW_BALL, 16);
+		ItemStack apple2 = new ItemStack(Material.APPLE, 8);
+		ItemStack bread2 = new ItemStack(Material.BREAD, 5);
+		ItemStack snow2 = new ItemStack(Material.SNOW_BALL, 8);
+		ItemStack pick = new ItemStack(Material.STONE_PICKAXE, 1);
+		ItemStack woodAxe = new ItemStack(Material.WOOD_AXE, 1);
+		ItemStack leatherBoots = new ItemStack(Material.LEATHER_BOOTS, 1);
+		ItemStack arrows2 = new ItemStack(Material.ARROW, 24);
+		ItemStack log2 = new ItemStack(Material.LOG, 12);
+		ItemStack dirt1 = new ItemStack(Material.DIRT, 16);
+		ItemStack dirt2 = new ItemStack(Material.DIRT, 24);
+		ItemStack cobble2 = new ItemStack(Material.DIRT, 24);
+		ItemStack sand2 = new ItemStack(Material.SAND, 16);
+		ItemStack glass1 = new ItemStack(Material.GLASS, 16);
+		ItemStack glass2 = new ItemStack(Material.GLASS, 24);
+		ItemStack stone1 = new ItemStack(Material.STONE, 16);
+		ItemStack stone2 = new ItemStack(Material.STONE, 24);
+		ItemStack water = new ItemStack(Material.WATER, 1);
+		
+		//Pre-center Islands
+		ItemStack ironHelm = new ItemStack(Material.IRON_HELMET, 1);
+		ItemStack ironChest = new ItemStack(Material.IRON_CHESTPLATE, 1);
+		ItemStack ironLeg = new ItemStack(Material.IRON_LEGGINGS, 1);
+		ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS, 1);
+		ItemStack tnt1 = new ItemStack(Material.TNT, 8);
+		ItemStack tnt2 = new ItemStack(Material.TNT, 16);
+		ItemStack gapple1 = new ItemStack(Material.GOLDEN_APPLE, 1);
+		ItemStack gapple2 = new ItemStack(Material.GOLDEN_APPLE, 2);
+		ItemStack diamond1 = new ItemStack(Material.DIAMOND, 4);
+		ItemStack diamond2 = new ItemStack(Material.DIAMOND, 8);
+		ItemStack fs = new ItemStack(Material.FLINT_AND_STEEL, 1);
+		ItemStack diamondSword = new ItemStack(Material.DIAMOND_SWORD, 1);
+		ItemStack diamondAxe = new ItemStack(Material.DIAMOND_AXE, 1);
+		ItemStack splashhe = new ItemStack(Material.SPLASH_POTION);
+		ItemMeta splashhemeta = (PotionMeta) splashhe.getItemMeta();
+		((PotionMeta) splashhemeta).setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
+		splashhe.setItemMeta(splashhemeta);
+		ItemStack splashha = new ItemStack(Material.SPLASH_POTION);
+		ItemMeta splashhameta = (PotionMeta) splashha.getItemMeta();
+		((PotionMeta) splashhameta).setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+		splashha.setItemMeta(splashhameta);
+		
+		//Center Island
+		ItemStack diamondHelm = new ItemStack(Material.DIAMOND_HELMET, 1);
+		ItemStack diamondChest = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+		ItemMeta diamondChestMeta = diamondChest.getItemMeta();
+		diamondChestMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+		diamondChest.setItemMeta(diamondChestMeta);
+		ItemStack diamondLeg = new ItemStack(Material.DIAMOND_LEGGINGS, 1);
+		ItemStack diamondBoots = new ItemStack(Material.DIAMOND_BOOTS, 1);
+		ItemStack enderPearl1 = new ItemStack(Material.ENDER_PEARL, 4);
+		ItemStack enderPearl2 = new ItemStack(Material.ENDER_PEARL, 6);
+		ItemStack splashsw = new ItemStack(Material.SPLASH_POTION, 1);
+		ItemMeta splashswmeta = (PotionMeta) splashsw.getItemMeta();
+		((PotionMeta) splashswmeta).setBasePotionData(new PotionData(PotionType.SPEED));
+		splashsw.setItemMeta(splashswmeta);
+		ItemStack splashfr = new ItemStack(Material.POTION, 1);
+		ItemMeta splashfrmeta = (PotionMeta) splashfr.getItemMeta();
+		((PotionMeta) splashfrmeta).setBasePotionData(new PotionData(PotionType.FIRE_RESISTANCE));
+		splashfr.setItemMeta(splashfrmeta);
+		ItemStack splashst = new ItemStack(Material.POTION, 1);
+		ItemMeta splashstmeta = (PotionMeta) splashst.getItemMeta();
+		((PotionMeta) splashstmeta).setBasePotionData(new PotionData(PotionType.STRENGTH));
+		splashst.setItemMeta(splashstmeta);
+		ItemStack deadBush = new ItemStack(Material.DEAD_BUSH, 1);
+		ItemMeta deadBushMeta = deadBush.getItemMeta();
+		deadBushMeta.addEnchant(Enchantment.KNOCKBACK, 1, true);
+		deadBush.setItemMeta(deadBushMeta);
+		ItemStack bottleOEnchanting = new ItemStack(Material.EXP_BOTTLE, 16);
+		ItemStack enchantedBook1 = new ItemStack(Material.ENCHANTED_BOOK, 1);
+		ItemMeta enchantedBook1Meta = enchantedBook1.getItemMeta();
+		enchantedBook1Meta.addEnchant(Enchantment.ARROW_KNOCKBACK, 1, true);
+		enchantedBook1.setItemMeta(enchantedBook1Meta);
+		ItemStack enchantedBook2 = new ItemStack(Material.ENCHANTED_BOOK, 1);
+		ItemMeta enchantedBook2Meta = enchantedBook2.getItemMeta();
+		enchantedBook2Meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+		enchantedBook2.setItemMeta(enchantedBook2Meta);
+		ItemStack enchantedBook3 = new ItemStack(Material.ENCHANTED_BOOK, 1);
+		ItemMeta enchantedBook3Meta = enchantedBook3.getItemMeta();
+		enchantedBook3Meta.addEnchant(Enchantment.ARROW_FIRE, 1, true);
+		enchantedBook3.setItemMeta(enchantedBook3Meta);
+		ItemStack enchantedBook4 = new ItemStack(Material.ENCHANTED_BOOK, 1);
+		ItemMeta enchantedBook4Meta = enchantedBook4.getItemMeta();
+		enchantedBook4Meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+		enchantedBook4.setItemMeta(enchantedBook4Meta);
+		ItemStack shield = new ItemStack(Material.SHIELD);
+		ItemStack bone1 = new ItemStack(Material.BONE, 2);
+		ItemStack bone2 = new ItemStack(Material.BONE, 5);
+		ItemStack wolf = new ItemStack(Material.MONSTER_EGG, 1, (short) 95);
+		
+		//Player Islands
+		cm.createChest(loc);
+		cm.clearChest(loc);
+		cm.setChestItem(loc, true, woodenSword, 3, chainHelm, 10, chainChest, 17, apple1, 25);
+		
+		cm.createChest(loc1);
+		cm.clearChest(loc1);
+		cm.setChestItem(loc1, true, stoneSword, 5, wood1, 18, pork1, 21);
+
+		cm.createChest(loc2);
+		cm.clearChest(loc2);
+		cm.setChestItem(loc2, true, lava, 6, ironAxe, 14, sand1, 20, bread1, 26);
+		
+		cm.createChest(loc3);
+		cm.clearChest(loc3);
+		cm.setChestItem(loc3, true, ironSword, 3, bow, 9, arrows1, 14, sand1, 22);
+		
+		cm.createChest(loc4);
+		cm.clearChest(loc4);
+		cm.setChestItem(loc4, true, leatherChest, 6, chainBoots, 15, chainHelm, 21, wood2, 26);
+		
+		cm.createChest(loc5);
+		cm.clearChest(loc5);
+		cm.setChestItem(loc5, true, leatherLeg, 4, cobble1, 15, snow1, 23);
+		
+		cm.createChest(loc6);
+		cm.clearChest(loc6);
+		cm.setChestItem(loc6, true, water, 3, glass1, 9, ironSword, 20);
+		
+		cm.createChest(loc7);
+		cm.clearChest(loc7);
+		cm.setChestItem(loc7, true, apple1, 7, chainChest, 13, chainBoots, 17, sand2, 21);
+		
+		cm.createChest(loc8);
+		cm.clearChest(loc8);
+		cm.setChestItem(loc8, true, snow2, 2, pork1, 12, bow, 19);
+		
+		cm.createChest(loc9);
+		cm.clearChest(loc9);
+		cm.setChestItem(loc9, true, arrows2, 6, bread2, 13, snow1, 23);
+		
+		cm.createChest(loc10);
+		cm.clearChest(loc10);
+		cm.setChestItem(loc10, true, lava, 5, bow, 10, arrows1, 20);
+		
+		cm.createChest(loc11);
+		cm.clearChest(loc11);
+		cm.setChestItem(loc11, true, glass1, 4, leatherChest, 10, chainHelm, 23, wood1, 26);
+
+		cm.createChest(loc12);
+		cm.clearChest(loc12);
+		cm.setChestItem(loc12, true, apple1, 5, wood2, 13, sand2, 21);
+		
+		cm.createChest(loc13);
+		cm.clearChest(loc13);
+		cm.setChestItem(loc13, true, chainBoots, 4, leatherLeg, 17, stoneSword, 23);
+		
+		cm.createChest(loc14);
+		cm.clearChest(loc14);
+		cm.setChestItem(loc14, true, water, 2, pork1, 14, glass2, 21);
+		
+		cm.createChest(loc15);
+		cm.clearChest(loc15);
+		cm.setChestItem(loc15, true, stone1, 3, sand2, 14, ironSword, 22);
+		
+		cm.createChest(loc16);
+		cm.clearChest(loc16);
+		cm.setChestItem(loc16, true, lava, 4, snow2, 13, ironAxe, 18);
+		
+		cm.createChest(loc17);
+		cm.clearChest(loc17);
+		cm.setChestItem(loc17, true, leatherBoots, 6, leatherLeg, 15, chainHelm, 23);
+		
+		cm.createChest(loc18);
+		cm.clearChest(loc18);
+		cm.setChestItem(loc18, true, water, 2, woodenSword, 14, bow, 25);
+		
+		cm.createChest(loc19);
+		cm.clearChest(loc19);
+		cm.setChestItem(loc19, true, dirt1, 5, stone1, 11, arrows2, 26);
+		
+		cm.createChest(loc20);
+		cm.clearChest(loc20);
+		cm.setChestItem(loc20, true, snow1, 4, pick, 12, chainHelm, 23, chainChest, 26);
+		
+		cm.createChest(loc21);
+		cm.clearChest(loc21);
+		cm.setChestItem(loc21, true, bow, 2, arrows2, 15, sand2, 21);
+		
+		cm.createChest(loc22);
+		cm.clearChest(loc22);
+		cm.setChestItem(loc22, true, lava, 3, water, 11, chainChest, 15, leatherLeg, 21);
+		
+		cm.createChest(loc23);
+		cm.clearChest(loc23);
+		cm.setChestItem(loc23, true, woodAxe, 5, glass2, 14, wood2, 20);
+		
+		cm.createChest(loc24);
+		cm.clearChest(loc24);
+		cm.setChestItem(loc24, true, stone1, 6, ironSword, 14, snow2, 21);
+		
+		cm.createChest(loc25);
+		cm.clearChest(loc25);
+		cm.setChestItem(loc25, true, apple1, 0, pick, 14, water, 21);
+		
+		cm.createChest(loc26);
+		cm.clearChest(loc26);
+		cm.setChestItem(loc26, true, leatherLeg, 2, chainHelm, 13, sand2, 23);
+		
+		cm.createChest(loc27);
+		cm.clearChest(loc27);
+		cm.setChestItem(loc27, true, lava, 4, stone2, 12, bow, 21);
+		
+		cm.createChest(loc28);
+		cm.clearChest(loc28);
+		cm.setChestItem(loc28, true, cobble2, 5, leatherLeg, 13, chainBoots, 21);
+		
+		cm.createChest(loc29);
+		cm.clearChest(loc29);
+		cm.setChestItem(loc29, true, apple2, 3, bow, 14, arrows1, 21);
+		
+		cm.createChest(loc30);
+		cm.clearChest(loc30);
+		cm.setChestItem(loc30, true, stoneSword, 6, bread2, 15, snow2, 26);
+		
+		cm.createChest(loc31);
+		cm.clearChest(loc31);
+		cm.setChestItem(loc31, true, leatherChest, 4, chainHelm, 14, leatherBoots, 24);
+		
+		cm.createChest(loc32);
+		cm.clearChest(loc32);
+		cm.setChestItem(loc32, true, lava, 5, stone2, 15, sand1, 21, pork1, 26);
+		
+		cm.createChest(loc33);
+		cm.clearChest(loc33);
+		cm.setChestItem(loc33, true, ironSword, 6, chainChest, 16, bow, 21);
+		
+		cm.createChest(loc34);
+		cm.clearChest(loc34);
+		cm.setChestItem(loc34, true, lava, 3, water, 15, woodAxe, 21);
+		
+		cm.createChest(loc35);
+		cm.clearChest(loc35);
+		cm.setChestItem(loc35, true, bread1, 4, snow2, 16, cobble2, 23);
+		
+		//Pre-center Islands
+		cm.createChest(loc36);
+		cm.clearChest(loc36);
+		cm.setChestItem(loc36, true, ironChest, 3, ironBoots, 9, splashha, 15, arrows1, 19, fs, 24);
+		
+		cm.createChest(loc37);
+		cm.clearChest(loc37);
+		cm.setChestItem(loc37, true, diamondAxe, 2, tnt1, 7, splashhe, 14, gapple2, 21, pork1, 24);
+		
+		cm.createChest(loc38);
+		cm.clearChest(loc38);
+		cm.setChestItem(loc38, true, ironLeg, 5, ironHelm, 12, splashhe, 19, gapple2, 23, apple2, 25);
+		
+		cm.createChest(loc39);
+		cm.clearChest(loc39);
+		cm.setChestItem(loc39, true, diamondSword, 4, diamond1, 11, arrows1, 16, fs, 23);
+		
+		cm.createChest(loc40);
+		cm.clearChest(loc40);
+		cm.setChestItem(loc40, true, arrows1, 2, diamond2, 7, splashhe, 13, diamondAxe, 19, bread2, 23);
+		
+		cm.createChest(loc41);
+		cm.clearChest(loc41);
+		cm.setChestItem(loc41, true, ironHelm, 5, ironBoots, 13, ironLeg, 17, bow, 22);
+		
+		cm.createChest(loc42);
+		cm.clearChest(loc42);
+		cm.setChestItem(loc42, true, diamondAxe, 4, diamond2, 11, splashha, 16, arrows1, 23);
+		
+		cm.createChest(loc43);
+		cm.clearChest(loc43);
+		cm.setChestItem(loc43, true, ironLeg, 4, ironChest, 11, gapple2, 16, bow, 23, pork1, 19);
+		
+		//Center Island
+		cm.createChest(loc44);
+		cm.clearChest(loc44);
+		cm.setChestItem(loc44, true, diamondHelm, 3, arrows1, 8, enchantedBook3, 13, enderPearl2, 19, bone2, 24);
+		
+		cm.createChest(loc45);
+		cm.clearChest(loc45);
+		cm.setChestItem(loc45, true, diamondChest, 2, splashfr, 8, bottleOEnchanting, 12, deadBush, 17, shield, 23, pork1, 25);
+		
+		cm.createChest(loc46);
+		cm.clearChest(loc46);
+		cm.setChestItem(loc46, true, diamondLeg, 4, splashst, 9, arrows1, 13, wolf, 20, bottleOEnchanting, 26, apple2, 16);
+		
+		cm.createChest(loc47);
+		cm.clearChest(loc47);
+		cm.setChestItem(loc47, true, diamondBoots, 5, arrows1, 8, enderPearl1, 12, bone1, 16, bow, 21);
+		
+		cm.createChest(loc48);
+		cm.clearChest(loc48);
+		cm.setChestItem(loc48, true, diamondHelm, 4, splashsw, 8, bottleOEnchanting, 12, deadBush, 16, shield, 20, pork1, 25);
+		
+		cm.createChest(loc49);
+		cm.clearChest(loc49);
+		cm.setChestItem(loc49, true, diamondChest, 3, splashst, 10, bone2, 13, enchantedBook1, 19, enchantedBook4, 25);
+		
+		cm.createChest(loc50);
+		cm.clearChest(loc50);
+		cm.setChestItem(loc50, true, diamondLeg, 5, splashsw, 9, bottleOEnchanting, 13, enchantedBook2, 17, wolf, 22, bread2, 25);
+		
+		cm.createChest(loc51);
+		cm.clearChest(loc51);
+		cm.setChestItem(loc51, true, diamondBoots, 4, arrows1, 9, enchantedBook3, 13, bone2, 19, bow, 25);
+	}
+	
+	@SuppressWarnings("unused")
+	public void chestRefil2()
+	{
+		World world = Bukkit.getWorld("OgresLair");
+		
+		//Player Islands
+		Location loc = new Location(world, -62, 62, 27);
+		Location loc1 = new Location(world, -62, 66, 28);
+		Location loc2 = new Location(world, -63, 58, 29);
+		Location loc3 = new Location(world, -81, 62, 2);
+		Location loc4 = new Location(world, -81, 66, 3);
+		Location loc5 = new Location(world, -82, 58, 4);
+		Location loc6 = new Location(world, -64, 62, -26);
+		Location loc7 = new Location(world, -64, 66, -27);
+		Location loc8 = new Location(world, -63, 58, -28);
+		Location loc9 = new Location(world, -27, 61, -62);
+		Location loc10 = new Location(world, -28, 65, -62);
+		Location loc11 = new Location(world, -29, 57, -63);
+		Location loc12 = new Location(world, -2, 61, -81);
+		Location loc13 = new Location(world, -3, 65, -81);
+		Location loc14 = new Location(world, -4, 57, -82);
+		Location loc15 = new Location(world, 26, 61, -64);
+		Location loc16 = new Location(world, 27, 65, -64);
+		Location loc17 = new Location(world, 28, 57, -63);
+		Location loc18 = new Location(world, 62, 62, -27);
+		Location loc19 = new Location(world, 62, 66, -28);
+		Location loc20 = new Location(world, 63, 58, -29);
+		Location loc21 = new Location(world, 29, 58, 63);
+		Location loc22 = new Location(world, 81, 62, -2);
+		Location loc23 = new Location(world, 81, 66, -3);
+		Location loc24 = new Location(world, 82, 58, -4);
+		Location loc25 = new Location(world, 64, 62, 26);
+		Location loc26 = new Location(world, 64, 66, -27);
+		Location loc27 = new Location(world, 63, 58, 28);
+		Location loc28 = new Location(world, 27, 62, 62);
+		Location loc29 = new Location(world, 28, 66, 62);
+		Location loc30 = new Location(world, 2, 62, 81);
+		Location loc31 = new Location(world, 3, 66, 81);
+		Location loc32 = new Location(world, 4, 58, 82);
+		Location loc33 = new Location(world, -26, 62, 64);
+		Location loc34 = new Location(world, -27, 66, 64);
+		Location loc35 = new Location(world, -28, 58, 63);
+		
+		//Pre-center Islands
+		Location loc36 = new Location(world, -3, 61, 62);
+		Location loc37 = new Location(world, -2, 58, 63);
+		Location loc38 = new Location(world, -62, 61, -3);
+		Location loc39 = new Location(world, -63, 58, -2);
+		Location loc40 = new Location(world, 3, 60, -62);
+		Location loc41 = new Location(world, 2, 57, -63);
+		Location loc42 = new Location(world, 62, 61, 3);
+		Location loc43 = new Location(world, 63, 58, 2);
+		
+		//Center Island
+		Location loc44 = new Location(world, 16, 62, 0);
+		Location loc45 = new Location(world, -1, 62, -21);
+		Location loc46 = new Location(world, -22, 62, 0);
+		Location loc47 = new Location(world, 0, 62, 16);
+		Location loc48 = new Location(world, 11, 63, -14);
+		Location loc49 = new Location(world, 9, 64, 10);
+		Location loc50 = new Location(world, -13, 66, 7);
+		Location loc51 = new Location(world, -11, 62, 0);
+		
+		//Player Islands
+		ItemStack woodenSword = new ItemStack(Material.WOOD_SWORD, 1);
+		ItemStack chainHelm = new ItemStack(Material.CHAINMAIL_HELMET, 1);
+		ItemStack chainChest = new ItemStack(Material.CHAINMAIL_CHESTPLATE, 1);
+		ItemStack apple1 = new ItemStack(Material.APPLE, 2);
+		ItemStack stoneSword = new ItemStack(Material.STONE_SWORD, 1);
+		ItemStack wood1 = new ItemStack(Material.WOOD, 16);
+		ItemStack pork1 = new ItemStack(Material.GRILLED_PORK, 4);
+		ItemStack lava = new ItemStack(Material.LAVA_BUCKET, 1);
+		ItemStack ironAxe = new ItemStack(Material.STONE_AXE, 1);
+		ItemStack sand1 = new ItemStack(Material.SAND, 24);
+		ItemStack bread1 = new ItemStack(Material.BREAD, 10);
+		ItemStack ironSword = new ItemStack(Material.IRON_SWORD, 1);
+		ItemStack bow = new ItemStack(Material.BOW, 1);
+		ItemStack arrows1 = new ItemStack(Material.ARROW, 16);
+		ItemStack log1 = new ItemStack(Material.LOG, 16);
+		ItemStack wood2 = new ItemStack(Material.WOOD, 8);
+		ItemStack leatherChest = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+		ItemStack chainBoots = new ItemStack(Material.CHAINMAIL_BOOTS, 1);
+		ItemStack leatherLeg = new ItemStack(Material.LEATHER_LEGGINGS, 1);
+		ItemStack cobble1 = new ItemStack(Material.COBBLESTONE, 16);
+		ItemStack snow1 = new ItemStack(Material.SNOW_BALL, 16);
+		ItemStack apple2 = new ItemStack(Material.APPLE, 8);
+		ItemStack bread2 = new ItemStack(Material.BREAD, 5);
+		ItemStack snow2 = new ItemStack(Material.SNOW_BALL, 8);
+		ItemStack pick = new ItemStack(Material.STONE_PICKAXE, 1);
+		ItemStack woodAxe = new ItemStack(Material.WOOD_AXE, 1);
+		ItemStack leatherBoots = new ItemStack(Material.LEATHER_BOOTS, 1);
+		ItemStack arrows2 = new ItemStack(Material.ARROW, 24);
+		ItemStack log2 = new ItemStack(Material.LOG, 12);
+		ItemStack dirt1 = new ItemStack(Material.DIRT, 16);
+		ItemStack dirt2 = new ItemStack(Material.DIRT, 24);
+		ItemStack cobble2 = new ItemStack(Material.DIRT, 24);
+		ItemStack sand2 = new ItemStack(Material.SAND, 16);
+		ItemStack glass1 = new ItemStack(Material.GLASS, 16);
+		ItemStack glass2 = new ItemStack(Material.GLASS, 24);
+		ItemStack stone1 = new ItemStack(Material.STONE, 16);
+		ItemStack stone2 = new ItemStack(Material.STONE, 24);
+		ItemStack water = new ItemStack(Material.WATER, 1);
+		
+		//Pre-center Islands
+		ItemStack ironHelm = new ItemStack(Material.IRON_HELMET, 1);
+		ItemStack ironChest = new ItemStack(Material.IRON_CHESTPLATE, 1);
+		ItemStack ironLeg = new ItemStack(Material.IRON_LEGGINGS, 1);
+		ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS, 1);
+		ItemStack tnt1 = new ItemStack(Material.TNT, 8);
+		ItemStack tnt2 = new ItemStack(Material.TNT, 16);
+		ItemStack gapple1 = new ItemStack(Material.GOLDEN_APPLE, 1);
+		ItemStack gapple2 = new ItemStack(Material.GOLDEN_APPLE, 2);
+		ItemStack diamond1 = new ItemStack(Material.DIAMOND, 4);
+		ItemStack diamond2 = new ItemStack(Material.DIAMOND, 8);
+		ItemStack fs = new ItemStack(Material.FLINT_AND_STEEL, 1);
+		ItemStack diamondSword = new ItemStack(Material.DIAMOND_SWORD, 1);
+		ItemStack diamondAxe = new ItemStack(Material.DIAMOND_AXE, 1);
+		ItemStack splashhe = new ItemStack(Material.SPLASH_POTION);
+		ItemMeta splashhemeta = (PotionMeta) splashhe.getItemMeta();
+		((PotionMeta) splashhemeta).setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
+		splashhe.setItemMeta(splashhemeta);
+		ItemStack splashha = new ItemStack(Material.SPLASH_POTION);
+		ItemMeta splashhameta = (PotionMeta) splashha.getItemMeta();
+		((PotionMeta) splashhameta).setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+		splashha.setItemMeta(splashhameta);
+		
+		//Center Island
+		ItemStack diamondHelm = new ItemStack(Material.DIAMOND_HELMET, 1);
+		ItemStack diamondChest = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+		ItemMeta diamondChestMeta = diamondChest.getItemMeta();
+		diamondChestMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+		diamondChest.setItemMeta(diamondChestMeta);
+		ItemStack diamondLeg = new ItemStack(Material.DIAMOND_LEGGINGS, 1);
+		ItemStack diamondBoots = new ItemStack(Material.DIAMOND_BOOTS, 1);
+		ItemStack enderPearl1 = new ItemStack(Material.ENDER_PEARL, 4);
+		ItemStack enderPearl2 = new ItemStack(Material.ENDER_PEARL, 6);
+		ItemStack splashsw = new ItemStack(Material.SPLASH_POTION, 1);
+		ItemMeta splashswmeta = (PotionMeta) splashsw.getItemMeta();
+		((PotionMeta) splashswmeta).setBasePotionData(new PotionData(PotionType.SPEED));
+		splashsw.setItemMeta(splashswmeta);
+		ItemStack splashfr = new ItemStack(Material.POTION, 1);
+		ItemMeta splashfrmeta = (PotionMeta) splashfr.getItemMeta();
+		((PotionMeta) splashfrmeta).setBasePotionData(new PotionData(PotionType.FIRE_RESISTANCE));
+		splashfr.setItemMeta(splashfrmeta);
+		ItemStack splashst = new ItemStack(Material.POTION, 1);
+		ItemMeta splashstmeta = (PotionMeta) splashst.getItemMeta();
+		((PotionMeta) splashstmeta).setBasePotionData(new PotionData(PotionType.STRENGTH));
+		splashst.setItemMeta(splashstmeta);
+		ItemStack deadBush = new ItemStack(Material.DEAD_BUSH, 1);
+		ItemMeta deadBushMeta = deadBush.getItemMeta();
+		deadBushMeta.addEnchant(Enchantment.KNOCKBACK, 1, true);
+		deadBush.setItemMeta(deadBushMeta);
+		ItemStack bottleOEnchanting = new ItemStack(Material.EXP_BOTTLE, 16);
+		ItemStack enchantedBook1 = new ItemStack(Material.ENCHANTED_BOOK, 1);
+		ItemMeta enchantedBook1Meta = enchantedBook1.getItemMeta();
+		enchantedBook1Meta.addEnchant(Enchantment.ARROW_KNOCKBACK, 1, true);
+		enchantedBook1.setItemMeta(enchantedBook1Meta);
+		ItemStack enchantedBook2 = new ItemStack(Material.ENCHANTED_BOOK, 1);
+		ItemMeta enchantedBook2Meta = enchantedBook2.getItemMeta();
+		enchantedBook2Meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+		enchantedBook2.setItemMeta(enchantedBook2Meta);
+		ItemStack enchantedBook3 = new ItemStack(Material.ENCHANTED_BOOK, 1);
+		ItemMeta enchantedBook3Meta = enchantedBook3.getItemMeta();
+		enchantedBook3Meta.addEnchant(Enchantment.ARROW_FIRE, 1, true);
+		enchantedBook3.setItemMeta(enchantedBook3Meta);
+		ItemStack enchantedBook4 = new ItemStack(Material.ENCHANTED_BOOK, 1);
+		ItemMeta enchantedBook4Meta = enchantedBook4.getItemMeta();
+		enchantedBook4Meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+		enchantedBook4.setItemMeta(enchantedBook4Meta);
+		ItemStack shield = new ItemStack(Material.SHIELD);
+		ItemStack bone1 = new ItemStack(Material.BONE, 2);
+		ItemStack bone2 = new ItemStack(Material.BONE, 5);
+		ItemStack wolf = new ItemStack(Material.MONSTER_EGG, 1, (short) 95);
+		
+		//Player Islands
+				cm.createChest(loc);
+				cm.clearChest(loc);
+				cm.setChestItem(loc, true, dirt2, 5, chainBoots, 10, chainHelm, 18, apple2, 24);
+				
+				cm.createChest(loc1);
+				cm.clearChest(loc1);
+				cm.setChestItem(loc1, true, ironSword, 6, wood2, 16, pork1, 24);
+
+				cm.createChest(loc2);
+				cm.clearChest(loc2);
+				cm.setChestItem(loc2, true, water, 7, woodAxe, 13, sand2, 21, bread2, 25);
+				
+				cm.createChest(loc3);
+				cm.clearChest(loc3);
+				cm.setChestItem(loc3, true, woodenSword, 2, bow, 10, arrows2, 16, sand2, 23);
+				
+				cm.createChest(loc4);
+				cm.clearChest(loc4);
+				cm.setChestItem(loc4, true, chainHelm, 6, chainBoots, 15, chainHelm, 21, wood2, 26);
+				
+				cm.createChest(loc5);
+				cm.clearChest(loc5);
+				cm.setChestItem(loc5, true, leatherBoots, 4, cobble2, 15, snow2, 21);
+				
+				cm.createChest(loc6);
+				cm.clearChest(loc6);
+				cm.setChestItem(loc6, true, lava, 3, glass2, 9, stoneSword, 20);
+				
+				cm.createChest(loc7);
+				cm.clearChest(loc7);
+				cm.setChestItem(loc7, true, apple2, 7, chainChest, 12, leatherBoots, 15, sand1, 20);
+				
+				cm.createChest(loc8);
+				cm.clearChest(loc8);
+				cm.setChestItem(loc8, true, snow1, 4, pork1, 12, bow, 20);
+				
+				cm.createChest(loc9);
+				cm.clearChest(loc9);
+				cm.setChestItem(loc9, true, arrows1, 5, bread1, 18, snow2, 24);
+				
+				cm.createChest(loc10);
+				cm.clearChest(loc10);
+				cm.setChestItem(loc10, true, water, 5, bow, 10, arrows2, 20);
+				
+				cm.createChest(loc11);
+				cm.clearChest(loc11);
+				cm.setChestItem(loc11, true, glass2, 4, chainChest, 15, chainHelm, 23, wood2, 26);
+
+				cm.createChest(loc12);
+				cm.clearChest(loc12);
+				cm.setChestItem(loc12, true, apple2, 5, wood1, 13, sand1, 21);
+				
+				cm.createChest(loc13);
+				cm.clearChest(loc13);
+				cm.setChestItem(loc13, true, chainChest, 1, leatherLeg, 14, woodenSword, 23);
+				
+				cm.createChest(loc14);
+				cm.clearChest(loc14);
+				cm.setChestItem(loc14, true, lava, 2, pork1, 16, glass1, 19);
+				
+				cm.createChest(loc15);
+				cm.clearChest(loc15);
+				cm.setChestItem(loc15, true, stone2, 3, sand1, 15, stoneSword, 23);
+				
+				cm.createChest(loc16);
+				cm.clearChest(loc16);
+				cm.setChestItem(loc16, true, water, 4, snow1, 14, woodAxe, 19);
+				
+				cm.createChest(loc17);
+				cm.clearChest(loc17);
+				cm.setChestItem(loc17, true, chainBoots, 6, leatherLeg, 15, chainHelm, 24);
+				
+				cm.createChest(loc18);
+				cm.setChestItem(loc18, true, lava, 4, ironSword, 13, bow, 24);
+				cm.clearChest(loc18);
+				
+				cm.createChest(loc19);
+				cm.clearChest(loc19);
+				cm.setChestItem(loc19, true, dirt2, 5, stone2, 11, arrows1, 26);
+				
+				cm.createChest(loc20);
+				cm.clearChest(loc20);
+				cm.setChestItem(loc20, true, snow1, 4, pick, 12, leatherLeg, 19, chainChest, 24);
+				
+				cm.createChest(loc21);
+				cm.clearChest(loc21);
+				cm.setChestItem(loc21, true, bow, 5, arrows1, 16, sand1, 23);
+				
+				cm.createChest(loc22);
+				cm.clearChest(loc22);
+				cm.setChestItem(loc22, true, lava, 11, water, 3, leatherChest, 17, leatherLeg, 23);
+				
+				cm.createChest(loc23);
+				cm.clearChest(loc23);
+				cm.setChestItem(loc23, true, ironAxe, 4, glass1, 15, wood2, 23);
+				
+				cm.createChest(loc24);
+				cm.clearChest(loc24);
+				cm.setChestItem(loc24, true, stone2, 7, woodenSword, 14, snow1, 22);
+				
+				cm.createChest(loc25);
+				cm.clearChest(loc25);
+				cm.setChestItem(loc25, true, apple2, 0, pick, 14, lava, 21);
+				
+				cm.createChest(loc26);
+				cm.clearChest(loc26);
+				cm.setChestItem(loc26, true, leatherBoots, 5, chainHelm, 14, sand2, 25);
+				
+				cm.createChest(loc27);
+				cm.clearChest(loc27);
+				cm.setChestItem(loc27, true, water, 5, stone1, 13, bow, 21);
+				
+				cm.createChest(loc28);
+				cm.clearChest(loc28);
+				cm.setChestItem(loc28, true, cobble1, 5, leatherLeg, 14, chainChest, 22);
+				
+				cm.createChest(loc29);
+				cm.clearChest(loc29);
+				cm.setChestItem(loc29, true, apple1, 4, bow, 13, arrows1, 25);
+				
+				cm.createChest(loc30);
+				cm.clearChest(loc30);
+				cm.setChestItem(loc30, true, woodenSword, 6, bread1, 16, snow2, 24);
+				
+				cm.createChest(loc31);
+				cm.clearChest(loc31);
+				cm.setChestItem(loc31, true, leatherChest, 4, chainHelm, 15, chainBoots, 23);
+				
+				cm.createChest(loc32);
+				cm.clearChest(loc32);
+				cm.setChestItem(loc32, true, water, 6, stone1, 15, sand2, 23, apple2, 26);
+				
+				cm.createChest(loc33);
+				cm.clearChest(loc33);
+				cm.setChestItem(loc33, true, stoneSword, 6, chainChest, 14, bow, 22);
+				
+				cm.createChest(loc34);
+				cm.clearChest(loc34);
+				cm.setChestItem(loc34, true, water, 5, lava, 16, ironAxe, 20);
+				
+				cm.createChest(loc35);
+				cm.clearChest(loc35);
+				cm.setChestItem(loc35, true, bread2, 3, snow1, 15, cobble1, 22);
+				
+				//Pre-center Islands
+				cm.createChest(loc36);
+				cm.clearChest(loc36);
+				cm.setChestItem(loc36, true, ironHelm, 3, ironBoots, 9, splashhe, 15, arrows1, 19, fs, 24);
+				
+				cm.createChest(loc37);
+				cm.clearChest(loc37);
+				cm.setChestItem(loc37, true, diamondAxe, 2, tnt1, 7, splashha, 14, gapple2, 21, pork1, 24);
+				
+				cm.createChest(loc38);
+				cm.clearChest(loc38);
+				cm.setChestItem(loc38, true, ironChest, 5, ironHelm, 12, splashhe, 19, gapple1, 23, apple1, 25);
+				
+				cm.createChest(loc39);
+				cm.clearChest(loc39);
+				cm.setChestItem(loc39, true, diamondSword, 4, diamond1, 11, arrows1, 16, fs, 23);
+				
+				cm.createChest(loc40);
+				cm.clearChest(loc40);
+				cm.setChestItem(loc40, true, arrows2, 2, diamond1, 7, splashhe, 13, diamondAxe, 19, bread2, 23);
+				
+				cm.createChest(loc41);
+				cm.clearChest(loc41);
+				cm.setChestItem(loc41, true, ironHelm, 5, ironBoots, 13, ironLeg, 17, bow, 22);
+				
+				cm.createChest(loc42);
+				cm.clearChest(loc42);
+				cm.setChestItem(loc42, true, diamondAxe, 4, diamond2, 11, splashhe, 16, arrows1, 23);
+				
+				cm.createChest(loc43);
+				cm.clearChest(loc43);
+				cm.setChestItem(loc43, true, ironLeg, 4, ironChest, 11, gapple1, 16, bow, 23, pork1, 19);
+				
+				//Center Island
+				cm.createChest(loc44);
+				cm.clearChest(loc44);
+				cm.setChestItem(loc44, true, diamondHelm, 6, arrows2, 8, enchantedBook3, 12, enderPearl1, 19, fs, 24);
+				
+				cm.createChest(loc45);
+				cm.clearChest(loc45);
+				cm.setChestItem(loc45, true, diamondChest, 2, splashst, 4, bottleOEnchanting, 11, deadBush, 18, shield, 23, pork1, 25);
+				
+				cm.createChest(loc46);
+				cm.clearChest(loc46);
+				cm.setChestItem(loc46, true, diamondBoots, 4, splashst, 9, arrows1, 13, wolf, 21, bottleOEnchanting, 26, apple2, 16);
+				
+				cm.createChest(loc47);
+				cm.clearChest(loc47);
+				cm.setChestItem(loc47, true, diamondLeg, 4, arrows2, 12, enderPearl2, 14, bone2, 16, bow, 22);
+				
+				cm.createChest(loc48);
+				cm.clearChest(loc48);
+				cm.setChestItem(loc48, true, diamondHelm, 1, splashfr, 7, bottleOEnchanting, 13, deadBush, 17, shield, 21, pork1, 25);
+				
+				cm.createChest(loc49);
+				cm.setChestItem(loc49, true, diamondChest, 3, splashst, 11, bone2, 13, enchantedBook3, 18, enchantedBook4, 25);
+				cm.clearChest(loc49);
+				
+				cm.createChest(loc50);
+				cm.clearChest(loc50);
+				cm.setChestItem(loc50, true, diamondLeg, 2, splashsw, 9, bottleOEnchanting, 14, enchantedBook1, 17, wolf, 23, bread2, 25);
+				
+				cm.createChest(loc51);
+				cm.clearChest(loc51);
+				cm.setChestItem(loc51, true, diamondBoots, 4, arrows1, 9, enchantedBook3, 15, bone2, 19, bow, 25);
+	}
+	
+	@EventHandler
+	public void onIventoryClick(InventoryClickEvent event)
+	{
+		ItemStack mainlobby = nameItem(new ItemStack(Material.BED), ChatColor.DARK_RED + "" + ChatColor.BOLD + "Main Lobby");
+		ItemStack skyWarsLobby = nameItem(new ItemStack(Material.BARRIER), ChatColor.AQUA + "" + ChatColor.BOLD + "Sky Wars Lobby");
+		ItemMeta swlMeta = skyWarsLobby.getItemMeta();
+		swlMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		skyWarsLobby.setItemMeta(swlMeta);
+		ItemStack skyWarsKits = nameItem(new ItemStack(Material.EYE_OF_ENDER), ChatColor.GOLD + "" + ChatColor.BOLD + "Sky Wars Kits");
+		
+		if(event.getWhoClicked() instanceof Player)
+		{
+		Player p = (Player) event.getWhoClicked();
+		ItemStack item = event.getCurrentItem();
+		World world = Bukkit.getWorld("OgresLair");
+		
+		if(p.getWorld().equals(world))
+		{
+			if(p.getGameMode() == GameMode.SURVIVAL && olGVars != 1)
+			{
+				event.setCancelled(true);
+			}
+		}
+		
+		if(item.getItemMeta().getDisplayName().contains("Ogre's Lair") && p.getLocation().getWorld() != world && olPGVars == 1)
+        {
+				switch(olPlayerCounter){
+				case 0:
+					Location loc = new Location(world, 3.5, 75.0, -78.5, 0, 0);
+					if(olplayer1 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer1 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer1.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(olplayer1);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 1:
+					World world1 = Bukkit.getWorld("OgresLair");
+					Location loc1 = new Location(world1, 79.5, 75.0, 3.5, 90, 0);
+					if(olplayer2 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer2 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer2.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc1);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 2:
+					World world2 = Bukkit.getWorld("OgresLair");
+					Location loc2 = new Location(world2, -2.5, 75.5, 79.5, -180, 0);
+					if(olplayer3 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer3 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer3.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc2);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 3:
+					World world3 = Bukkit.getWorld("OgresLair");
+					Location loc3 = new Location(world3, -78.5, 75.5, -2.5, -90, 0);
+					if(olplayer4 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer4 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer4.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc3);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 4:
+					World world4 = Bukkit.getWorld("OgresLair");
+					Location loc4 = new Location(world4, -21.5, 75.0, -59.5, 0, 0);
+					if(olplayer5 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer5 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer5.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc4);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 5:
+					World world5 = Bukkit.getWorld("OgresLair");
+					Location loc5 = new Location(world5, 60.5, 75.0, -21.5, 90, 0);
+					if(olplayer6 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer6 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer6.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc5);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 6:
+					World world6 = Bukkit.getWorld("OgresLair");
+					Location loc6 = new Location(world6, 22.5, 75.0, 60.5, -180, 0);
+					if(olplayer7 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer7 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer7.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc6);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 7:
+					World world7 = Bukkit.getWorld("OgresLair");
+					Location loc7 = new Location(world7, -59.5, 75.0, 22.5, -90, 0);
+					if(olplayer8 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer8 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer8.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc7);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 8:
+					World world8 = Bukkit.getWorld("OgresLair");
+					Location loc8 = new Location(world8, 22.5, 75.0, -65.5, 0, 0);
+					if(olplayer9 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer9 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer9.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc8);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 9:
+					World world9 = Bukkit.getWorld("OgresLair");
+					Location loc9 = new Location(world9, 66.5, 75.0, 21.5, 90, 0);
+					if(olplayer10 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer10 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer10.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc9);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 10:
+					World world10 = Bukkit.getWorld("OgresLair");
+					Location loc10 = new Location(world10, -20.5, 75.0, 66.5, -180, 0);
+					if(olplayer11 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer11 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer11.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc10);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 11:
+					World world11 = Bukkit.getWorld("OgresLair");
+					Location loc11 = new Location(world11, -65.5, 75.0, -20.5, -90, 0);
+					if(olplayer12 == null)
+		            {
+		            	p.getInventory().clear();
+			            ++olPlayerCounter;
+			            olplayer12 = (Player) event.getWhoClicked();
+			            for(Player pl : Bukkit.getServer().getOnlinePlayers())
+						{
+			            	p.showPlayer(pl);
+			            	pl.showPlayer(p);
+							if(pl.getWorld().getName().equals("OgresLair"))
+							{
+								pl.sendMessage(ChatColor.GREEN + olplayer12.getName() + " has joined the game, "  + ChatColor.GOLD + olPlayerCounter + "/12");
+							}
+						}
+		            	p.teleport(loc11);
+		            	p.getInventory().setItem(7, mainlobby);
+			            p.getInventory().setItem(8, skyWarsLobby);
+			            p.getInventory().setItem(4, skyWarsKits);
+			            setupScoreboard(p);
+			            p.setHealth(20.0);
+			            p.setFoodLevel(20);
+			            olPlayers.add(p);
+			            p.setAllowFlight(false);
+						break;
+		            }else{
+		            }
+				case 12:
+					p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "This Game Is Full");
+					p.closeInventory();
+					break;
+				}
+        	}else if(item.getItemMeta().getDisplayName().contains("Ogres Lair") && p.getLocation().getWorld() == world){
+        		p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are already in this game");
+        	}else if(item.getItemMeta().getDisplayName().contains("Ogres Lair")){
+        		p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "This game is still in progress");
+        	}
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	public void OLPreGameTimer()
+	{
+		World world = Bukkit.getWorld("OgresLair");
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
+			@Override
+			public void run(){
+				Bukkit.getWorld("OgresLair").setTime(13000);
+				Bukkit.getWorld("OgresLair").setStorm(true);
+				Bukkit.getWorld("OgresLair").setThundering(true);
+				Bukkit.getWorld("OgresLair").setAutoSave(false);
+				Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "save-off");
+				
+				for(Player p : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(p.getLocation().getWorld().getName().equals("OgresLair"))
+					{
+						updateScoreboard(p);
+					}
+				}
+				
+				if(olPGVars == 1)
+				{
+					if(olPGTimer == 0 && olPlayerCounter >= 3)
+					{
+						olPGTimer = 15;
+						olPGVars = 2;
+						for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "15 " + ChatColor.GREEN + "Seconds");
+							}
+						}
+					}else if(olPGTimer == 0 && olPlayerCounter <= 2){  
+						olPGTimer = 15;
+						
+						for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								p.sendMessage(ChatColor.DARK_RED + "Not Enough Players to Start the Game");
+							}
+						}
+					}else if(olPlayerCounter == 12){
+			            olPGTimer = 15;
+			            olPGVars = 2;
+			            for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "15 " + ChatColor.GREEN + "Seconds");
+							}
+						}
+					}else{
+						--olPGTimer;
+					}
+				}
+				
+				if(olPGVars == 2)
+				{
+					--olPGTimer;
+					for(Player p : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(p.getWorld().getName().equals("OgresLair"))
+						{
+							switch(olPGTimer)
+							{
+							case 10:
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "10 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 9: 
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "9 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 8:
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "8 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 7:
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "7 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 6:
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "6 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 5:
+								IChatBaseComponent chatTitle = ChatSerializer.a("{\"text\":\"§c§l*5*\"}");
+					    		PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+					    		
+					    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title);
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "5 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 4:	
+								IChatBaseComponent chatTitle1 = ChatSerializer.a("{\"text\":\"§6§l*4*\"}");
+					    		PacketPlayOutTitle title1 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle1);
+					    		
+					    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title1);
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "4 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 3:
+								IChatBaseComponent chatTitle2 = ChatSerializer.a("{\"text\":\"§c§l*3*\"}");
+					    		PacketPlayOutTitle title2 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle2);
+					    		
+					    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title2);
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "3 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 2:
+								IChatBaseComponent chatTitle3 = ChatSerializer.a("{\"text\":\"§6§l*2*\"}");
+					    		PacketPlayOutTitle title3 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle3);
+					    		
+					    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title3);
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "2 " + ChatColor.GREEN + "Seconds");
+								break;
+							case 1:
+								IChatBaseComponent chatTitle4 = ChatSerializer.a("{\"text\":\"§c§l*1*\"}");
+					    		PacketPlayOutTitle title4 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle4);
+					    		
+					    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title4);
+								p.sendMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "1 " + ChatColor.GREEN + "Second");
+								break;
+							case 0:
+								IChatBaseComponent chatTitle5 = ChatSerializer.a("{\"text\":\"§b§l*Sky Wars*\"}");
+					    		PacketPlayOutTitle title5 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle5);
+					    		IChatBaseComponent chatSubTitle = ChatSerializer.a("{\"text\": \"§6§l*On Crimson Central*\"}");
+					    		PacketPlayOutTitle subtitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, chatSubTitle);
+				    		
+								((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title5);
+								((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(subtitle);
+								p.sendMessage(ChatColor.GREEN + "Game has started");
+								p.getInventory().clear();
+								
+								chestRefil();
+								cageDelete();
+								olPGVars = 0;
+								olGVars = 1;
+								olGTimer = 600;
+								
+								if(SkyWarsLobby.warriors.contains(p))
+								{
+									ItemStack leatherHelm = new ItemStack(Material.LEATHER_HELMET, 1);
+									ItemStack leatherChest = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+									ItemStack leatherLeg = new ItemStack(Material.LEATHER_LEGGINGS, 1);
+									ItemStack leatherBoots = new ItemStack(Material.LEATHER_BOOTS, 1);
+									ItemStack stoneSword = new ItemStack(Material.STONE_SWORD, 1);
+									ItemStack wood = new ItemStack(Material.WOOD, 16);
+
+									p.getInventory().setHelmet(leatherHelm);
+									p.getInventory().setChestplate(leatherChest);
+									p.getInventory().setLeggings(leatherLeg);
+									p.getInventory().setBoots(leatherBoots);
+									p.getInventory().addItem(stoneSword);
+									p.getInventory().addItem(wood);
+								}else if(SkyWarsLobby.bowsmen.contains(p)){
+									ItemStack bow = new ItemStack(Material.BOW, 1);
+									ItemStack arrows = new ItemStack(Material.ARROW, 16);
+
+									p.getInventory().addItem(bow);
+									p.getInventory().addItem(arrows);
+								}else if(SkyWarsLobby.brewers.contains(p)){
+									ItemStack splashhe = new ItemStack(Material.SPLASH_POTION);
+									ItemMeta splashhemeta = (PotionMeta) splashhe.getItemMeta();
+									((PotionMeta) splashhemeta).setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
+									splashhe.setItemMeta(splashhemeta);
+									ItemStack splashha = new ItemStack(Material.SPLASH_POTION);
+									ItemMeta splashhameta = (PotionMeta) splashha.getItemMeta();
+									((PotionMeta) splashhameta).setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+									splashha.setItemMeta(splashhameta);
+									
+									p.getInventory().addItem(splashhe);
+									p.getInventory().addItem(splashhe);
+									p.getInventory().addItem(splashha);
+									p.getInventory().addItem(splashha);
+								}
+							break;
+						}
+					}
+				}
+			}
+			}
+		}, 0, 20);
+	}
+		
+	public void OLGameTimer()
+	{
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
+			@Override
+			public void run(){
+				if(olGVars == 1)
+				{
+					--olGTimer;
+					for(Player p : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(p.getWorld().getName().equals("OgresLair"))
+						{
+							switch(olGTimer)
+							{
+								case 600:
+									updateScoreboard(p);
+									break;
+								case 520:
+									updateScoreboard(p);
+									break;
+								case 480:
+									updateScoreboard(p);
+									break;
+								case 430:
+									p.sendMessage(ChatColor.GREEN + "Chests are refilling in 10 seconds");
+									break;
+								case 420:
+									p.sendMessage(ChatColor.GREEN + "Chests have been refilled");
+									chestRefil();
+									updateScoreboard(p);
+									break;
+								case 360:
+									updateScoreboard(p);
+									break;
+								case 300:
+									updateScoreboard(p);
+									break;
+								case 250:
+									p.sendMessage(ChatColor.GREEN + "Chests are refilling in 10 seconds");
+									break;
+								case 240:
+									p.sendMessage(ChatColor.GREEN + "Chests have been refilled");
+									chestRefil();
+									updateScoreboard(p);
+									break;
+								case 180:
+									updateScoreboard(p);
+									break;
+								case 120:
+									updateScoreboard(p);
+									break;
+								case 60:
+									p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "1 " + ChatColor.GREEN + "Minute");
+									updateScoreboard(p);
+									break;
+								case 10:
+									p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "10 " + ChatColor.GREEN + "Seconds");
+									break;
+								case 9:
+									p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "9 " + ChatColor.GREEN + "Seconds");
+									break;
+								case 8:
+									p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "8 " + ChatColor.GREEN + "Seconds");
+									break;
+								case 7:
+									p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "7 " + ChatColor.GREEN + "Seconds");
+									break;
+								case 6:
+									p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "6 " + ChatColor.GREEN + "Seconds");
+									break;
+								case 5:
+									IChatBaseComponent chatTitle = ChatSerializer.a("{\"text\":\"§c§l*5*\"}");
+						    		PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+						    		
+						    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title);
+									p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "5 " + ChatColor.GREEN + "Seconds");
+									break;
+								case 4:
+									IChatBaseComponent chatTitle1 = ChatSerializer.a("{\"text\":\"§6§l*4*\"}");
+						    		PacketPlayOutTitle title1 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle1);
+						    		
+						    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title1);
+						    		p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "4 " + ChatColor.GREEN + "Seconds");	
+						    		break;
+								case 3:
+									IChatBaseComponent chatTitle2 = ChatSerializer.a("{\"text\":\"§c§l*3*\"}");
+						    		PacketPlayOutTitle title2 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle2);
+						    		
+						    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title2);
+						    		p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "3 " + ChatColor.GREEN + "Seconds");	
+						    		break;
+								case 2:
+									IChatBaseComponent chatTitle3 = ChatSerializer.a("{\"text\":\"§6§l*2*\"}");
+						    		PacketPlayOutTitle title3 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle3);
+						    		
+						    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title3);
+						    		p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "2 " + ChatColor.GREEN + "Seconds");
+						    		break;
+								case 1:
+									IChatBaseComponent chatTitle4 = ChatSerializer.a("{\"text\":\"§c§l*1*\"}");
+						    		PacketPlayOutTitle title4 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle4);
+						    		
+						    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title4);
+						    		p.sendMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "1 " + ChatColor.GREEN + "Seconds");
+						    		break;
+								case 0:
+						    		IChatBaseComponent Title = ChatSerializer.a("{\"text\": \"§6§l*Tie*\"}");
+						    		PacketPlayOutTitle subtitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, Title);
+					    		
+									((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(subtitle);
+									p.sendMessage(ChatColor.GREEN + "Game has ended");
+									
+									olGVars = 2;
+									olGFinal = 10;
+									break;
+							}
+						}
+					}
+				}
+			}
+		}, 0, 20);
+	}
+	
+	public void OLEndGameTimer()
+	{
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
+			@SuppressWarnings("deprecation")
+			@Override
+			public void run(){
+				if(olGVars == 2)
+				{
+					--olGFinal;
+					if(olGFinal == 0)
+					{
+						World world = Bukkit.getWorld("SkyWarsLobby");
+						
+						Location loc = new Location(world, -2561.5, 52, 744.5, -90, 0);
+						
+						ItemStack skyWarsMapMenu = nameItem(new ItemStack(Material.MAP),
+								ChatColor.AQUA + "" + ChatColor.BOLD + "Select Game");
+						
+						ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+						ItemStack cosmetics = nameItem(new ItemStack(Material.CHEST), ChatColor.YELLOW + "Cosmetics");
+						ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+						ItemMeta hidePlayersMeta = hidePlayers.getItemMeta();
+						ArrayList<String> hpLore = new ArrayList<String>();
+						hpLore.add(ChatColor.YELLOW + "Coming Soon!");
+						hidePlayersMeta.setLore(hpLore);
+						hidePlayers.setItemMeta(hidePlayersMeta);
+						ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+						ItemStack lobbySelector = nameItem(new ItemStack(Material.NETHER_STAR), ChatColor.GOLD + "Lobby Selector (Coming Soon)");
+						ItemMeta lobbySelectorMeta = lobbySelector.getItemMeta();
+						ArrayList<String> lsLore = new ArrayList<String>();
+						lsLore.add(ChatColor.YELLOW + "Coming Soon!");
+						lobbySelectorMeta.setLore(lsLore);
+						lobbySelector.setItemMeta(lobbySelectorMeta);
+						
+						for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							String pn = p.getName();
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								if(olDeadPlayers.contains(p))
+								{
+									for(Player pls : Bukkit.getServer().getOnlinePlayers())
+									{
+										if(pls != p)
+										{
+											pls.showPlayer(p);
+										}
+									}
+								}
+								
+								p.teleport(loc);
+								
+								p.getInventory().clear();
+								
+								p.getPlayer().getInventory().setItem(0, gameMenu);
+								p.getPlayer().getInventory().setItem(1, skyWarsMapMenu);
+								ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+								SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+								skullMeta.setOwner(pn);
+								skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+								profile.setItemMeta(skullMeta);
+								skullMeta.setDisplayName(pn);
+								p.getPlayer().getInventory().setItem(7, profile);
+								p.getPlayer().getInventory().setItem(3, hidePlayers);
+								p.getPlayer().getInventory().setItem(5, serverRadio);
+								p.getPlayer().getInventory().setItem(8, lobbySelector);
+								p.getPlayer().getInventory().setItem(4, cosmetics);
+								
+								p.setAllowFlight(false);
+								p.setFlying(false);
+								
+								p.setHealth(20.0);
+								p.setFoodLevel(20);
+								
+								MainLobby.setupScoreboard1(p);
+							}
+						}
+						
+						olGVars = 0;
+						olPGVars = 1;
+						olPGTimer = 15;
+						olGTimer = 600;
+						olGFinal = 10;
+						olPlayerCounter = 0;
+						
+						olPlayers.clear();
+						olDeadPlayers.clear();
+						
+						rollback("OgresLair");
+						cageRedo();
+					}
+				}
+			}
+		}, 0, 20);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent event){
+		World reworld = Bukkit.getWorld("OgresLair");
+		Player p = event.getPlayer();
+		if(p.getLocation().getWorld().equals(reworld) && p.getGameMode() == GameMode.SURVIVAL)
+		{
+			if(olGVars != 1)
+			{
+				event.setCancelled(true);
+			}
+		}
+			
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockPlace(BlockPlaceEvent event)
+	{
+		World mainworld = Bukkit.getWorld("OgresLair");
+		Player p = event.getPlayer();
+		if(p.getLocation().getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL)
+		{
+			if(olGVars != 1)
+			{
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void quitEvent(PlayerQuitEvent e) {
+		Player p = e.getPlayer();
+		//World mainworld = Bukkit.getWorld("OgresLair");
+		if(OgresLairSkyWars.olPlayers.contains(p))
+		{
+			--OgresLairSkyWars.olPlayerCounter;
+			OgresLairSkyWars.olPlayers.remove(p);
+		}
+		if(OgresLairSkyWars.olDeadPlayers.contains(p))
+		{
+			--OgresLairSkyWars.olPlayerCounter;
+			OgresLairSkyWars.olDeadPlayers.remove(p);
+		}
+		if(OgresLairSkyWars.olPlayerCounter < 2)
+		{
+			if(OgresLairSkyWars.olPlayerCounter < 2)
+			{
+				if(OgresLairSkyWars.olPGVars == 1){
+					OgresLairSkyWars.olPGVars = 1;
+					OgresLairSkyWars.olGVars = 0;
+					OgresLairSkyWars.olGTimer = 600;
+					OgresLairSkyWars.olPGTimer = 15;
+					OgresLairSkyWars.olGFinal = 10;
+				}else if(OgresLairSkyWars.olPGVars == 2){
+					OgresLairSkyWars.olPGVars = 1;
+					OgresLairSkyWars.olGVars = 0;
+					OgresLairSkyWars.olGTimer = 600;
+					OgresLairSkyWars.olPGTimer = 15;
+					OgresLairSkyWars.olGFinal = 10;
+					for(Player pl : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(pl.getWorld().getName().equals("OgresLair"))
+						{
+							pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+						}
+					}
+				}else{
+					OgresLairSkyWars.olPGVars = 0;
+					OgresLairSkyWars.olGVars = 2;
+					OgresLairSkyWars.olGTimer = 600;
+					OgresLairSkyWars.olPGTimer = 15;
+					OgresLairSkyWars.olGFinal = 10;
+			
+					for(Player pl : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(pl.getWorld().getName().equals("OgresLair"))
+						{
+							pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void PlayerDamageReceive(EntityDamageByEntityEvent e)
+	{	
+		World mainworld = Bukkit.getWorld("OgresLair");
+		Location reDeathRespawn = new Location(mainworld, -2561.5, 52, 744.5, -90, 0);
+		
+		if(e.getEntity() instanceof Player)
+		{
+			Player damaged = (Player) e.getEntity();
+			if(e.getDamager() instanceof Player)
+			{
+				Player damager = (Player) e.getDamager();
+				
+				if(damaged.getWorld().equals(mainworld))
+				{
+					if(olDeadPlayers.contains(damager))
+					{
+						e.setCancelled(true);
+					}
+					
+					if((damaged.getHealth()-e.getDamage()) <= 0)
+					{
+						e.setCancelled(true);
+						
+						for (ItemStack itemStack : damaged.getInventory().getContents()) {
+							if(itemStack != null)
+							{
+								damaged.getWorld().dropItemNaturally(damaged.getLocation(), itemStack);
+							}
+						}
+						for (ItemStack itemStack : damaged.getInventory().getArmorContents()) {
+							if(itemStack != null)
+							{
+								damaged.getWorld().dropItemNaturally(damaged.getLocation(), itemStack);
+							}
+						}
+						
+						olDeadPlayers.add(damaged);
+						damaged.teleport(reDeathRespawn);
+						damaged.setHealth(20.0);
+						damaged.setFoodLevel(20);
+						damaged.setAllowFlight(true);
+						damaged.setFlying(true);
+						damaged.getInventory().clear();
+						
+						if(olGVars == 1)
+						{
+							--olPlayerCounter;
+						}
+						
+						for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								p.hidePlayer(damaged);
+								p.sendMessage(ChatColor.RED + damaged.getName() + ChatColor.GOLD + " has been killed by " + ChatColor.RED + damager.getName());
+							}
+						}
+					}
+					
+					if(olPlayerCounter == 1 && olGVars == 1)
+					{
+						for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								if(olDeadPlayers.contains(p) != true)
+								{
+									IChatBaseComponent chatTitle = ChatSerializer.a("{\"text\":\"§4§l*Victory*\"}");
+						    		PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+						    		
+						    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title);
+						    		
+						    		reWinner = p;
+						    		p.sendMessage(ChatColor.GREEN + "Game has Ended");
+									p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+									p.sendMessage(ChatColor.AQUA + "Winner: " + ChatColor.GOLD + reWinner.getName());
+									p.sendMessage(ChatColor.AQUA + "Map: " + ChatColor.GOLD + "Ogre's Lair");
+									p.sendMessage(ChatColor.AQUA + "Mode: " + ChatColor.GOLD + "Normal, Solo");
+									p.sendMessage(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+								}
+							}
+						}
+						
+						for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								if(olDeadPlayers.contains(p))
+								{
+									p.sendMessage(ChatColor.GREEN + "Game has Ended");
+									p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+									p.sendMessage(ChatColor.AQUA + "Winner: " + ChatColor.GOLD + reWinner.getName());
+									p.sendMessage(ChatColor.AQUA + "Map: " + ChatColor.GOLD + "Ogre's Lair");
+									p.sendMessage(ChatColor.AQUA + "Mode: " + ChatColor.GOLD + "Normal, Solo");
+									p.sendMessage(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+									p.teleport(reWinner);
+
+									Firework f = (Firework) p.getPlayer().getWorld().spawnEntity(reWinner.getLocation(),
+											EntityType.FIREWORK);
+									Firework f2 = (Firework) p.getPlayer().getWorld().spawnEntity(reWinner.getLocation(),
+											EntityType.FIREWORK);
+									Firework f3 = (Firework) p.getPlayer().getWorld().spawnEntity(reWinner.getLocation(),
+											EntityType.FIREWORK);
+
+									FireworkMeta fm = f.getFireworkMeta();
+									fm.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BALL_LARGE)
+											.withColor(Color.RED).withFade(Color.WHITE).build());
+									fm.setPower(2);
+									f.setFireworkMeta(fm);
+									
+									FireworkMeta fm2 = f2.getFireworkMeta();
+									fm2.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BALL_LARGE)
+											.withColor(Color.RED).withFade(Color.WHITE).build());
+									fm2.setPower(2);
+									f2.setFireworkMeta(fm2);
+									
+									FireworkMeta fm3 = f3.getFireworkMeta();
+									fm3.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BALL_LARGE)
+											.withColor(Color.RED).withFade(Color.WHITE).build());
+									fm3.setPower(2);
+									f3.setFireworkMeta(fm3);
+								}
+							}
+							
+							olGVars = 2;
+							olGFinal = 10;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void pickupItemEvent(PlayerPickupItemEvent e)
+	{
+		World mainworld = Bukkit.getWorld("OgresLair");
+		Player p = e.getPlayer();
+		if(olDeadPlayers.contains(e.getPlayer()))
+		{
+			e.setCancelled(true);
+		}
+		if(p.getWorld().equals(mainworld) && olGVars != 1)
+		{
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void dropItemEvent(PlayerDropItemEvent e)
+	{
+		World mainworld = Bukkit.getWorld("OgresLair");
+		Player p = e.getPlayer();
+		if(olDeadPlayers.contains(e.getPlayer()))
+		{
+			e.setCancelled(true);
+		}
+		if(p.getWorld().equals(mainworld) && olGVars != 1)
+		{
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerDamage(EntityDamageEvent e)
+	{
+		World mainworld = Bukkit.getWorld("OgresLair");
+		Location reDeathRespawn = new Location(mainworld, 0.5, 138, 0.5);
+		
+		if(e.getEntity() instanceof Player)
+		{
+			Player damaged = (Player) e.getEntity();
+			
+			if(olDeadPlayers.contains(damaged))
+			{
+				e.setCancelled(true);
+			}
+			
+			if(damaged.getWorld().equals(mainworld))
+			{
+				if(olGTimer > 595)
+				{
+					e.setCancelled(true);
+				}
+				
+				if((damaged.getHealth()-e.getDamage()) <= 0)
+				{
+					e.setCancelled(true);
+					
+					for (ItemStack itemStack : damaged.getInventory().getContents()) {
+						if(itemStack != null)
+						{
+							damaged.getWorld().dropItemNaturally(damaged.getLocation(), itemStack);
+						}
+					}
+					for (ItemStack itemStack : damaged.getInventory().getArmorContents()) {
+						if(itemStack != null)
+						{
+							damaged.getWorld().dropItemNaturally(damaged.getLocation(), itemStack);
+						}
+					}
+					
+					olDeadPlayers.add(damaged);
+					damaged.teleport(reDeathRespawn);
+					damaged.setHealth(20.0);
+					damaged.setFoodLevel(20);
+					damaged.setAllowFlight(true);
+					damaged.setFlying(true);
+					damaged.getInventory().clear();
+					
+					if(olGVars == 1)
+					{
+						--olPlayerCounter;
+					}
+					
+					for(Player p : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(p.getWorld().getName().equals("OgresLair"))
+						{
+							p.hidePlayer(damaged);
+							
+							if(e.getCause() == DamageCause.FALL)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " fell from a high place");
+							}
+							if(e.getCause() == DamageCause.BLOCK_EXPLOSION)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has been exploded");
+							}
+							if(e.getCause() == DamageCause.CONTACT)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has been killed");
+							}
+							if(e.getCause() == DamageCause.DROWNING)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has drowned");
+							}
+							if(e.getCause() == DamageCause.ENTITY_EXPLOSION)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has been exploded");
+							}
+							if(e.getCause() == DamageCause.FALLING_BLOCK)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has been killed");
+							}
+							if(e.getCause() == DamageCause.FIRE)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has burned to death");
+							}
+							if(e.getCause() == DamageCause.FIRE_TICK)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has burned to death");
+							}
+							if(e.getCause() == DamageCause.HOT_FLOOR)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has burned to death");
+							}
+							if(e.getCause() == DamageCause.LAVA)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has burned to death");
+							}
+							if(e.getCause() == DamageCause.LIGHTNING)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has been killed by lightning");
+							}
+							if(e.getCause() == DamageCause.MAGIC)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has been killed by magic");
+							}
+							if(e.getCause() == DamageCause.MELTING)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has burned to death");
+							}
+							if(e.getCause() == DamageCause.POISON)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has been killed by poison");
+							}
+							if(e.getCause() == DamageCause.PROJECTILE)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has been killed by a projectile");
+							}
+							if(e.getCause() == DamageCause.STARVATION)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has staved to death");
+							}
+							if(e.getCause() == DamageCause.SUFFOCATION)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has suffocated");
+							}
+							if(e.getCause() == DamageCause.SUICIDE)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has suidided");
+							}
+							if(e.getCause() == DamageCause.THORNS)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED +  " has been killed by thorns");
+							}
+							if(e.getCause() == DamageCause.VOID)
+							{
+								p.sendMessage(ChatColor.GOLD + damaged.getName() + ChatColor.RED + " has fallen into the void");
+							}
+						}
+					}
+					
+					if(olPlayerCounter == 1 && olGVars == 1)
+					{
+						for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								if(olDeadPlayers.contains(p) != true)
+								{
+									IChatBaseComponent chatTitle = ChatSerializer.a("{\"text\":\"§4§l*Victory*\"}");
+						    		PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+						    		
+						    		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title);
+						    		
+						    		reWinner = p;
+						    		p.sendMessage(ChatColor.GREEN + "Game has Ended");
+									p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+									p.sendMessage(ChatColor.AQUA + "Winner: " + ChatColor.GOLD + reWinner.getName());
+									p.sendMessage(ChatColor.AQUA + "Map: " + ChatColor.GOLD + "Ogre's Lair");
+									p.sendMessage(ChatColor.AQUA + "Mode: " + ChatColor.GOLD + "Normal, Solo");
+									p.sendMessage(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+								}
+							}
+						}
+						
+						for(Player p : Bukkit.getServer().getOnlinePlayers())
+						{
+							if(p.getWorld().getName().equals("OgresLair"))
+							{
+								if(olDeadPlayers.contains(p))
+								{
+									p.sendMessage(ChatColor.GREEN + "Game has Ended");
+									p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+									p.sendMessage(ChatColor.AQUA + "Winner: " + ChatColor.GOLD + reWinner.getName());
+									p.sendMessage(ChatColor.AQUA + "Map: " + ChatColor.GOLD + "Ogres's Lair");
+									p.sendMessage(ChatColor.AQUA + "Mode: " + ChatColor.GOLD + "Normal, Solo");
+									p.sendMessage(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+									p.teleport(reWinner);
+
+									Firework f = (Firework) p.getPlayer().getWorld().spawnEntity(reWinner.getLocation(),
+											EntityType.FIREWORK);
+									Firework f2 = (Firework) p.getPlayer().getWorld().spawnEntity(reWinner.getLocation(),
+											EntityType.FIREWORK);
+									Firework f3 = (Firework) p.getPlayer().getWorld().spawnEntity(reWinner.getLocation(),
+											EntityType.FIREWORK);
+
+									FireworkMeta fm = f.getFireworkMeta();
+									fm.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BALL_LARGE)
+											.withColor(Color.RED).withFade(Color.WHITE).build());
+									fm.setPower(2);
+									f.setFireworkMeta(fm);
+									
+									FireworkMeta fm2 = f2.getFireworkMeta();
+									fm2.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BALL_LARGE)
+											.withColor(Color.RED).withFade(Color.WHITE).build());
+									fm2.setPower(2);
+									f2.setFireworkMeta(fm2);
+									
+									FireworkMeta fm3 = f3.getFireworkMeta();
+									fm3.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BALL_LARGE)
+											.withColor(Color.RED).withFade(Color.WHITE).build());
+									fm3.setPower(2);
+									f3.setFireworkMeta(fm3);
+								}
+							}
+							
+							olGVars = 2;
+							olGFinal = 10;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void setupScoreboard(Player p){		
+		ScoreboardWrapper sc_wrapper = new ScoreboardWrapper(p.getUniqueId());
+		CrimsonCentralMain.sbs.put(p.getUniqueId(), sc_wrapper);
+		
+		sc_wrapper.setTitle(0, ChatColor.GREEN + "" + ChatColor.BOLD + "Ogre's Lair");
+		
+		sc_wrapper.setLine(0, 11, ChatColor.AQUA + "", "Time Left: ");
+		if(olGTimer%60 < 10){
+			sc_wrapper.setLine(0, 10, ChatColor.GOLD + "", olGTimer/60 + ":0" + olGTimer%60);
+		}else{
+			sc_wrapper.setLine(0, 10, ChatColor.GOLD + "", olGTimer/60 + ":" + olGTimer%60);
+		}
+		sc_wrapper.setLineBlank(0, 9);
+		sc_wrapper.setLine(0, 8, ChatColor.AQUA + "", "Players Left:");
+		sc_wrapper.setLine(0, 7, ChatColor.GOLD + "", "" + olPlayerCounter);
+		sc_wrapper.setLineBlank(0, 6);
+		sc_wrapper.setLine(0, 5, ChatColor.AQUA + "", "Gamemode: ");
+		sc_wrapper.setLine(0, 4, ChatColor.GOLD + "", "Normal, Solo");
+		sc_wrapper.setLineBlank(0, 3);
+		sc_wrapper.setLine(0, 2, ChatColor.AQUA + "", "Kills: ");
+		sc_wrapper.setLine(0, 1, ChatColor.GOLD + "", "Coming Soon");
+		
+		sc_wrapper.toggleScoreboard();
+		sc_wrapper.changePage(0);
+	}
+	
+	public void updateScoreboard(Player p){		
+		ScoreboardWrapper sc_wrapper = CrimsonCentralMain.sbs.get(p.getUniqueId());
+		
+		sc_wrapper.setTitle(0, ChatColor.GREEN + "" + ChatColor.BOLD + "Ogre's Lair");
+		
+		sc_wrapper.setLine(0, 11, ChatColor.AQUA + "", "Time Left: ");
+		if(olGTimer%60 < 10){
+			sc_wrapper.setLine(0, 10, ChatColor.GOLD + "", olGTimer/60 + ":0" + olGTimer%60);
+		}else{
+			sc_wrapper.setLine(0, 10, ChatColor.GOLD + "", olGTimer/60 + ":" + olGTimer%60);
+		}
+		sc_wrapper.setLineBlank(0, 9);
+		sc_wrapper.setLine(0, 8, ChatColor.AQUA + "", "Players Left:");
+		sc_wrapper.setLine(0, 7, ChatColor.GOLD + "", "" + olPlayerCounter);
+		sc_wrapper.setLineBlank(0, 6);
+		sc_wrapper.setLine(0, 5, ChatColor.AQUA + "", "Gamemode: ");
+		sc_wrapper.setLine(0, 4, ChatColor.GOLD + "", "Normal, Solo");
+		sc_wrapper.setLineBlank(0, 3);
+		sc_wrapper.setLine(0, 2, ChatColor.AQUA + "", "Kills: ");
+		sc_wrapper.setLine(0, 1, ChatColor.GOLD + "", "Coming Soon");
+		
+		sc_wrapper.setTitle(1, ChatColor.GREEN + "" + ChatColor.BOLD + "Ogre's Lair");
+		
+		sc_wrapper.setLine(1, 11, ChatColor.AQUA + "", "Time Left: ");
+		if(olGTimer%60 < 10){
+			sc_wrapper.setLine(0, 10, ChatColor.GOLD + "", olGTimer/60 + ":0" + olGTimer%60);
+		}else{
+			sc_wrapper.setLine(0, 10, ChatColor.GOLD + "", olGTimer/60 + ":" + olGTimer%60);
+		}
+		sc_wrapper.setLineBlank(1, 9);
+		sc_wrapper.setLine(1, 8, ChatColor.AQUA + "", "Players Left:");
+		sc_wrapper.setLine(1, 7, ChatColor.GOLD + "", "" + olPlayerCounter);
+		sc_wrapper.setLineBlank(1, 6);
+		sc_wrapper.setLine(1, 5, ChatColor.AQUA + "", "Gamemode: ");
+		sc_wrapper.setLine(1, 4, ChatColor.GOLD + "", "Normal, Solo");
+		sc_wrapper.setLineBlank(1, 3);
+		sc_wrapper.setLine(1, 2, ChatColor.AQUA + "", "Kills: ");
+		sc_wrapper.setLine(1, 1, ChatColor.GOLD + "", "Coming Soon");
+		
+		sc_wrapper.changePage(1);
+		sc_wrapper.changePage(0);
+	}
+	
+	private static ItemStack nameItem(ItemStack item, String name)
+	{
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(name);
+		item.setItemMeta(meta);
+		return item;
+	}
+	
+	public static ItemStack createItemStack(Material type, int amt, String name, ItemFlag itemFlag1, ItemFlag itemFlag2,
+			ItemFlag itemFlag3, Enchantment enc1, int lev1, Enchantment enc2, int lev2, Enchantment enc3, int lev3,
+			PotionType potion, DyeColor dy, String... lores) {
+		ItemStack stack = new ItemStack(type, amt);
+		ItemMeta im = stack.getItemMeta();
+		im.setDisplayName(name);
+		if (itemFlag1 != null) {
+			im.addItemFlags(itemFlag1);
+		}
+		if (itemFlag2 != null) {
+			im.addItemFlags(itemFlag2);
+		}
+		if (itemFlag3 != null) {
+			im.addItemFlags(itemFlag3);
+		}
+		if (enc1 != null) {
+			im.addEnchant(enc1, lev1, true);
+		}
+		if (enc2 != null) {
+			im.addEnchant(enc2, lev2, true);
+		}
+		if (enc3 != null) {
+			im.addEnchant(enc3, lev3, true);
+		}
+		if (potion != null) {
+			((PotionMeta) im).setBasePotionData(new PotionData(potion));
+		}
+		if (dy != null) {
+			((BannerMeta) im).setBaseColor(dy);
+		}
+		ArrayList<String> lore = new ArrayList<String>();
+		for (String str : lores) {
+			lore.add(str);
+		}
+		im.setLore(lore);
+		stack.setItemMeta(im);
+		return stack;
+	}
+	
+	public static void unloadMap(String OgresLair)
+	{
+		if(Bukkit.getServer().unloadWorld(Bukkit.getServer().getWorld(OgresLair), false))
+		{
+			plugin.getLogger().info("Successfully unloaded " + OgresLair);
+		}else{
+			plugin.getLogger().severe("COULD NOT UNLOAD " + OgresLair);
+		}
+	}
+	
+	public static void loadMap(String OgresLair)
+	{
+		Bukkit.getServer().createWorld(new WorldCreator(OgresLair));
+	}
+	
+	public static void rollback(String OgresLair)
+	{
+		unloadMap(OgresLair);
+		loadMap(OgresLair);
+	}
+}
