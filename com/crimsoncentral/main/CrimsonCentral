@@ -1,0 +1,1724 @@
+package com.crimsoncentral.main;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
+import org.bukkit.FireworkEffect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
+
+import com.crimsoncentral.crystalwars.LoggerLandCrystalWars;
+import com.crimsoncentral.skywars.AfricanSafariSkyWars;
+import com.crimsoncentral.skywars.FrozenWonderlandSkyWars;
+import com.crimsoncentral.skywars.OasisParadiseSkyWars;
+import com.crimsoncentral.skywars.OgresLairSkyWars;
+import com.crimsoncentral.skywars.RomanEmpireSkyWars;
+import com.crimsoncentral.skywars.SkyMineSkyWars;
+import com.crimsoncentral.skywars.SkyWarsLobby;
+import com.crimsoncentral.util.PlayerConfig;
+import com.crimsoncentral.util.ScoreboardWrapper;
+
+import net.minecraft.server.v1_10_R1.EnumParticle;
+import net.minecraft.server.v1_10_R1.PacketPlayOutWorldParticles;
+
+public class CrimsonCentralMain extends JavaPlugin implements Listener {
+	public final Logger logger = Logger.getLogger("Minecraft");
+	public static CrimsonCentralMain plugin; 
+	public static HashMap<UUID, ScoreboardWrapper> sbs = new HashMap<UUID, ScoreboardWrapper>();
+	public static HashMap<Player, Integer> fireworkCount = new HashMap<Player, Integer>();
+	public static HashMap<Player, Integer> magicCount = new HashMap<Player, Integer>();
+	public static HashMap<Player, Integer> guardCount = new HashMap<Player, Integer>();
+	public static HashMap<Player, Integer> guardian = new HashMap<Player, Integer>();
+	public static HashMap<Player, Integer> jumpCount = new HashMap<Player, Integer>();
+	public static HashMap<Player, Integer> jump = new HashMap<Player, Integer>();
+	private final RomanEmpireSkyWars Scheduler = new RomanEmpireSkyWars(this);
+	private final OasisParadiseSkyWars opScheduler = new OasisParadiseSkyWars(this);
+	private final FrozenWonderlandSkyWars fwScheduler = new FrozenWonderlandSkyWars(this);
+	private final AfricanSafariSkyWars asScheduler = new AfricanSafariSkyWars(this);
+	private final OgresLairSkyWars olScheduler = new OgresLairSkyWars(this);
+	private final SkyMineSkyWars smScheduler = new SkyMineSkyWars(this);
+	private final LoggerLandCrystalWars llScheduler = new LoggerLandCrystalWars(this);
+	public int firework = 0;
+	public int magic = 0;
+ 	
+	public CrimsonCentralMain()
+	{
+		plugin = this;
+	}
+	
+	@Override
+	public void onEnable() {
+		new LobbyJoinListener(this);
+		PluginDescriptionFile pdfFile = this.getDescription();
+        this.logger.info(pdfFile.getName() +"version" + pdfFile.getVersion() + "is now enabled");
+        Bukkit.getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new RomanEmpireSkyWars(), this);
+        getServer().getPluginManager().registerEvents(new MainLobby(), this);
+        getServer().getPluginManager().registerEvents(new SkyWarsLobby(), this);
+        getServer().getPluginManager().registerEvents(new PingListener(), this);
+        getServer().getPluginManager().registerEvents(new OasisParadiseSkyWars(), this);
+        getServer().getPluginManager().registerEvents(new FrozenWonderlandSkyWars(), this);
+        getServer().getPluginManager().registerEvents(new AfricanSafariSkyWars(), this);
+        getServer().getPluginManager().registerEvents(new OgresLairSkyWars(), this);
+        getServer().getPluginManager().registerEvents(new SkyMineSkyWars(), this);
+        getServer().getPluginManager().registerEvents(new Ranks(), this);
+        getServer().getPluginManager().registerEvents(new LoggerLandCrystalWars(), this);
+        getServer().getPluginManager().addPermission(Ranks.owner);
+        getServer().getPluginManager().addPermission(Ranks.coowner);
+        getServer().getPluginManager().addPermission(Ranks.admin);
+        getServer().getPluginManager().addPermission(Ranks.helper);
+        getServer().getPluginManager().addPermission(Ranks.guardian);
+        getServer().getPluginManager().addPermission(Ranks.rogue);
+        getServer().getPluginManager().addPermission(Ranks.legend);
+        getServer().getPluginManager().addPermission(Ranks.mage);
+        getServer().getPluginManager().addPermission(Ranks.crimson);
+		    Ranks.owner.setDefault(PermissionDefault.FALSE);
+		    Ranks.coowner.setDefault(PermissionDefault.FALSE);
+		    Ranks.admin.setDefault(PermissionDefault.FALSE);
+		    Ranks.helper.setDefault(PermissionDefault.FALSE);
+		    Ranks.guardian.setDefault(PermissionDefault.FALSE);
+		    Ranks.rogue.setDefault(PermissionDefault.FALSE);
+		    Ranks.legend.setDefault(PermissionDefault.FALSE);
+		    Ranks.mage.setDefault(PermissionDefault.FALSE);
+		    Ranks.crimson.setDefault(PermissionDefault.FALSE);
+		    Ranks.setupTeams();
+        this.saveDefaultConfig();
+        Scheduler.REPreGameTimer();
+        Scheduler.REGameTimer();
+        Scheduler.REEndGameTimer();
+        opScheduler.OPPreGameTimer();
+        opScheduler.OPGameTimer();
+        opScheduler.OPEndGameTimer();
+        fwScheduler.FWPreGameTimer();
+        fwScheduler.FWGameTimer();
+        fwScheduler.FWEndGameTimer();
+        asScheduler.ASPreGameTimer();
+        asScheduler.ASGameTimer();
+        asScheduler.ASEndGameTimer();
+        olScheduler.OLPreGameTimer();
+        olScheduler.OLGameTimer();
+        olScheduler.OLEndGameTimer();
+        smScheduler.SMPreGameTimer();
+        smScheduler.SMGameTimer();
+        smScheduler.SMEndGameTimer();
+        llScheduler.coalMine();
+        llScheduler.villagerTeleport();
+        for(Player p : Bukkit.getOnlinePlayers())
+        {
+        	LobbyJoinListener.setupScoreboard(p);
+        	if(p.hasPermission(Ranks.owner) || p.hasPermission(Ranks.coowner) || p.hasPermission(Ranks.admin) || p.hasPermission(Ranks.helper) || p.hasPermission(Ranks.guardian) || p.hasPermission(Ranks.rogue) || p.hasPermission(Ranks.legend) || p.hasPermission(Ranks.mage) || p.hasPermission(Ranks.crimson))
+			    {
+        		if(p.getLocation().getWorld().equals("CrimsonCentralLobby") || p.getLocation().getWorld().equals("SkyWarsLobby"))
+        		{
+        			p.setAllowFlight(true);
+        			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+        		}
+			    }
+        }
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+			@Override
+			public void run()
+			{
+				Bukkit.getWorld("CrimsonCentralLobby").setTime(8000);
+				Bukkit.getWorld("CrimsonCentralLobby").setStorm(false);
+				Bukkit.getWorld("SkyWarsLobby").setTime(8000);
+				Bukkit.getWorld("SkyWarsLobby").setStorm(false);
+				for(Player p : Bukkit.getOnlinePlayers())
+		        {
+					//Ranks.playerNameScoreboard(p);
+					if(fireworkCount.containsKey(p))
+					{
+						if(fireworkCount.get(p) != 0)
+						{
+							int i = fireworkCount.get(p);
+							--i;
+							fireworkCount.remove(p);
+							fireworkCount.put(p, i);
+						}
+					}
+					if(magicCount.containsKey(p))
+					{
+						if(magicCount.get(p) != 0)
+						{
+							int i = magicCount.get(p);
+							--i;
+							magicCount.remove(p);
+							magicCount.put(p, i);
+						}
+					}
+					if(guardCount.containsKey(p))
+					{
+						if(guardCount.get(p) != 0)
+						{
+							int i = guardCount.get(p);
+							--i;
+							guardCount.remove(p);
+							guardCount.put(p, i);
+						}
+					}
+					if(jumpCount.containsKey(p))
+					{
+						if(jumpCount.get(p) != 0)
+						{
+							int i = jumpCount.get(p);
+							--i;
+							jumpCount.remove(p);
+							jumpCount.put(p, i);
+						}
+					}
+		        }		
+			}
+		}, 0, 20);
+    }
+    
+	
+	@Override
+	public void onDisable() 
+	{
+		PluginDescriptionFile pdfFile = this.getDescription();
+        this.logger.info(pdfFile.getName() +"version" + pdfFile.getVersion() + "is now disabled");
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+	}
+	
+	public void loadConfiguration() {
+		this.saveDefaultConfig();
+	}
+	
+	@SuppressWarnings({ "deprecation", "unused" })
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		Player player = (Player) sender;
+		
+		if (cmd.getName().equalsIgnoreCase("games")) {
+			
+			sender.sendMessage(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH +">-----------------------------------------<");
+			sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Our Minigames are:" + ChatColor.BLUE);
+			sender.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Hunger Games        " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Coming Soon");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Sky Wars               " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Open");
+			sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Capture the Flag     " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Coming Soon");
+			sender.sendMessage(ChatColor.GRAY + "" + ChatColor.BOLD + "The Walls              " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Coming Soon");
+			sender.sendMessage(ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "Spleef                 " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Coming Soon");
+			sender.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Rouge Wars           " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Coming Soon");
+			sender.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Zombie Apocalypse   " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Coming Soon");
+			sender.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "One in the Chamber  " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Coming Soon");
+			sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Survival               " + ChatColor.BLUE + "Status: " + ChatColor.DARK_GREEN + "Coming Soon");
+			sender.sendMessage(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH +">-----------------------------------------<");
+			return true;
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("rules")) {
+			sender.sendMessage(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH +">-----------------------------------------<");
+			sender.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "1. No Hacking/Mods/Cheating");
+			sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "2. Be respectful to Admins, Helpers, Watchdogs, etc.");
+			sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "3. No cursing/swearing");
+			sender.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "4. Do not ask for a rank");
+			sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "5. No spamming the chat/advertising anything!");
+			sender.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "6. Do not abuse problems with the server. Report them and you could get rewards!");
+			sender.sendMessage(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH +">-----------------------------------------<");
+			return true;
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("GameMenu")) {
+			Inventory inv = Bukkit.createInventory(null, 45, ChatColor.RED + "Game Menu");
+
+			ItemStack skyWars = createItemStack(Material.BOW, 1,
+					ChatColor.AQUA + "" + ChatColor.BOLD + "Sky Wars " + ChatColor.YELLOW + "(Popular)",
+					ItemFlag.HIDE_ENCHANTS, null, null, Enchantment.ARROW_INFINITE, 1, null, 0, null, 0,
+					null, null, "", "Be the last man standing in an ", "epic Sky Battle! Go solo",
+					"or team up", "", "4 Maps Open: Oasis Paradise, Sky Mine,", " Frozen and Roman Empire");
+			inv.setItem(13, skyWars);
+
+			ItemStack hungerGames = createItemStack(Material.CHEST, 1,
+					ChatColor.DARK_RED + "" + ChatColor.BOLD + "Hunger Games", null, null, null, null, 0,
+					null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(12, hungerGames);
+
+			ItemStack captureTheFlag = createItemStack(Material.BANNER, 1,
+					ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "Capture the Flag", null, null, null, null,
+					0, null, 0, null, 0, null, DyeColor.BLUE, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(14, captureTheFlag);
+
+			ItemStack theWalls = createItemStack(Material.COBBLE_WALL, 1,
+					ChatColor.GREEN + "" + ChatColor.BOLD + "The Walls", null, null, null, null, 0, null, 0,
+					null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(21, theWalls);
+
+			ItemStack spleef = createItemStack(Material.GOLD_SPADE, 1,
+					ChatColor.DARK_RED + "" + ChatColor.BOLD + "Spleef", ItemFlag.HIDE_ATTRIBUTES, null,
+					null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(22, spleef);
+
+			ItemStack rogueWars = createItemStack(Material.IRON_SWORD, 1,
+					ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Rogue Wars", ItemFlag.HIDE_ATTRIBUTES,
+					ItemFlag.HIDE_ENCHANTS, null, Enchantment.FIRE_ASPECT, 1, null, 0, null, 0, null, null,
+					ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(23, rogueWars);
+
+			ItemStack apocalypse = createItemStack(Material.STONE_AXE, 1,
+					ChatColor.GREEN + "" + ChatColor.BOLD + "Apocalypse", ItemFlag.HIDE_ATTRIBUTES, null,
+					null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(30, apocalypse);
+
+			ItemStack oneInTheChamber = createItemStack(Material.TIPPED_ARROW, 1,
+					ChatColor.DARK_RED + "" + ChatColor.BOLD + "One In The Chamber",
+					ItemFlag.HIDE_POTION_EFFECTS, null, null, null, 0, null, 0, null, 0,
+					PotionType.FIRE_RESISTANCE, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(31, oneInTheChamber);
+
+			ItemStack survival = createItemStack(Material.GRASS, 1,
+					ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Survival", null, null, null, null, 0,
+					null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(32, survival);
+
+			ItemStack Back = nameItem(new ItemStack(Material.BED),
+					ChatColor.DARK_RED + "" + ChatColor.BOLD + "Main Lobby");
+			inv.setItem(9, Back);
+
+			ItemStack testServer = createItemStack(Material.FIREWORK, 1,
+					ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Test Server", ItemFlag.HIDE_ATTRIBUTES,
+					null, null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(18, testServer);
+
+			ItemStack leveling = createItemStack(Material.EXP_BOTTLE, 1,
+					ChatColor.GREEN + "" + ChatColor.BOLD + "Leveling", null, null, null, null, 0, null, 0,
+					null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(27, leveling);
+			
+			player.openInventory(inv);
+			player.openInventory(inv);
+			player.openInventory(inv);
+			return true;
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("GodSword")) {
+			ItemStack godSword = nameItem(new ItemStack(Material.DIAMOND_SWORD), ChatColor.DARK_RED + "" + ChatColor.BOLD + "God Sword");
+			ItemMeta godSwordMeta = godSword.getItemMeta();
+			godSwordMeta.addEnchant(Enchantment.FIRE_ASPECT, 5, true);
+			godSwordMeta.addEnchant(Enchantment.KNOCKBACK, 5, true);
+			godSwordMeta.addEnchant(Enchantment.DAMAGE_ALL, 5, true);
+			godSword.setItemMeta(godSwordMeta);
+			player.getInventory().addItem(godSword);
+			return true;
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("Staff")) {
+			if(player.isOp() == true)
+			{
+				Inventory staff = Bukkit.createInventory(null, 27, ChatColor.RED + "Staff Tools");
+				ItemStack toggleFlight = nameItem(new ItemStack(Material.FEATHER), ChatColor.GRAY + "Toggle Flight");
+				ItemStack teleport = nameItem(new ItemStack(Material.ENDER_PEARL), ChatColor.DARK_AQUA + "Teleport");
+				ItemStack toggleVisible = nameItem(new ItemStack(Material.EYE_OF_ENDER), ChatColor.RED + "Toggle Visibility");
+				if(player.getGameMode() == GameMode.SURVIVAL){
+					ItemStack toggleGamemode = nameItem(new ItemStack(Material.GRASS), ChatColor.GREEN + "Toggle Gamemode");
+					staff.setItem(11, toggleGamemode);
+				}else if(player.getGameMode() == GameMode.CREATIVE){
+					ItemStack toggleGamemode = nameItem(new ItemStack(Material.DIAMOND_BLOCK), ChatColor.GREEN + "Toggle Gamemode");
+					staff.setItem(11, toggleGamemode);
+				}else if(player.getGameMode() == GameMode.ADVENTURE){
+					ItemStack toggleGamemode = nameItem(new ItemStack(Material.EMPTY_MAP), ChatColor.GREEN + "Toggle Gamemode");
+					staff.setItem(11, toggleGamemode);
+				}else if(player.getGameMode() == GameMode.SPECTATOR){
+					ItemStack toggleGamemode = nameItem(new ItemStack(Material.FEATHER), ChatColor.GREEN + "Toggle Gamemode");
+					staff.setItem(11, toggleGamemode);
+				}
+				staff.setItem(10, toggleFlight);
+				staff.setItem(12, teleport);
+				//staff.setItem(13, toggleVisible);
+				player.openInventory(staff);
+			}else{
+				player.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+			}
+		}
+		
+		if(cmd.getName().equalsIgnoreCase("ccr"))
+		{
+			if(args.length == 0)
+			{
+				player.sendMessage(ChatColor.RED + "Not enough arguments!");
+				player.sendMessage(ChatColor.RED + "Usage: /ccr [set/reset] [PlayerName] [Rank (Must be valid, only if using set)]");
+			}else if(args.length == 1){
+				player.sendMessage(ChatColor.RED + "Not enough arguments!");
+				player.sendMessage(ChatColor.RED + "Usage: /ccr set [PlayerName] [Rank (Must be valid)]");
+			}else if(args.length == 2){
+				String s = args[0];
+				String pl = args[1];
+				if(s != null && s.equals("reset")){
+					PlayerConfig u = new PlayerConfig(player.getUniqueId());
+					if(Bukkit.getPlayer(pl) != null)
+					{
+						Player plr = Bukkit.getPlayer(pl);
+						player.sendMessage(ChatColor.GREEN + "" + plr.getName() + "'s rank was reset!");
+						for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+						{
+							PermissionAttachment Attachment = per.getAttachment();
+							if (Attachment != null) 
+							{
+								Map < String, Boolean > Flags = Attachment.getPermissions();
+								for (String Perm : Flags.keySet()) 
+								{
+									Attachment.setPermission(Perm, false);
+								}
+							}
+						}
+						u.setRank("No Rank");
+						LobbyJoinListener.setupScoreboard(player);
+					}
+				}
+			}else if(args.length == 3){
+				String s = args[0];
+				String pl = args[1];
+				String rank = args[2];
+				
+				if(s != null && s.equals("set"))
+				{
+					if(Bukkit.getPlayer(pl) != null)
+					{
+						Player plr = Bukkit.getPlayer(pl);
+						PlayerConfig u = new PlayerConfig(plr.getUniqueId());
+						if (rank.equalsIgnoreCase("Owner")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Owner!");
+							u.setRank("Owner");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment ownerAttachment = plr.addAttachment(this);
+							ownerAttachment.setPermission(Ranks.owner, true);
+							Ranks.ranks.put(plr.getUniqueId(), ownerAttachment);
+							Ranks.ranks.remove(plr.getUniqueId());
+							LobbyJoinListener.setupScoreboard(plr);
+						} else if (rank.equalsIgnoreCase("CoOwner")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Co-Owner!");
+							u.setRank("CoOwner");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment coownerAttachment = plr.addAttachment(this);
+							coownerAttachment.setPermission(Ranks.coowner, true);
+							Ranks.ranks.put(plr.getUniqueId(), coownerAttachment);
+							Ranks.ranks.remove(plr.getUniqueId());
+							LobbyJoinListener.setupScoreboard(plr);
+						} else if (rank.equalsIgnoreCase("Admin")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Admin!");
+							u.setRank("Admin");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment adminAttachment = plr.addAttachment(this);
+							adminAttachment.setPermission(Ranks.admin, true);
+							Ranks.ranks.put(plr.getUniqueId(), adminAttachment);
+							Ranks.ranks.remove(plr.getUniqueId());
+							LobbyJoinListener.setupScoreboard(plr);
+						} else if (rank.equalsIgnoreCase("Helper")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Helper!");
+							u.setRank("Helper");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment helperAttachment = plr.addAttachment(this);
+							helperAttachment.setPermission(Ranks.helper, true);
+							Ranks.ranks.put(plr.getUniqueId(), helperAttachment);
+							Ranks.ranks.remove(plr.getUniqueId());
+							LobbyJoinListener.setupScoreboard(plr);
+						} else if (rank.equalsIgnoreCase("Guardian")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Gaurdian!");
+							u.setRank("Guardian");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment guardianAttachment = plr.addAttachment(this);
+							guardianAttachment.setPermission(Ranks.guardian, true);
+							Ranks.ranks.put(plr.getUniqueId(), guardianAttachment);
+							Ranks.ranks.remove(plr.getUniqueId());
+							LobbyJoinListener.setupScoreboard(plr);
+						} else if (rank.equalsIgnoreCase("Rogue")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Rogue!");
+							u.setRank("Rogue");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment rogueAttachment = plr.addAttachment(this);
+							rogueAttachment.setPermission(Ranks.rogue, true);
+							Ranks.ranks.put(plr.getUniqueId(), rogueAttachment);
+							Ranks.ranks.remove(plr.getUniqueId());
+							LobbyJoinListener.setupScoreboard(plr);
+						} else if (rank.equalsIgnoreCase("Legend")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Legend!");
+							u.setRank("Legend");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment legendAttachment = plr.addAttachment(this);
+							legendAttachment.setPermission(Ranks.legend, true);
+							Ranks.ranks.put(plr.getUniqueId(), legendAttachment);
+							Ranks.ranks.remove(plr.getUniqueId());
+							LobbyJoinListener.setupScoreboard(plr);
+						} else if (rank.equalsIgnoreCase("Mage")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Mage!");
+							u.setRank("Mage");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment mageAttachment = plr.addAttachment(this);
+							mageAttachment.setPermission(Ranks.mage, true);
+							Ranks.ranks.put(plr.getUniqueId(), mageAttachment);
+							Ranks.ranks.remove(plr.getUniqueId());
+							LobbyJoinListener.setupScoreboard(plr);
+						} else if (rank.equalsIgnoreCase("Crimson")) {
+							player.sendMessage(ChatColor.GREEN + "" + plr.getName() + " has been set to rank Crimson!");
+							u.setRank("Crimson");
+							for(PermissionAttachmentInfo per: plr.getEffectivePermissions())
+							{
+								PermissionAttachment Attachment = per.getAttachment();
+								if (Attachment != null) 
+								{
+									Map < String, Boolean > Flags = Attachment.getPermissions();
+									for (String Perm : Flags.keySet()) 
+									{
+										Attachment.setPermission(Perm, false);
+									}
+								}
+							}
+							PermissionAttachment crimsonAttachment = plr.addAttachment(this);
+							crimsonAttachment.setPermission(Ranks.crimson, true);
+							Ranks.ranks.replace(plr.getUniqueId(), crimsonAttachment);
+							LobbyJoinListener.setupScoreboard(plr);
+						}
+					}
+				}
+			}
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("Lobby") || cmd.getName().equalsIgnoreCase("Hub") || cmd.getName().equalsIgnoreCase("Spawn") )
+		{	
+			ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+			ItemStack cosmetics = nameItem(new ItemStack(Material.CHEST), ChatColor.YELLOW + "Cosmetics");
+			ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+			ItemMeta hidePlayersMeta = hidePlayers.getItemMeta();
+			ArrayList<String> hpLore = new ArrayList<String>();
+			hpLore.add(ChatColor.YELLOW + "Coming Soon!");
+			hidePlayersMeta.setLore(hpLore);
+			hidePlayers.setItemMeta(hidePlayersMeta);
+			ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+			ItemStack lobbySelector = nameItem(new ItemStack(Material.NETHER_STAR), ChatColor.GOLD + "Lobby Selector (Coming Soon)");
+			ItemMeta lobbySelectorMeta = lobbySelector.getItemMeta();
+			ArrayList<String> lsLore = new ArrayList<String>();
+			lsLore.add(ChatColor.YELLOW + "Coming Soon!");
+			lobbySelectorMeta.setLore(lsLore);
+			lobbySelector.setItemMeta(lobbySelectorMeta);
+			
+			
+			if(player.hasPermission(Ranks.owner) || player.hasPermission(Ranks.coowner) || player.hasPermission(Ranks.admin) || player.hasPermission(Ranks.helper) || player.hasPermission(Ranks.guardian) || player.hasPermission(Ranks.rogue) || player.hasPermission(Ranks.legend) || player.hasPermission(Ranks.mage) || player.hasPermission(Ranks.crimson))
+			{
+				player.setAllowFlight(true);
+			}
+			
+			
+			String pn = player.getName();
+			
+			World romanEmpire = Bukkit.getWorld("RomanEmpire");
+			World main = Bukkit.getWorld("CrimsonCentralLobby");
+			Location loc = new Location(main, 3.5, 35.0, 0.5, 90, 0);
+				if(RomanEmpireSkyWars.players.contains(player))
+				{
+					--RomanEmpireSkyWars.rePlayerCounter;
+					RomanEmpireSkyWars.players.remove(player);
+				}
+				if(RomanEmpireSkyWars.deadPlayers.contains(player))
+				{
+					--RomanEmpireSkyWars.rePlayerCounter;
+					RomanEmpireSkyWars.deadPlayers.remove(player);
+				}
+				if(RomanEmpireSkyWars.replayer1 == player){
+					RomanEmpireSkyWars.replayer1 = null;
+				}else if(RomanEmpireSkyWars.replayer2 == player){
+					RomanEmpireSkyWars.replayer2 = null;
+				}else if(RomanEmpireSkyWars.replayer3 == player){
+					RomanEmpireSkyWars.replayer3 = null;
+				}else if(RomanEmpireSkyWars.replayer4 == player){
+					RomanEmpireSkyWars.replayer4 = null;
+				}else if(RomanEmpireSkyWars.replayer5 == player){
+					RomanEmpireSkyWars.replayer5 = null;
+				}else if(RomanEmpireSkyWars.replayer6 == player){
+					RomanEmpireSkyWars.replayer6 = null;
+				}else if(RomanEmpireSkyWars.replayer7 == player){
+					RomanEmpireSkyWars.replayer7 = null;
+				}else if(RomanEmpireSkyWars.replayer8 == player){
+					RomanEmpireSkyWars.replayer8 = null;
+				}else if(RomanEmpireSkyWars.replayer9 == player){
+					RomanEmpireSkyWars.replayer9 = null;
+				}else if(RomanEmpireSkyWars.replayer10 == player){
+					RomanEmpireSkyWars.replayer10 = null;
+				}else if(RomanEmpireSkyWars.replayer11 == player){
+					RomanEmpireSkyWars.replayer11 = null;
+				}else if(RomanEmpireSkyWars.replayer12 == player){
+					RomanEmpireSkyWars.replayer12 = null;
+				}
+				if(RomanEmpireSkyWars.rePlayerCounter < 2)
+				{
+					if(RomanEmpireSkyWars.rePGVars == 1){
+						
+					}else{
+					RomanEmpireSkyWars.rePGVars = 0;
+					RomanEmpireSkyWars.reGVars = 2;
+					RomanEmpireSkyWars.reGTimer = 600;
+					RomanEmpireSkyWars.rePGTimer = 15;
+					RomanEmpireSkyWars.reGFinal = 15;
+					
+					for(Player pl : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(pl.getWorld().getName().equals("RomanEmpire"))
+						{
+							pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+						}
+					}
+					}
+				}
+				if(RomanEmpireSkyWars.reGVars == 1)
+				{
+					
+					for (ItemStack itemStack : player.getInventory().getContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+					for (ItemStack itemStack : player.getInventory().getArmorContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+				}else{
+					
+				}
+				
+			World frozen = Bukkit.getWorld("Frozen");
+				if(FrozenWonderlandSkyWars.fwPlayers.contains(player))
+				{
+					--FrozenWonderlandSkyWars.fwPlayerCounter;
+					FrozenWonderlandSkyWars.fwPlayers.remove(player);
+				}
+				if(FrozenWonderlandSkyWars.fwDeadPlayers.contains(player))
+				{
+					--FrozenWonderlandSkyWars.fwPlayerCounter;
+					FrozenWonderlandSkyWars.fwDeadPlayers.remove(player);
+				}
+				if(FrozenWonderlandSkyWars.fwplayer1 == player){
+					FrozenWonderlandSkyWars.fwplayer1 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer2 == player){
+					FrozenWonderlandSkyWars.fwplayer2 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer3 == player){
+					FrozenWonderlandSkyWars.fwplayer3 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer4 == player){
+					FrozenWonderlandSkyWars.fwplayer4 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer5 == player){
+					FrozenWonderlandSkyWars.fwplayer5 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer6 == player){
+					FrozenWonderlandSkyWars.fwplayer6 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer7 == player){
+					FrozenWonderlandSkyWars.fwplayer7 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer8 == player){
+					FrozenWonderlandSkyWars.fwplayer8 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer9 == player){
+					FrozenWonderlandSkyWars.fwplayer9 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer10 == player){
+					FrozenWonderlandSkyWars.fwplayer10 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer11 == player){
+					FrozenWonderlandSkyWars.fwplayer11 = null;
+				}else if(FrozenWonderlandSkyWars.fwplayer12 == player){
+					FrozenWonderlandSkyWars.fwplayer12 = null;
+				}
+				
+				if(FrozenWonderlandSkyWars.fwPlayerCounter < 2 || FrozenWonderlandSkyWars.fwPlayerCounter > 11)
+				{
+					if(FrozenWonderlandSkyWars.fwPGVars == 1){
+						
+					}else{
+					FrozenWonderlandSkyWars.fwPGVars = 0;
+					FrozenWonderlandSkyWars.fwGVars = 2;
+					FrozenWonderlandSkyWars.fwGTimer = 600;
+					FrozenWonderlandSkyWars.fwPGTimer = 15;
+					FrozenWonderlandSkyWars.fwGFinal = 15;
+					
+					for(Player pl : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(pl.getWorld().getName().equals("Frozen"))
+						{
+							pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+						}
+					}
+					}
+				}
+				if(FrozenWonderlandSkyWars.fwGVars == 1)
+				{
+					
+					for (ItemStack itemStack : player.getInventory().getContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+					for (ItemStack itemStack : player.getInventory().getArmorContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+				}else{
+					
+				}
+			
+			World oasisParadise = Bukkit.getWorld("OasisNormalSolo");
+				if(OasisParadiseSkyWars.opPlayers.contains(player))
+				{
+					--OasisParadiseSkyWars.opPlayerCounter;
+					OasisParadiseSkyWars.opPlayers.remove(player);
+				}
+				if(OasisParadiseSkyWars.opDeadPlayers.contains(player))
+				{
+					--OasisParadiseSkyWars.opPlayerCounter;
+					OasisParadiseSkyWars.opDeadPlayers.remove(player);
+				}
+				if(OasisParadiseSkyWars.opplayer1 == player){
+					OasisParadiseSkyWars.opplayer1 = null;
+				}else if(OasisParadiseSkyWars.opplayer2 == player){
+					OasisParadiseSkyWars.opplayer2 = null;
+				}else if(OasisParadiseSkyWars.opplayer3 == player){
+					OasisParadiseSkyWars.opplayer3 = null;
+				}else if(OasisParadiseSkyWars.opplayer4 == player){
+					OasisParadiseSkyWars.opplayer4 = null;
+				}else if(OasisParadiseSkyWars.opplayer5 == player){
+					OasisParadiseSkyWars.opplayer5 = null;
+				}else if(OasisParadiseSkyWars.opplayer6 == player){
+					OasisParadiseSkyWars.opplayer6 = null;
+				}else if(OasisParadiseSkyWars.opplayer7 == player){
+					OasisParadiseSkyWars.opplayer7 = null;
+				}else if(OasisParadiseSkyWars.opplayer8 == player){
+					OasisParadiseSkyWars.opplayer8 = null;
+				}else if(OasisParadiseSkyWars.opplayer9 == player){
+					OasisParadiseSkyWars.opplayer9 = null;
+				}else if(OasisParadiseSkyWars.opplayer10 == player){
+					OasisParadiseSkyWars.opplayer10 = null;
+				}else if(OasisParadiseSkyWars.opplayer11 == player){
+					OasisParadiseSkyWars.opplayer11 = null;
+				}else if(OasisParadiseSkyWars.opplayer12 == player){
+					OasisParadiseSkyWars.opplayer12 = null;
+				}
+				
+				if(OasisParadiseSkyWars.opPlayerCounter < 2)
+				{
+					if(OasisParadiseSkyWars.opPGVars == 1){
+						
+					}else{
+					OasisParadiseSkyWars.opPGVars = 0;
+					OasisParadiseSkyWars.opGVars = 2;
+					OasisParadiseSkyWars.opGTimer = 600;
+					OasisParadiseSkyWars.opPGTimer = 15;
+					OasisParadiseSkyWars.opGFinal = 15;
+					
+					for(Player pl : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(pl.getWorld().getName().equals("OasisNormalSolo"))
+						{
+							pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+						}
+					}
+					}
+				}
+				if(OasisParadiseSkyWars.opGVars == 1)
+				{
+					
+					for (ItemStack itemStack : player.getInventory().getContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+					for (ItemStack itemStack : player.getInventory().getArmorContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+				}else{
+					
+				}
+			
+			World safari = Bukkit.getWorld("Safari");
+				if(AfricanSafariSkyWars.asPlayers.contains(player))
+				{
+					--AfricanSafariSkyWars.asPlayerCounter;
+					AfricanSafariSkyWars.asPlayers.remove(player);
+				}
+				if(AfricanSafariSkyWars.asDeadPlayers.contains(player))
+				{
+					--AfricanSafariSkyWars.asPlayerCounter;
+					AfricanSafariSkyWars.asDeadPlayers.remove(player);
+				}
+				if(AfricanSafariSkyWars.asplayer1 == player){
+					AfricanSafariSkyWars.asplayer1 = null;
+				}else if(AfricanSafariSkyWars.asplayer2 == player){
+					AfricanSafariSkyWars.asplayer2 = null;
+				}else if(AfricanSafariSkyWars.asplayer3 == player){
+					AfricanSafariSkyWars.asplayer3 = null;
+				}else if(AfricanSafariSkyWars.asplayer4 == player){
+					AfricanSafariSkyWars.asplayer4 = null;
+				}else if(AfricanSafariSkyWars.asplayer5 == player){
+					AfricanSafariSkyWars.asplayer5 = null;
+				}else if(AfricanSafariSkyWars.asplayer6 == player){
+					AfricanSafariSkyWars.asplayer6 = null;
+				}else if(AfricanSafariSkyWars.asplayer7 == player){
+					AfricanSafariSkyWars.asplayer7 = null;
+				}else if(AfricanSafariSkyWars.asplayer8 == player){
+					AfricanSafariSkyWars.asplayer8 = null;
+				}else if(AfricanSafariSkyWars.asplayer9 == player){
+					AfricanSafariSkyWars.asplayer9 = null;
+				}else if(AfricanSafariSkyWars.asplayer10 == player){
+					AfricanSafariSkyWars.asplayer10 = null;
+				}else if(AfricanSafariSkyWars.asplayer11 == player){
+					AfricanSafariSkyWars.asplayer11 = null;
+				}else if(AfricanSafariSkyWars.asplayer12 == player){
+					AfricanSafariSkyWars.asplayer12 = null;
+				}
+				if(AfricanSafariSkyWars.asPlayerCounter < 2)
+				{
+					if(AfricanSafariSkyWars.asPGVars == 1){
+							
+					}else{
+					AfricanSafariSkyWars.asPGVars = 0;
+					AfricanSafariSkyWars.asGVars = 2;
+					AfricanSafariSkyWars.asGTimer = 600;
+					AfricanSafariSkyWars.asPGTimer = 15;
+					AfricanSafariSkyWars.asGFinal = 15;
+					
+					for(Player pl : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(pl.getWorld().getName().equals("Safari"))
+						{
+							pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+						}
+					}
+					}
+				}
+				if(AfricanSafariSkyWars.asGVars == 1)
+				{
+					
+					for (ItemStack itemStack : player.getInventory().getContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+					for (ItemStack itemStack : player.getInventory().getArmorContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+				}else{
+					
+				}
+			
+			World ogresLair = Bukkit.getWorld("OgresLair");
+				if(OgresLairSkyWars.olPlayers.contains(player))
+				{
+					--OgresLairSkyWars.olPlayerCounter;
+					OgresLairSkyWars.olPlayers.remove(player);
+				}
+				if(OgresLairSkyWars.olDeadPlayers.contains(player))
+				{
+					--OgresLairSkyWars.olPlayerCounter;
+					OgresLairSkyWars.olDeadPlayers.remove(player);
+				}
+				if(OgresLairSkyWars.olplayer1 == player){
+					OgresLairSkyWars.olplayer1 = null;
+				}else if(OgresLairSkyWars.olplayer2 == player){
+					OgresLairSkyWars.olplayer2 = null;
+				}else if(OgresLairSkyWars.olplayer3 == player){
+					OgresLairSkyWars.olplayer3 = null;
+				}else if(OgresLairSkyWars.olplayer4 == player){
+					OgresLairSkyWars.olplayer4 = null;
+				}else if(OgresLairSkyWars.olplayer5 == player){
+					OgresLairSkyWars.olplayer5 = null;
+				}else if(OgresLairSkyWars.olplayer6 == player){
+					OgresLairSkyWars.olplayer6 = null;
+				}else if(OgresLairSkyWars.olplayer7 == player){
+					OgresLairSkyWars.olplayer7 = null;
+				}else if(OgresLairSkyWars.olplayer8 == player){
+					OgresLairSkyWars.olplayer8 = null;
+				}else if(OgresLairSkyWars.olplayer9 == player){
+					OgresLairSkyWars.olplayer9 = null;
+				}else if(OgresLairSkyWars.olplayer10 == player){
+					OgresLairSkyWars.olplayer10 = null;
+				}else if(OgresLairSkyWars.olplayer11 == player){
+					OgresLairSkyWars.olplayer11 = null;
+				}else if(OgresLairSkyWars.olplayer12 == player){
+					OgresLairSkyWars.olplayer12 = null;
+				}
+				if(OgresLairSkyWars.olPlayerCounter < 2)
+				{
+					if(OgresLairSkyWars.olPGVars == 1){
+						
+					}else{
+					OgresLairSkyWars.olPGVars = 0;
+					OgresLairSkyWars.olGVars = 2;
+					OgresLairSkyWars.olGTimer = 600;
+					OgresLairSkyWars.olPGTimer = 15;
+					OgresLairSkyWars.olGFinal = 15;
+					
+					for(Player pl : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(pl.getWorld().getName().equals("OgresLair"))
+						{
+							pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+						}
+					}
+					}
+				}
+				if(OgresLairSkyWars.olGVars == 1)
+				{
+					
+					for (ItemStack itemStack : player.getInventory().getContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+					for (ItemStack itemStack : player.getInventory().getArmorContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+				}else{
+					
+				}
+			
+			World skyMine = Bukkit.getWorld("SkyMine");
+				if(SkyMineSkyWars.smPlayers.contains(player))
+				{
+					--SkyMineSkyWars.smPlayerCounter;
+					SkyMineSkyWars.smPlayers.remove(player);
+				}
+				if(SkyMineSkyWars.smDeadPlayers.contains(player))
+				{
+					--SkyMineSkyWars.smPlayerCounter;
+					SkyMineSkyWars.smDeadPlayers.remove(player);
+				}
+				if(SkyMineSkyWars.smplayer1 == player){
+					SkyMineSkyWars.smplayer1 = null;
+				}else if(SkyMineSkyWars.smplayer2 == player){
+					SkyMineSkyWars.smplayer2 = null;
+				}else if(SkyMineSkyWars.smplayer3 == player){
+					SkyMineSkyWars.smplayer3 = null;
+				}else if(SkyMineSkyWars.smplayer4 == player){
+					SkyMineSkyWars.smplayer4 = null;
+				}else if(SkyMineSkyWars.smplayer5 == player){
+					SkyMineSkyWars.smplayer5 = null;
+				}else if(SkyMineSkyWars.smplayer6 == player){
+					SkyMineSkyWars.smplayer6 = null;
+				}else if(SkyMineSkyWars.smplayer7 == player){
+					SkyMineSkyWars.smplayer7 = null;
+				}else if(SkyMineSkyWars.smplayer8 == player){
+					SkyMineSkyWars.smplayer8 = null;
+				}else if(SkyMineSkyWars.smplayer9 == player){
+					SkyMineSkyWars.smplayer9 = null;
+				}else if(SkyMineSkyWars.smplayer10 == player){
+					SkyMineSkyWars.smplayer10 = null;
+				}else if(SkyMineSkyWars.smplayer11 == player){
+					SkyMineSkyWars.smplayer11 = null;
+				}else if(SkyMineSkyWars.smplayer12 == player){
+					SkyMineSkyWars.smplayer12 = null;
+				}
+				if(SkyMineSkyWars.smPlayerCounter < 2)
+				{
+					if(SkyMineSkyWars.smPGVars == 1){
+						
+					}else{
+					SkyMineSkyWars.smPGVars = 0;
+					SkyMineSkyWars.smGVars = 2;
+					SkyMineSkyWars.smGTimer = 600;
+					SkyMineSkyWars.smPGTimer = 15;
+					SkyMineSkyWars.smGFinal = 15;
+					
+					for(Player pl : Bukkit.getServer().getOnlinePlayers())
+					{
+						if(pl.getWorld().getName().equals("Safari"))
+						{
+							pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+						}
+					}
+					}
+				}
+				if(SkyMineSkyWars.smGVars == 1)
+				{
+					
+					for (ItemStack itemStack : player.getInventory().getContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+					for (ItemStack itemStack : player.getInventory().getArmorContents()) {
+						if(itemStack != null)
+						{
+							player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+						}
+					}
+				}else{
+				
+				}
+			
+			player.teleport(loc);
+			player.getInventory().clear();
+			player.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			player.getPlayer().getInventory().setItem(7, profile);
+			player.getPlayer().getInventory().setItem(3, hidePlayers);
+			player.getPlayer().getInventory().setItem(5, serverRadio);
+			player.getPlayer().getInventory().setItem(8, lobbySelector);
+			player.getPlayer().getInventory().setItem(4, cosmetics);
+			player.setHealth(20.0);
+            player.setFoodLevel(20);
+            LobbyJoinListener.setupScoreboard(player);
+		}else if(cmd.getName().equalsIgnoreCase("fw")){
+			if(player.hasPermission(Ranks.owner) || player.hasPermission(Ranks.coowner) || player.hasPermission(Ranks.admin) || player.hasPermission(Ranks.helper) || player.hasPermission(Ranks.guardian) || player.hasPermission(Ranks.rogue) || player.hasPermission(Ranks.legend) || player.hasPermission(Ranks.mage))
+			{
+				if(fireworkCount.get(player) != null)
+				{
+					if(fireworkCount.get(player) == 0 )
+					{
+						if(player.getWorld().getName().equals("CrimsonCentralLobby") || player.getWorld().getName().equals("SkyWarsLobby"))
+						{
+							sendFirework(player);
+							fireworkCount.remove(player);
+							fireworkCount.put(player, 15);
+						}else{
+							player.sendMessage(ChatColor.RED + "You cannot use this command here!");
+						}
+					}else{
+						player.sendMessage(ChatColor.RED + "You must wait " + fireworkCount.get(player) + " more seconds before using this again");
+					}
+				}else if(fireworkCount.get(player) == null)
+				{
+					if(player.getWorld().getName().equals("CrimsonCentralLobby") || player.getWorld().getName().equals("SkyWarsLobby"))
+					{
+						sendFirework(player);
+						if(!fireworkCount.containsKey(player))
+						{
+							fireworkCount.put(player, 15);
+						}
+					}else{
+							player.sendMessage(ChatColor.RED + "You cannot use this command here!");
+					}
+				}
+			}else{
+				player.sendMessage(ChatColor.RED + "You do not have permission to use this command. To get permission puchase rank mage or above!");
+			}
+		}else if(cmd.getName().equalsIgnoreCase("stats")){
+			if(player.hasPermission(Ranks.owner) || player.hasPermission(Ranks.coowner) || player.hasPermission(Ranks.admin) || player.hasPermission(Ranks.helper) || player.hasPermission(Ranks.guardian) || player.hasPermission(Ranks.rogue) || player.hasPermission(Ranks.legend))
+			{	
+				if(args.length == 1)
+				{
+					String s = args[0];
+					Player p = Bukkit.getPlayer(s);
+					PlayerConfig u = new PlayerConfig(p.getUniqueId());
+					
+					player.getPlayer().sendMessage(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+					player.getPlayer().sendMessage(ChatColor.GREEN + "Name: " + ChatColor.DARK_RED + p.getName());
+					player.getPlayer().sendMessage(ChatColor.GOLD + "Coins: " + ChatColor.GREEN + u.getMoney());
+					player.getPlayer().sendMessage(ChatColor.RED + "Rank: " + ChatColor.YELLOW + u.getRank());
+					player.getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH +">-----------------------------------------<");
+				}else{
+					player.sendMessage(ChatColor.RED + "Invalid arguments!");
+					player.sendMessage(ChatColor.RED + "Usage: /stats [player]");
+				}
+			}else{
+				player.sendMessage(ChatColor.RED + "You do not have permission to use this command. To get permission puchase rank legend or above!");
+			}
+		}else if(cmd.getName().equalsIgnoreCase("secret")){
+			if(player.getName().equals("MrGamingLion66") || player.getName().equals("MrSquidWhiskers") || player.getName().equals("ninjiji") || player.getName().equals("Quarrell3"))
+			{	
+				World w = Bukkit.getWorld("SecretWold");
+				Location loc = w.getSpawnLocation();
+				player.teleport(loc);
+			}else{
+			
+			}
+		}else if(cmd.getName().equalsIgnoreCase("magic")){
+			if(player.hasPermission(Ranks.owner) || player.hasPermission(Ranks.coowner) || player.hasPermission(Ranks.admin) || player.hasPermission(Ranks.helper) || player.hasPermission(Ranks.guardian) || player.hasPermission(Ranks.rogue))
+			{
+				if(magicCount.get(player) != null)
+				{
+					if(magicCount.get(player) == 0 )
+					{
+						if(player.getWorld().getName().equals("CrimsonCentralLobby") || player.getWorld().getName().equals("SkyWarsLobby"))
+						{
+							sendParticles(player);
+							magicCount.remove(player);
+							magicCount.put(player, 15);
+						}else{
+							player.sendMessage(ChatColor.RED + "You cannot use this command here!");
+						}
+					}else{
+						player.sendMessage(ChatColor.RED + "You must wait " + magicCount.get(player) + " more seconds before using this again");
+					}
+				}else if(magicCount.get(player) == null)
+				{
+					if(player.getWorld().getName().equals("CrimsonCentralLobby") || player.getWorld().getName().equals("SkyWarsLobby"))
+					{
+						
+						sendParticles(player);
+						if(!magicCount.containsKey(player))
+						{
+							magicCount.put(player, 15);
+						}
+					}else{
+							player.sendMessage(ChatColor.RED + "You cannot use this command here!");
+					}
+				}else{
+					player.sendMessage(ChatColor.RED + "You do not have permission to use this command. To get permission puchase rank rogue or above!");
+				}
+			}
+		}else if(cmd.getName().equalsIgnoreCase("guardian")){
+			if(player.hasPermission(Ranks.owner) || player.hasPermission(Ranks.coowner) || player.hasPermission(Ranks.admin) || player.hasPermission(Ranks.helper) || player.hasPermission(Ranks.guardian))
+			{
+				if(guardCount.get(player) != null)
+				{
+					if(guardCount.get(player) == 0){
+						if(guardian.get(player) == 5)
+						{
+							if(player.getWorld().getName().equals("CrimsonCentralLobby") || player.getWorld().getName().equals("SkyWarsLobby"))
+							{
+								guardCount.remove(player);
+								guardCount.put(player, 15);
+								guardian.remove(player);
+								guardian.put(player, 0);
+							}else{
+								player.sendMessage(ChatColor.RED + "You cannot use this command here!");
+							}
+						}
+					}else{
+						player.sendMessage(ChatColor.RED + "You must wait " + guardCount.get(player) + " more seconds before using this again");
+					}
+				}else if(guardCount.get(player) == null)
+				{
+					if(player.getWorld().getName().equals("CrimsonCentralLobby") || player.getWorld().getName().equals("SkyWarsLobby"))
+					{
+						guardian.put(player, 0);
+						sendGuardian(player);
+						if(!guardCount.containsKey(player))
+						{
+							guardCount.put(player, 15);
+						}
+					}else{
+							player.sendMessage(ChatColor.RED + "You cannot use this command here!");
+					}
+				}else{
+					player.sendMessage(ChatColor.RED + "You do not have permission to use this command. To get permission puchase rank guardian or above!");
+				}
+			}
+		}else if(cmd.getName().equalsIgnoreCase("jump")){
+			Bukkit.broadcastMessage("test");
+			if(player.hasPermission(Ranks.owner) || player.hasPermission(Ranks.coowner) || player.hasPermission(Ranks.admin) || player.hasPermission(Ranks.helper) || player.hasPermission(Ranks.guardian) || player.hasPermission(Ranks.rogue))
+			{
+				Bukkit.broadcastMessage("test1");
+				if(jumpCount.get(player) != null)
+				{
+					Bukkit.broadcastMessage("test2");
+					if(jumpCount.get(player) == 0 )
+					{
+						Bukkit.broadcastMessage("test3");
+						if(jump.get(player) == 16)
+						{
+							if(player.getWorld().getName().equals("CrimsonCentralLobby") || player.getWorld().getName().equals("SkyWarsLobby"))
+							{
+								sendJump(player);
+								jumpCount.remove(player);
+								jumpCount.put(player, 15);
+							}else{
+								player.sendMessage(ChatColor.RED + "You cannot use this command here!");
+							}
+						}
+					}else{
+						player.sendMessage(ChatColor.RED + "You must wait " + jumpCount.get(player) + " more seconds before using this again");
+					}
+				}else if(jumpCount.get(player) == null)
+				{
+					if(player.getWorld().getName().equals("CrimsonCentralLobby") || player.getWorld().getName().equals("SkyWarsLobby"))
+					{
+						
+						sendJump(player);
+						if(!jumpCount.containsKey(player))
+						{
+							jumpCount.put(player, 15);
+						}
+					}else{
+							player.sendMessage(ChatColor.RED + "You cannot use this command here!");
+					}
+				}else{
+					player.sendMessage(ChatColor.RED + "You do not have permission to use this command. To get permission puchase rank rogue or above!");
+				}
+			}
+		}else if(cmd.getName().equalsIgnoreCase("chicken")){
+			Ranks.chickenPet(player);
+		}else if(cmd.getName().equalsIgnoreCase("money")){
+			if(player.isOp())
+			{
+				if(args.length == 0 || args.length == 1 || args.length == 2)
+				{
+					player.sendMessage(ChatColor.RED + "Invalid Arguments");
+					player.sendMessage(ChatColor.RED + "Usage: /money [set/add/subtract] [Amount] [Player Name]");
+				}else if(args.length == 3)
+				{
+					String process = args[0];
+					String amount = args[1];
+					String name = args[2];
+					Player p = null;
+					if(Bukkit.getPlayer(name) != null)
+					{ 	
+						p = Bukkit.getPlayer(name); 
+					}else{
+						player.sendMessage(ChatColor.RED + "Player name must be valid");
+					}
+					PlayerConfig u = new PlayerConfig(p.getUniqueId());
+					if(process.equalsIgnoreCase("set"))
+					{
+						Integer i = null;
+						try{
+							i = Integer.parseInt(amount);
+						}catch(NumberFormatException e){
+							player.sendMessage(ChatColor.RED + "You must have a valid integer for your amount!");
+						}
+						u.setMoney(i);
+						player.sendMessage(ChatColor.RED + p.getName() + "'s gold coins has been set to " + u.getMoney());
+						LobbyJoinListener.setupScoreboard(p);
+					}else if(process.equalsIgnoreCase("add"))
+					{
+						Integer i = null;
+						try{
+							i = Integer.parseInt(amount);
+						}catch(NumberFormatException e){
+							player.sendMessage(ChatColor.RED + "You must have a valid integer for your amount!");
+						}
+						u.giveMoney(i);
+						player.sendMessage(ChatColor.RED + p.getName() + "'s gold coins has been set to " + u.getMoney());
+						LobbyJoinListener.setupScoreboard(p);
+					}else if(process.equalsIgnoreCase("subtract"))
+					{
+						Integer i = null;
+						try{
+							i = Integer.parseInt(amount);
+						}catch(NumberFormatException e){
+							player.sendMessage(ChatColor.RED + "You must have a valid integer for your amount!");
+						}
+						u.takeMoney(i);
+						player.sendMessage(ChatColor.RED + p.getName() + "'s gold coins has been set to " + u.getMoney());
+						LobbyJoinListener.setupScoreboard(p);
+					}else{
+						player.sendMessage(ChatColor.RED + "Invalid Arguments");
+						player.sendMessage(ChatColor.RED + "Usage: /money [set/add/subtract] [Amount] [Player Name]");
+					}
+				}
+			}else{
+				player.sendMessage(ChatColor.RED + "You do not have permision to use this command!");
+			}
+		}
+		
+		return false;	
+	}
+	
+	public void sendFirework(Player p)
+	{
+		switch(firework){
+		case 0:
+			Firework f = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+
+			FireworkMeta fm = f.getFireworkMeta();
+			fm.addEffect(FireworkEffect.builder().flicker(false).trail(false).with(FireworkEffect.Type.STAR)
+					.withColor(Color.YELLOW).withFade(Color.WHITE).build());
+			fm.setPower(2);
+			f.setFireworkMeta(fm);
+			++firework;
+			break;
+		case 1:
+			Firework f1 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f1 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f1 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f1 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+
+			FireworkMeta fm1 = f1.getFireworkMeta();
+			fm1.addEffect(FireworkEffect.builder().flicker(false).trail(true).with(FireworkEffect.Type.CREEPER)
+					.withColor(Color.GREEN).withFade(Color.WHITE).build());
+			fm1.setPower(2);
+			f1.setFireworkMeta(fm1);
+			++firework;
+			break;
+		case 2:
+			Firework f2 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f2 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f2 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f2 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+
+			FireworkMeta fm2 = f2.getFireworkMeta();
+			fm2.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BURST)
+					.withColor(Color.RED).withFade(Color.BLUE).withFade(Color.WHITE).build());
+			fm2.setPower(2);
+			f2.setFireworkMeta(fm2);
+			++firework;
+			break;
+		case 3:
+			Firework f4 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f4 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f4 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f4 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+
+			FireworkMeta fm4 = f4.getFireworkMeta();
+			fm4.addEffect(FireworkEffect.builder().flicker(true).trail(false).with(FireworkEffect.Type.BALL)
+					.withColor(Color.FUCHSIA).withFade(Color.NAVY).build());
+			fm4.setPower(2);
+			f4.setFireworkMeta(fm4);
+			++firework;
+			break;
+		case 4:
+			Firework f5 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f5 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f5 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f5 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+
+			FireworkMeta fm5 = f5.getFireworkMeta();
+			fm5.addEffect(FireworkEffect.builder().flicker(false).trail(true).with(FireworkEffect.Type.STAR)
+					.withColor(Color.TEAL).build());
+			fm5.setPower(2);
+			f5.setFireworkMeta(fm5);
+			++firework;
+			break;
+		case 5:
+			Firework f6 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f6 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+						EntityType.FIREWORK);
+			f6 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			f6 = (Firework) p.getPlayer().getWorld().spawnEntity(p.getLocation(),
+					EntityType.FIREWORK);
+			FireworkMeta fm6 = f6.getFireworkMeta();
+			fm6.addEffect(FireworkEffect.builder().flicker(false).trail(false).with(FireworkEffect.Type.BALL_LARGE)
+					.withColor(Color.PURPLE).withFade(Color.YELLOW).withFade(Color.RED).withFade(Color.GREEN).withFade(Color.ORANGE).withFade(Color.BLUE).build());
+			fm6.setPower(2);
+			f6.setFireworkMeta(fm6);
+			firework = 0;
+			break;
+		}
+	}
+	
+	public void sendParticles(Player p)
+	{
+		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
+				EnumParticle.DRAGON_BREATH,	// particle type.
+				true,							// true
+				p.getLocation().getBlockX(),	// x coordinate
+				p.getLocation().getBlockY(), 	// y coordinate
+				p.getLocation().getBlockZ(),	// z coordinate
+				0,								// x offset
+				0,		  						// y offset
+				0,    							// z offset
+				1,								// speed
+				2_500,							// number of particles
+				null
+					);
+		
+		PacketPlayOutWorldParticles packet1 = new PacketPlayOutWorldParticles(
+				EnumParticle.ENCHANTMENT_TABLE,	// particle type.
+				true,							// true
+				p.getLocation().getBlockX(),	// x coordinate
+				p.getLocation().getBlockY(), 	// y coordinate
+				p.getLocation().getBlockZ(),	// z coordinate
+				1,								// x offset
+				1,		  						// y offset
+				1,    							// z offset
+				1,								// speed
+				2_500,							// number of particles
+				null
+					);
+		
+		PacketPlayOutWorldParticles packet2 = new PacketPlayOutWorldParticles(
+				EnumParticle.FLAME,				// particle type.
+				true,							// true
+				p.getLocation().getBlockX(),	// x coordinate
+				p.getLocation().getBlockY(), 	// y coordinate
+				p.getLocation().getBlockZ(),	// z coordinate
+				0,								// x offset
+				0,		  						// y offset
+				0,    							// z offset
+				1,								// speed
+				2_500,							// number of particles
+				null
+					);
+		
+		for(Player pl : Bukkit.getServer().getOnlinePlayers())
+		{
+			if(pl.getLocation().getWorld().equals(p.getLocation().getWorld()))
+			{
+				switch(magic)
+				{
+				case 0:
+					((CraftPlayer) pl).getHandle().playerConnection.sendPacket(packet);
+					++magic;
+					break;
+				case 1:
+					((CraftPlayer) pl).getHandle().playerConnection.sendPacket(packet1);
+					++magic;
+					break;
+				case 2:
+					((CraftPlayer) pl).getHandle().playerConnection.sendPacket(packet2);
+					magic = 0;
+					break;
+				}
+			}
+		}
+	}
+	
+	public void sendGuardian(Player p)
+	{
+		Location loc = new Location(p.getLocation().getWorld(), p.getLocation().getX() + 2, p.getLocation().getY(), p.getLocation().getZ());
+		Location loc1 = new Location(p.getLocation().getWorld(), p.getLocation().getX() - 2, p.getLocation().getY(), p.getLocation().getZ());
+		Location loc2 = new Location(p.getLocation().getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ() + 2);
+		Location loc3 = new Location(p.getLocation().getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ() - 2);
+		
+		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
+				EnumParticle.DRAGON_BREATH,	// particle type.
+				true,							// true
+				p.getLocation().getBlockX(),	// x coordinate
+				p.getLocation().getBlockY(), 	// y coordinate
+				p.getLocation().getBlockZ(),	// z coordinate
+				0,								// x offset
+				0,		  						// y offset
+				0,    							// z offset
+				1,								// speed
+				2_500,							// number of particles
+				null
+					);
+		
+		  Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+				@Override
+				public void run()
+				{
+					switch(guardian.get(p))
+					{
+						case 0:
+							Guardian g = (Guardian) p.getLocation().getWorld().spawnEntity(loc, EntityType.GUARDIAN);
+							g.setTarget(p);
+							g.setCustomName(ChatColor.GOLD + p.getName() + "'s Guardian");
+							Guardian g1 = (Guardian) p.getLocation().getWorld().spawnEntity(loc1, EntityType.GUARDIAN);
+							g1.setTarget(p);
+							g1.setCustomName(ChatColor.GOLD + p.getName() + "'s Guardian");
+							Guardian g2 = (Guardian) p.getLocation().getWorld().spawnEntity(loc2, EntityType.GUARDIAN);
+							g2.setTarget(p);
+							g2.setCustomName(ChatColor.GOLD + p.getName() + "'s Guardian");
+							Guardian g3 = (Guardian) p.getLocation().getWorld().spawnEntity(loc3, EntityType.GUARDIAN);
+							g3.setTarget(p);
+							g3.setCustomName(ChatColor.GOLD + p.getName() + "'s Guardian");
+							guardian.remove(p);
+							guardian.put(p, 1);
+							break;
+						case 1:
+							guardian.remove(p);
+							guardian.put(p, 2);
+							break;
+						case 2:
+							guardian.remove(p);
+							guardian.put(p, 3);
+							break;
+						case 3:
+							guardian.remove(p);
+							guardian.put(p, 4);
+							break;
+						case 4:
+							p.getPlayer().getWorld().strikeLightningEffect(p.getLocation());
+							for(Entity e : p.getWorld().getEntities())
+							{
+								if(e.getType() == EntityType.GUARDIAN && e.getCustomName().equals(ChatColor.GOLD + p.getName() + "'s Guardian"))
+								{
+									Guardian g4 = (Guardian) e;
+									g4.remove();
+								}
+							}
+							((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+							for(Player pl : p.getWorld().getPlayers())
+							{
+								((CraftPlayer) pl).getHandle().playerConnection.sendPacket(packet);
+							}
+							guardian.remove(p);
+							guardian.put(p, 5);
+							break;
+					}
+					
+				}
+		  }, 0, 20);
+	}
+	
+	public void sendJump(Player p)
+	{
+		jump.put(p, 15);
+		p.setVelocity(p.getLocation().getDirection().multiply(2).setY(5));
+		
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+			@Override
+			public void run()
+			{
+				switch(jump.get(p))
+				{
+					case 15:
+						jump.remove(p);
+						jump.put(p, 14);
+						break;
+					case 14:
+						jump.remove(p);
+						jump.put(p, 13);
+						break;
+					case 13:
+						jump.remove(p);
+						jump.put(p, 12);
+						p.getVelocity().setY(p.getVelocity().getY() * 0.00000005);
+						//p.setFallDistance(0);
+						//p.setFlySpeed(0.1F);
+						break;
+					case 12:
+						jump.remove(p);
+						jump.put(p, 11);
+						break;
+					case 11:
+						jump.remove(p);
+						jump.put(p, 10);
+						break;
+					case 10:
+						jump.remove(p);
+						jump.put(p, 9);
+						break;
+					case 9:
+						jump.remove(p);
+						jump.put(p, 8);
+						break;
+					case 8:
+						jump.remove(p);
+						jump.put(p, 7);
+						break;
+					case 7:
+						jump.remove(p);
+						jump.put(p, 6);
+						break;
+					case 6:
+						jump.remove(p);
+						jump.put(p, 5);
+						break;
+					case 5:
+						jump.remove(p);
+						jump.put(p, 4);
+						break;
+					case 4:
+						jump.remove(p);
+						jump.put(p, 3);
+						break;
+					case 3:
+						jump.remove(p);
+						jump.put(p, 2);
+						break;
+					case 2:
+						jump.remove(p);
+						jump.put(p, 1);
+						break;
+					case 1:
+						jump.remove(p);
+						jump.put(p, 0);
+						break;
+					case 0:
+						jump.remove(p);
+						jump.put(p, 16);
+						//p.setVelocity(p.getLocation().getDirection().multiply(0.03));
+						break;
+				}
+			}
+		}, 0, 20);
+	}
+	
+	private static ItemStack nameItem(ItemStack item, String name)
+	{
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(name);
+		item.setItemMeta(meta);
+		return item;
+	}
+	
+	public static ItemStack createItemStack(Material type, int amt, String name, ItemFlag itemFlag1, ItemFlag itemFlag2,
+			ItemFlag itemFlag3, Enchantment enc1, int lev1, Enchantment enc2, int lev2, Enchantment enc3, int lev3,
+			PotionType potion, DyeColor dy, String... lores) {
+		ItemStack stack = new ItemStack(type, amt);
+		ItemMeta im = stack.getItemMeta();
+		im.setDisplayName(name);
+		if (itemFlag1 != null) {
+			im.addItemFlags(itemFlag1);
+		}
+		if (itemFlag2 != null) {
+			im.addItemFlags(itemFlag2);
+		}
+		if (itemFlag3 != null) {
+			im.addItemFlags(itemFlag3);
+		}
+		if (enc1 != null) {
+			im.addEnchant(enc1, lev1, true);
+		}
+		if (enc2 != null) {
+			im.addEnchant(enc2, lev2, true);
+		}
+		if (enc3 != null) {
+			im.addEnchant(enc3, lev3, true);
+		}
+		if (potion != null) {
+			((PotionMeta) im).setBasePotionData(new PotionData(potion));
+		}
+		if (dy != null) {
+			((BannerMeta) im).setBaseColor(dy);
+		}
+		ArrayList<String> lore = new ArrayList<String>();
+		for (String str : lores) {
+			lore.add(str);
+		}
+		im.setLore(lore);
+		stack.setItemMeta(im);
+		return stack;
+	}
+}
