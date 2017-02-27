@@ -1,0 +1,1102 @@
+package com.crimsoncentral.skywars;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
+
+import com.crimsoncentral.main.LobbyJoinListener;
+import com.crimsoncentral.main.MainLobby;
+import com.crimsoncentral.main.Ranks;
+
+import net.minecraft.server.v1_10_R1.IChatBaseComponent;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutTitle;
+
+public class SkyWarsLobby implements Listener {
+	public static List<Player> warriors = new ArrayList<Player>();
+	public static List<Player> bowsmen = new ArrayList<Player>();
+	public static List<Player> brewers = new ArrayList<Player>();
+	
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onPunch2(PlayerInteractEvent pei) {
+		Player player = pei.getPlayer();
+		String pn = player.getName();
+
+		if (player.getItemInHand().getItemMeta().getDisplayName().contains("Select Game")) {
+			Inventory skyWarsMapsINV = Bukkit.createInventory(null, 9, ChatColor.AQUA + "Sky Wars Maps");
+			ItemStack skyWarsMapPack1 = nameItem(new ItemStack(Material.MAP),
+					ChatColor.GOLD + "" + ChatColor.BOLD + "Map Pack 1: The Beggining");
+			ItemMeta skyWarsMapPack1Meta = skyWarsMapPack1.getItemMeta();
+			ArrayList<String> hgLore = new ArrayList<String>();
+			hgLore.add(ChatColor.BLUE + "Ogre's Lair, Dragon's Keep");
+			hgLore.add(ChatColor.BLUE + "African Safari, Sky Mine");
+			hgLore.add(ChatColor.BLUE + "Frozen Wonderland, Jungle Treehouse");
+			hgLore.add(ChatColor.BLUE + "Oasis Paradise, Roman Empire");
+			skyWarsMapPack1Meta.setLore(hgLore);
+			skyWarsMapPack1.setItemMeta(skyWarsMapPack1Meta);
+			skyWarsMapsINV.setItem(4, skyWarsMapPack1);
+
+			player.openInventory(skyWarsMapsINV);
+		}else if(player.getItemInHand().getItemMeta().getDisplayName().contains("Sky Wars") && player.getItemInHand().getType() == Material.BARRIER) {
+			ItemStack skyWarsMapMenu = nameItem(new ItemStack(Material.MAP),
+					ChatColor.AQUA + "" + ChatColor.BOLD + "Select Game");
+			
+			ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+			ItemStack cosmetics = nameItem(new ItemStack(Material.CHEST), ChatColor.YELLOW + "Cosmetics");
+			ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+			ItemMeta hidePlayersMeta = hidePlayers.getItemMeta();
+			ArrayList<String> hpLore = new ArrayList<String>();
+			hpLore.add(ChatColor.YELLOW + "Coming Soon!");
+			hidePlayersMeta.setLore(hpLore);
+			hidePlayers.setItemMeta(hidePlayersMeta);
+			ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+			ItemStack lobbySelector = nameItem(new ItemStack(Material.NETHER_STAR), ChatColor.GOLD + "Lobby Selector (Coming Soon)");
+			ItemMeta lobbySelectorMeta = lobbySelector.getItemMeta();
+			ArrayList<String> lsLore = new ArrayList<String>();
+			lsLore.add(ChatColor.YELLOW + "Coming Soon!");
+			lobbySelectorMeta.setLore(lsLore);
+			lobbySelector.setItemMeta(lobbySelectorMeta);
+			
+			World world1 = Bukkit.getWorld("SkyWarsLobby");
+			Location loc = new Location(world1, -2561.5, 52, 744.5, -90, 0);
+			player.getInventory().clear();
+			player.getPlayer().getInventory().setItem(1, skyWarsMapMenu);
+			player.teleport(loc);
+
+			IChatBaseComponent chatTitle = ChatSerializer.a("{\"text\":\"§b§l*Sky Wars*\"}");
+			PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+			((CraftPlayer) player.getPlayer()).getHandle().playerConnection.sendPacket(title);
+
+			IChatBaseComponent chatSubTitle = ChatSerializer.a("{\"text\": \"§6§l*On Crimson Central*\"}");
+			PacketPlayOutTitle subtitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE,
+					chatSubTitle);
+			((CraftPlayer) player.getPlayer()).getHandle().playerConnection.sendPacket(subtitle);
+
+			player.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			skullMeta.setDisplayName(pn);
+			player.getPlayer().getInventory().setItem(7, profile);
+			player.getPlayer().getInventory().setItem(3, hidePlayers);
+			player.getPlayer().getInventory().setItem(5, serverRadio);
+			player.getPlayer().getInventory().setItem(8, lobbySelector);
+			player.getPlayer().getInventory().setItem(4, cosmetics);
+			MainLobby.setupScoreboard1(player);
+			
+			
+			if(player.hasPermission(Ranks.owner) || player.hasPermission(Ranks.coowner) || player.hasPermission(Ranks.admin) || player.hasPermission(Ranks.helper) || player.hasPermission(Ranks.guardian) || player.hasPermission(Ranks.rogue) || player.hasPermission(Ranks.legend) || player.hasPermission(Ranks.mage) || player.hasPermission(Ranks.crimson))
+			{
+				player.setAllowFlight(true);
+				player.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			}
+			
+			if(RomanEmpireSkyWars.players.contains(player))
+			{
+				--RomanEmpireSkyWars.rePlayerCounter;
+				RomanEmpireSkyWars.players.contains(player);
+			}else if(RomanEmpireSkyWars.deadPlayers.contains(player)){
+				--RomanEmpireSkyWars.rePlayerCounter;
+				RomanEmpireSkyWars.deadPlayers.contains(player);
+			}
+			
+			if(RomanEmpireSkyWars.replayer1 == player){
+				RomanEmpireSkyWars.replayer1 = null;
+			}else if(RomanEmpireSkyWars.replayer2 == player){
+				RomanEmpireSkyWars.replayer2 = null;
+			}else if(RomanEmpireSkyWars.replayer3 == player){
+				RomanEmpireSkyWars.replayer3 = null;
+			}else if(RomanEmpireSkyWars.replayer4 == player){
+				RomanEmpireSkyWars.replayer4 = null;
+			}else if(RomanEmpireSkyWars.replayer5 == player){
+				RomanEmpireSkyWars.replayer5 = null;
+			}else if(RomanEmpireSkyWars.replayer6 == player){
+				RomanEmpireSkyWars.replayer6 = null;
+			}else if(RomanEmpireSkyWars.replayer7 == player){
+				RomanEmpireSkyWars.replayer7 = null;
+			}else if(RomanEmpireSkyWars.replayer8 == player){
+				RomanEmpireSkyWars.replayer8 = null;
+			}else if(RomanEmpireSkyWars.replayer9 == player){
+				RomanEmpireSkyWars.replayer9 = null;
+			}else if(RomanEmpireSkyWars.replayer10 == player){
+				RomanEmpireSkyWars.replayer10 = null;
+			}else if(RomanEmpireSkyWars.replayer11 == player){
+				RomanEmpireSkyWars.replayer11 = null;
+			}else if(RomanEmpireSkyWars.replayer12 == player){
+				RomanEmpireSkyWars.replayer12 = null;
+			}
+			
+			if(RomanEmpireSkyWars.rePlayerCounter < 2)
+			{
+				if(RomanEmpireSkyWars.rePGVars == 1){
+					
+				}else{
+				RomanEmpireSkyWars.rePGVars = 0;
+				RomanEmpireSkyWars.reGVars = 2;
+				RomanEmpireSkyWars.reGTimer = 600;
+				RomanEmpireSkyWars.rePGTimer = 15;
+				RomanEmpireSkyWars.reGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("RomanEmpire"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			
+			if(OasisParadiseSkyWars.opPlayers.contains(player))
+			{
+				--OasisParadiseSkyWars.opPlayerCounter;
+				OasisParadiseSkyWars.opPlayers.contains(player);
+			}else if(OasisParadiseSkyWars.opDeadPlayers.contains(player)){
+				--OasisParadiseSkyWars.opPlayerCounter;
+				OasisParadiseSkyWars.opDeadPlayers.contains(player);
+			}
+			
+			if(OasisParadiseSkyWars.opplayer1 == player){
+				OasisParadiseSkyWars.opplayer1 = null;
+			}else if(OasisParadiseSkyWars.opplayer2 == player){
+				OasisParadiseSkyWars.opplayer2 = null;
+			}else if(OasisParadiseSkyWars.opplayer3 == player){
+				OasisParadiseSkyWars.opplayer3 = null;
+			}else if(OasisParadiseSkyWars.opplayer4 == player){
+				OasisParadiseSkyWars.opplayer4 = null;
+			}else if(OasisParadiseSkyWars.opplayer5 == player){
+				OasisParadiseSkyWars.opplayer5 = null;
+			}else if(OasisParadiseSkyWars.opplayer6 == player){
+				OasisParadiseSkyWars.opplayer6 = null;
+			}else if(OasisParadiseSkyWars.opplayer7 == player){
+				OasisParadiseSkyWars.opplayer7 = null;
+			}else if(OasisParadiseSkyWars.opplayer8 == player){
+				OasisParadiseSkyWars.opplayer8 = null;
+			}else if(OasisParadiseSkyWars.opplayer9 == player){
+				OasisParadiseSkyWars.opplayer9 = null;
+			}else if(OasisParadiseSkyWars.opplayer10 == player){
+				OasisParadiseSkyWars.opplayer10 = null;
+			}else if(OasisParadiseSkyWars.opplayer11 == player){
+				OasisParadiseSkyWars.opplayer11 = null;
+			}else if(OasisParadiseSkyWars.opplayer12 == player){
+				OasisParadiseSkyWars.opplayer12 = null;
+			}
+			
+			if(OasisParadiseSkyWars.opPlayerCounter < 2)
+			{
+				if(OasisParadiseSkyWars.opPGVars == 1){
+					
+				}else{
+				OasisParadiseSkyWars.opPGVars = 0;
+				OasisParadiseSkyWars.opGVars = 2;
+				OasisParadiseSkyWars.opGTimer = 600;
+				OasisParadiseSkyWars.opPGTimer = 15;
+				OasisParadiseSkyWars.opGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("OasisNormalSolo"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			
+			if(FrozenWonderlandSkyWars.fwPlayers.contains(player))
+			{
+				--FrozenWonderlandSkyWars.fwPlayerCounter;
+				FrozenWonderlandSkyWars.fwPlayers.contains(player);
+			}else if(FrozenWonderlandSkyWars.fwDeadPlayers.contains(player)){
+				--FrozenWonderlandSkyWars.fwPlayerCounter;
+				FrozenWonderlandSkyWars.fwDeadPlayers.contains(player);
+			}
+			
+			if(FrozenWonderlandSkyWars.fwplayer1 == player){
+				FrozenWonderlandSkyWars.fwplayer1 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer2 == player){
+				FrozenWonderlandSkyWars.fwplayer2 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer3 == player){
+				FrozenWonderlandSkyWars.fwplayer3 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer4 == player){
+				FrozenWonderlandSkyWars.fwplayer4 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer5 == player){
+				FrozenWonderlandSkyWars.fwplayer5 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer6 == player){
+				FrozenWonderlandSkyWars.fwplayer6 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer7 == player){
+				FrozenWonderlandSkyWars.fwplayer7 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer8 == player){
+				FrozenWonderlandSkyWars.fwplayer8 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer9 == player){
+				FrozenWonderlandSkyWars.fwplayer9 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer10 == player){
+				FrozenWonderlandSkyWars.fwplayer10 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer11 == player){
+				FrozenWonderlandSkyWars.fwplayer11 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer12 == player){
+				FrozenWonderlandSkyWars.fwplayer12 = null;
+			}
+			
+			if(FrozenWonderlandSkyWars.fwPlayerCounter < 2)
+			{
+				if(FrozenWonderlandSkyWars.fwPGVars == 1){
+					
+				}else{
+				FrozenWonderlandSkyWars.fwPGVars = 0;
+				FrozenWonderlandSkyWars.fwGVars = 2;
+				FrozenWonderlandSkyWars.fwGTimer = 600;
+				FrozenWonderlandSkyWars.fwPGTimer = 15;
+				FrozenWonderlandSkyWars.fwGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("Frozen"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			if(AfricanSafariSkyWars.asPlayers.contains(player))
+			{
+				--AfricanSafariSkyWars.asPlayerCounter;
+				AfricanSafariSkyWars.asPlayers.contains(player);
+			}else if(AfricanSafariSkyWars.asDeadPlayers.contains(player)){
+				--AfricanSafariSkyWars.asPlayerCounter;
+				AfricanSafariSkyWars.asDeadPlayers.contains(player);
+			}
+			if(AfricanSafariSkyWars.asplayer1 == player){
+				AfricanSafariSkyWars.asplayer1 = null;
+			}else if(AfricanSafariSkyWars.asplayer2 == player){
+				AfricanSafariSkyWars.asplayer2 = null;
+			}else if(AfricanSafariSkyWars.asplayer3 == player){
+				AfricanSafariSkyWars.asplayer3 = null;
+			}else if(AfricanSafariSkyWars.asplayer4 == player){
+				AfricanSafariSkyWars.asplayer4 = null;
+			}else if(AfricanSafariSkyWars.asplayer5 == player){
+				AfricanSafariSkyWars.asplayer5 = null;
+			}else if(AfricanSafariSkyWars.asplayer6 == player){
+				AfricanSafariSkyWars.asplayer6 = null;
+			}else if(AfricanSafariSkyWars.asplayer7 == player){
+				AfricanSafariSkyWars.asplayer7 = null;
+			}else if(AfricanSafariSkyWars.asplayer8 == player){
+				AfricanSafariSkyWars.asplayer8 = null;
+			}else if(AfricanSafariSkyWars.asplayer9 == player){
+				AfricanSafariSkyWars.asplayer9 = null;
+			}else if(AfricanSafariSkyWars.asplayer10 == player){
+				AfricanSafariSkyWars.asplayer10 = null;
+			}else if(AfricanSafariSkyWars.asplayer11 == player){
+				AfricanSafariSkyWars.asplayer11 = null;
+			}else if(AfricanSafariSkyWars.asplayer12 == player){
+				AfricanSafariSkyWars.asplayer12 = null;
+			}
+			if(AfricanSafariSkyWars.asPlayerCounter < 2)
+			{
+				if(AfricanSafariSkyWars.asPGVars == 1){
+						
+				}else{
+				AfricanSafariSkyWars.asPGVars = 0;
+				AfricanSafariSkyWars.asGVars = 2;
+				AfricanSafariSkyWars.asGTimer = 600;
+				AfricanSafariSkyWars.asPGTimer = 15;
+				AfricanSafariSkyWars.asGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("Safari"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			
+			if(SkyMineSkyWars.smPlayers.contains(player))
+			{
+				--SkyMineSkyWars.smPlayerCounter;
+				SkyMineSkyWars.smPlayers.contains(player);
+			}else if(SkyMineSkyWars.smDeadPlayers.contains(player)){
+				--SkyMineSkyWars.smPlayerCounter;
+				SkyMineSkyWars.smDeadPlayers.contains(player);
+			}
+			if(SkyMineSkyWars.smplayer1 == player){
+				SkyMineSkyWars.smplayer1 = null;
+			}else if(SkyMineSkyWars.smplayer2 == player){
+				SkyMineSkyWars.smplayer2 = null;
+			}else if(SkyMineSkyWars.smplayer3 == player){
+				SkyMineSkyWars.smplayer3 = null;
+			}else if(SkyMineSkyWars.smplayer4 == player){
+				SkyMineSkyWars.smplayer4 = null;
+			}else if(SkyMineSkyWars.smplayer5 == player){
+				SkyMineSkyWars.smplayer5 = null;
+			}else if(SkyMineSkyWars.smplayer6 == player){
+				SkyMineSkyWars.smplayer6 = null;
+			}else if(SkyMineSkyWars.smplayer7 == player){
+				SkyMineSkyWars.smplayer7 = null;
+			}else if(SkyMineSkyWars.smplayer8 == player){
+				SkyMineSkyWars.smplayer8 = null;
+			}else if(SkyMineSkyWars.smplayer9 == player){
+				SkyMineSkyWars.smplayer9 = null;
+			}else if(SkyMineSkyWars.smplayer10 == player){
+				SkyMineSkyWars.smplayer10 = null;
+			}else if(SkyMineSkyWars.smplayer11 == player){
+				SkyMineSkyWars.smplayer11 = null;
+			}else if(SkyMineSkyWars.smplayer12 == player){
+				SkyMineSkyWars.smplayer12 = null;
+			}
+			if(SkyMineSkyWars.smPlayerCounter < 2)
+			{
+				if(AfricanSafariSkyWars.asPGVars == 1){
+					
+				}else{
+				SkyMineSkyWars.smPGVars = 0;
+				SkyMineSkyWars.smGVars = 2;
+				SkyMineSkyWars.smGTimer = 600;
+				SkyMineSkyWars.smPGTimer = 15;
+				SkyMineSkyWars.smGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("Safari"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			
+			if(OgresLairSkyWars.olPlayers.contains(player))
+			{
+				--OgresLairSkyWars.olPlayerCounter;
+				OgresLairSkyWars.olPlayers.contains(player);
+			}else if(OgresLairSkyWars.olDeadPlayers.contains(player)){
+				--OgresLairSkyWars.olPlayerCounter;
+				OgresLairSkyWars.olDeadPlayers.contains(player);
+			}
+			if(OgresLairSkyWars.olplayer1 == player){
+				OgresLairSkyWars.olplayer1 = null;
+			}else if(OgresLairSkyWars.olplayer2 == player){
+				OgresLairSkyWars.olplayer2 = null;
+			}else if(OgresLairSkyWars.olplayer3 == player){
+				OgresLairSkyWars.olplayer3 = null;
+			}else if(OgresLairSkyWars.olplayer4 == player){
+				OgresLairSkyWars.olplayer4 = null;
+			}else if(OgresLairSkyWars.olplayer5 == player){
+				OgresLairSkyWars.olplayer5 = null;
+			}else if(OgresLairSkyWars.olplayer6 == player){
+				OgresLairSkyWars.olplayer6 = null;
+			}else if(OgresLairSkyWars.olplayer7 == player){
+				OgresLairSkyWars.olplayer7 = null;
+			}else if(OgresLairSkyWars.olplayer8 == player){
+				OgresLairSkyWars.olplayer8 = null;
+			}else if(OgresLairSkyWars.olplayer9 == player){
+				OgresLairSkyWars.olplayer9 = null;
+			}else if(OgresLairSkyWars.olplayer10 == player){
+				OgresLairSkyWars.olplayer10 = null;
+			}else if(OgresLairSkyWars.olplayer11 == player){
+				OgresLairSkyWars.olplayer11 = null;
+			}else if(OgresLairSkyWars.olplayer12 == player){
+				OgresLairSkyWars.olplayer12 = null;
+			}
+			if(OgresLairSkyWars.olPlayerCounter < 2)
+			{
+				if(OgresLairSkyWars.olPGVars == 1){
+					
+				}else{
+				OgresLairSkyWars.olPGVars = 0;
+				OgresLairSkyWars.olGVars = 2;
+				OgresLairSkyWars.olGTimer = 600;
+				OgresLairSkyWars.olPGTimer = 15;
+				OgresLairSkyWars.olGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("OgresLair"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+		}else if (player.getItemInHand().getItemMeta().getDisplayName().contains("Main Lobby")) {
+			World mainLobby = Bukkit.getWorld("CrimsonCentralLobby");
+			Location loc = new Location(mainLobby, 3.5, 35.0, 0.5, 90, 0);
+			
+			ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+			ItemStack cosmetics = nameItem(new ItemStack(Material.CHEST), ChatColor.YELLOW + "Cosmetics");
+			ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+			ItemMeta hidePlayersMeta = hidePlayers.getItemMeta();
+			ArrayList<String> hpLore = new ArrayList<String>();
+			hpLore.add(ChatColor.YELLOW + "Coming Soon!");
+			hidePlayersMeta.setLore(hpLore);
+			hidePlayers.setItemMeta(hidePlayersMeta);
+			ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+			ItemStack lobbySelector = nameItem(new ItemStack(Material.NETHER_STAR), ChatColor.GOLD + "Lobby Selector (Coming Soon)");
+			ItemMeta lobbySelectorMeta = lobbySelector.getItemMeta();
+			ArrayList<String> lsLore = new ArrayList<String>();
+			lsLore.add(ChatColor.YELLOW + "Coming Soon!");
+			lobbySelectorMeta.setLore(lsLore);
+			lobbySelector.setItemMeta(lobbySelectorMeta);
+			
+			player.getInventory().clear();
+			player.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			skullMeta.setDisplayName(pn);
+			player.getPlayer().getInventory().setItem(7, profile);
+			player.getPlayer().getInventory().setItem(3, hidePlayers);
+			player.getPlayer().getInventory().setItem(5, serverRadio);
+			player.getPlayer().getInventory().setItem(8, lobbySelector);
+			player.getPlayer().getInventory().setItem(4, cosmetics);
+			LobbyJoinListener.setupScoreboard(player);
+			
+			if(player.hasPermission(Ranks.owner) || player.hasPermission(Ranks.coowner) || player.hasPermission(Ranks.admin) || player.hasPermission(Ranks.helper) || player.hasPermission(Ranks.guardian) || player.hasPermission(Ranks.rogue) || player.hasPermission(Ranks.legend) || player.hasPermission(Ranks.mage) || player.hasPermission(Ranks.crimson))
+			{
+				player.setAllowFlight(true);
+				player.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			}
+
+			player.teleport(loc);
+			
+			if(RomanEmpireSkyWars.players.contains(player))
+			{
+				--RomanEmpireSkyWars.rePlayerCounter;
+				RomanEmpireSkyWars.players.contains(player);
+			}else if(RomanEmpireSkyWars.deadPlayers.contains(player)){
+				--RomanEmpireSkyWars.rePlayerCounter;
+				RomanEmpireSkyWars.deadPlayers.contains(player);
+			}
+			
+			if(RomanEmpireSkyWars.replayer1 == player){
+				RomanEmpireSkyWars.replayer1 = null;
+				player.sendMessage("test");
+			}else if(RomanEmpireSkyWars.replayer2 == player){
+				RomanEmpireSkyWars.replayer2 = null;
+			}else if(RomanEmpireSkyWars.replayer3 == player){
+				RomanEmpireSkyWars.replayer3 = null;
+			}else if(RomanEmpireSkyWars.replayer4 == player){
+				RomanEmpireSkyWars.replayer4 = null;
+			}else if(RomanEmpireSkyWars.replayer5 == player){
+				RomanEmpireSkyWars.replayer5 = null;
+			}else if(RomanEmpireSkyWars.replayer6 == player){
+				RomanEmpireSkyWars.replayer6 = null;
+			}else if(RomanEmpireSkyWars.replayer7 == player){
+				RomanEmpireSkyWars.replayer7 = null;
+			}else if(RomanEmpireSkyWars.replayer8 == player){
+				RomanEmpireSkyWars.replayer8 = null;
+			}else if(RomanEmpireSkyWars.replayer9 == player){
+				RomanEmpireSkyWars.replayer9 = null;
+			}else if(RomanEmpireSkyWars.replayer10 == player){
+				RomanEmpireSkyWars.replayer10 = null;
+			}else if(RomanEmpireSkyWars.replayer11 == player){
+				RomanEmpireSkyWars.replayer11 = null;
+			}else if(RomanEmpireSkyWars.replayer12 == player){
+				RomanEmpireSkyWars.replayer12 = null;
+			}
+			
+			if(RomanEmpireSkyWars.rePlayerCounter < 2)
+			{
+				if(RomanEmpireSkyWars.rePGVars == 1){
+					
+				}else{
+				RomanEmpireSkyWars.rePGVars = 1;
+				RomanEmpireSkyWars.reGVars = 0;
+				RomanEmpireSkyWars.reGTimer = 600;
+				RomanEmpireSkyWars.rePGTimer = 15;
+				RomanEmpireSkyWars.reGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("RomanEmpire"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			
+			if(OasisParadiseSkyWars.opPlayers.contains(player))
+			{
+				--OasisParadiseSkyWars.opPlayerCounter;
+				OasisParadiseSkyWars.opPlayers.contains(player);
+			}else if(OasisParadiseSkyWars.opDeadPlayers.contains(player)){
+				--OasisParadiseSkyWars.opPlayerCounter;
+				OasisParadiseSkyWars.opDeadPlayers.contains(player);
+			}
+			
+			if(OasisParadiseSkyWars.opplayer1 == player){
+				OasisParadiseSkyWars.opplayer1 = null;
+			}else if(OasisParadiseSkyWars.opplayer2 == player){
+				OasisParadiseSkyWars.opplayer2 = null;
+			}else if(OasisParadiseSkyWars.opplayer3 == player){
+				OasisParadiseSkyWars.opplayer3 = null;
+			}else if(OasisParadiseSkyWars.opplayer4 == player){
+				OasisParadiseSkyWars.opplayer4 = null;
+			}else if(OasisParadiseSkyWars.opplayer5 == player){
+				OasisParadiseSkyWars.opplayer5 = null;
+			}else if(OasisParadiseSkyWars.opplayer6 == player){
+				OasisParadiseSkyWars.opplayer6 = null;
+			}else if(OasisParadiseSkyWars.opplayer7 == player){
+				OasisParadiseSkyWars.opplayer7 = null;
+			}else if(OasisParadiseSkyWars.opplayer8 == player){
+				OasisParadiseSkyWars.opplayer8 = null;
+			}else if(OasisParadiseSkyWars.opplayer9 == player){
+				OasisParadiseSkyWars.opplayer9 = null;
+			}else if(OasisParadiseSkyWars.opplayer10 == player){
+				OasisParadiseSkyWars.opplayer10 = null;
+			}else if(OasisParadiseSkyWars.opplayer11 == player){
+				OasisParadiseSkyWars.opplayer11 = null;
+			}else if(OasisParadiseSkyWars.opplayer12 == player){
+				OasisParadiseSkyWars.opplayer12 = null;
+			}
+			
+			if(OasisParadiseSkyWars.opPlayerCounter < 2)
+			{
+				if(OasisParadiseSkyWars.opPGVars == 1){
+					
+				}else{
+				OasisParadiseSkyWars.opPGVars = 0;
+				OasisParadiseSkyWars.opGVars = 2;
+				OasisParadiseSkyWars.opGTimer = 600;
+				OasisParadiseSkyWars.opPGTimer = 15;
+				OasisParadiseSkyWars.opGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("OasisNormalSolo"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			
+			if(FrozenWonderlandSkyWars.fwPlayers.contains(player))
+			{
+				--FrozenWonderlandSkyWars.fwPlayerCounter;
+				FrozenWonderlandSkyWars.fwPlayers.contains(player);
+			}else if(FrozenWonderlandSkyWars.fwDeadPlayers.contains(player)){
+				--FrozenWonderlandSkyWars.fwPlayerCounter;
+				FrozenWonderlandSkyWars.fwDeadPlayers.contains(player);
+			}
+			if(FrozenWonderlandSkyWars.fwplayer1 == player){
+				FrozenWonderlandSkyWars.fwplayer1 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer2 == player){
+				FrozenWonderlandSkyWars.fwplayer2 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer3 == player){
+				FrozenWonderlandSkyWars.fwplayer3 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer4 == player){
+				FrozenWonderlandSkyWars.fwplayer4 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer5 == player){
+				FrozenWonderlandSkyWars.fwplayer5 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer6 == player){
+				FrozenWonderlandSkyWars.fwplayer6 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer7 == player){
+				FrozenWonderlandSkyWars.fwplayer7 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer8 == player){
+				FrozenWonderlandSkyWars.fwplayer8 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer9 == player){
+				FrozenWonderlandSkyWars.fwplayer9 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer10 == player){
+				FrozenWonderlandSkyWars.fwplayer10 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer11 == player){
+				FrozenWonderlandSkyWars.fwplayer11 = null;
+			}else if(FrozenWonderlandSkyWars.fwplayer12 == player){
+				FrozenWonderlandSkyWars.fwplayer12 = null;
+			}
+			
+			if(FrozenWonderlandSkyWars.fwPlayerCounter < 2 || FrozenWonderlandSkyWars.fwPlayerCounter > 11)
+			{
+				if(FrozenWonderlandSkyWars.fwPGVars == 1){
+					
+				}else{
+				FrozenWonderlandSkyWars.fwPGVars = 0;
+				FrozenWonderlandSkyWars.fwGVars = 2;
+				FrozenWonderlandSkyWars.fwGTimer = 600;
+				FrozenWonderlandSkyWars.fwPGTimer = 15;
+				FrozenWonderlandSkyWars.fwGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("Frozen"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			if(AfricanSafariSkyWars.asPlayers.contains(player))
+			{
+				--AfricanSafariSkyWars.asPlayerCounter;
+				AfricanSafariSkyWars.asPlayers.contains(player);
+			}else if(AfricanSafariSkyWars.asDeadPlayers.contains(player)){
+				--AfricanSafariSkyWars.asPlayerCounter;
+				AfricanSafariSkyWars.asDeadPlayers.contains(player);
+			}
+			if(AfricanSafariSkyWars.asplayer1 == player){
+				AfricanSafariSkyWars.asplayer1 = null;
+			}else if(AfricanSafariSkyWars.asplayer2 == player){
+				AfricanSafariSkyWars.asplayer2 = null;
+			}else if(AfricanSafariSkyWars.asplayer3 == player){
+				AfricanSafariSkyWars.asplayer3 = null;
+			}else if(AfricanSafariSkyWars.asplayer4 == player){
+				AfricanSafariSkyWars.asplayer4 = null;
+			}else if(AfricanSafariSkyWars.asplayer5 == player){
+				AfricanSafariSkyWars.asplayer5 = null;
+			}else if(AfricanSafariSkyWars.asplayer6 == player){
+				AfricanSafariSkyWars.asplayer6 = null;
+			}else if(AfricanSafariSkyWars.asplayer7 == player){
+				AfricanSafariSkyWars.asplayer7 = null;
+			}else if(AfricanSafariSkyWars.asplayer8 == player){
+				AfricanSafariSkyWars.asplayer8 = null;
+			}else if(AfricanSafariSkyWars.asplayer9 == player){
+				AfricanSafariSkyWars.asplayer9 = null;
+			}else if(AfricanSafariSkyWars.asplayer10 == player){
+				AfricanSafariSkyWars.asplayer10 = null;
+			}else if(AfricanSafariSkyWars.asplayer11 == player){
+				AfricanSafariSkyWars.asplayer11 = null;
+			}else if(AfricanSafariSkyWars.asplayer12 == player){
+				AfricanSafariSkyWars.asplayer12 = null;
+			}
+			if(AfricanSafariSkyWars.asPlayerCounter < 2 || AfricanSafariSkyWars.asPlayerCounter > 11)
+			{
+				if(AfricanSafariSkyWars.asPGVars == 1){
+						
+				}else{
+				AfricanSafariSkyWars.asPGVars = 0;
+				AfricanSafariSkyWars.asGVars = 2;
+				AfricanSafariSkyWars.asGTimer = 600;
+				AfricanSafariSkyWars.asPGTimer = 15;
+				AfricanSafariSkyWars.asGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("Safari"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			
+			if(SkyMineSkyWars.smplayer1 == player){
+				SkyMineSkyWars.smplayer1 = null;
+			}else if(SkyMineSkyWars.smplayer2 == player){
+				SkyMineSkyWars.smplayer2 = null;
+			}else if(SkyMineSkyWars.smplayer3 == player){
+				SkyMineSkyWars.smplayer3 = null;
+			}else if(SkyMineSkyWars.smplayer4 == player){
+				SkyMineSkyWars.smplayer4 = null;
+			}else if(SkyMineSkyWars.smplayer5 == player){
+				SkyMineSkyWars.smplayer5 = null;
+			}else if(SkyMineSkyWars.smplayer6 == player){
+				SkyMineSkyWars.smplayer6 = null;
+			}else if(SkyMineSkyWars.smplayer7 == player){
+				SkyMineSkyWars.smplayer7 = null;
+			}else if(SkyMineSkyWars.smplayer8 == player){
+				SkyMineSkyWars.smplayer8 = null;
+			}else if(SkyMineSkyWars.smplayer9 == player){
+				SkyMineSkyWars.smplayer9 = null;
+			}else if(SkyMineSkyWars.smplayer10 == player){
+				SkyMineSkyWars.smplayer10 = null;
+			}else if(SkyMineSkyWars.smplayer11 == player){
+				SkyMineSkyWars.smplayer11 = null;
+			}else if(SkyMineSkyWars.smplayer12 == player){
+				SkyMineSkyWars.smplayer12 = null;
+			}
+			if(SkyMineSkyWars.smPlayerCounter < 2)
+			{
+				if(AfricanSafariSkyWars.asPGVars == 1){
+					
+				}else{
+				SkyMineSkyWars.smPGVars = 0;
+				SkyMineSkyWars.smGVars = 2;
+				SkyMineSkyWars.smGTimer = 600;
+				SkyMineSkyWars.smPGTimer = 15;
+				SkyMineSkyWars.smGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("Safari"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+			
+			if(OgresLairSkyWars.olPlayers.contains(player))
+			{
+				--OgresLairSkyWars.olPlayerCounter;
+				OgresLairSkyWars.olPlayers.contains(player);
+			}else if(OgresLairSkyWars.olDeadPlayers.contains(player)){
+				--OgresLairSkyWars.olPlayerCounter;
+				OgresLairSkyWars.olDeadPlayers.contains(player);
+			}
+			if(OgresLairSkyWars.olplayer1 == player){
+				OgresLairSkyWars.olplayer1 = null;
+			}else if(OgresLairSkyWars.olplayer2 == player){
+				OgresLairSkyWars.olplayer2 = null;
+			}else if(OgresLairSkyWars.olplayer3 == player){
+				OgresLairSkyWars.olplayer3 = null;
+			}else if(OgresLairSkyWars.olplayer4 == player){
+				OgresLairSkyWars.olplayer4 = null;
+			}else if(OgresLairSkyWars.olplayer5 == player){
+				OgresLairSkyWars.olplayer5 = null;
+			}else if(OgresLairSkyWars.olplayer6 == player){
+				OgresLairSkyWars.olplayer6 = null;
+			}else if(OgresLairSkyWars.olplayer7 == player){
+				OgresLairSkyWars.olplayer7 = null;
+			}else if(OgresLairSkyWars.olplayer8 == player){
+				OgresLairSkyWars.olplayer8 = null;
+			}else if(OgresLairSkyWars.olplayer9 == player){
+				OgresLairSkyWars.olplayer9 = null;
+			}else if(OgresLairSkyWars.olplayer10 == player){
+				OgresLairSkyWars.olplayer10 = null;
+			}else if(OgresLairSkyWars.olplayer11 == player){
+				OgresLairSkyWars.olplayer11 = null;
+			}else if(OgresLairSkyWars.olplayer12 == player){
+				OgresLairSkyWars.olplayer12 = null;
+			}
+			if(OgresLairSkyWars.olPlayerCounter < 2)
+			{
+				if(OgresLairSkyWars.olPGVars == 1){
+					
+				}else{
+				OgresLairSkyWars.olPGVars = 0;
+				OgresLairSkyWars.olGVars = 2;
+				OgresLairSkyWars.olGTimer = 600;
+				OgresLairSkyWars.olPGTimer = 15;
+				OgresLairSkyWars.olGFinal = 15;
+				
+				for(Player pl : Bukkit.getServer().getOnlinePlayers())
+				{
+					if(pl.getWorld().getName().equals("OgresLair"))
+					{
+						pl.sendMessage(ChatColor.RED+ "There are no longer enough players to continue the game. Game restarting.");
+					}
+				}
+				}
+			}
+		}else if(player.getItemInHand().getItemMeta().getDisplayName().contains("Sky Wars Kits"))
+		{
+			Inventory swKits = Bukkit.createInventory(null, 9, ChatColor.GOLD + "Sky Wars Kits");
+			ItemStack warrior = createItemStack(Material.LEATHER_CHESTPLATE, 1, ChatColor.GRAY + "Kit: Warrior", ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, null, Enchantment.PROTECTION_ENVIRONMENTAL, 1, null, 0, null, 0, null, null, "");
+			swKits.setItem(3, warrior);
+			ItemStack bowsman = createItemStack(Material.BOW, 1, ChatColor.AQUA + "Kit: Bowsman", ItemFlag.HIDE_ATTRIBUTES, null, null, null, 0, null, 0, null, 0, null, null, "");
+			swKits.setItem(4, bowsman);
+			ItemStack brewer = createItemStack(Material.SPLASH_POTION, 1, ChatColor.RED + "Kit: Brewer", ItemFlag.HIDE_POTION_EFFECTS, null, null, null, 0, null, 0, null, 0, PotionType.FIRE_RESISTANCE, null, "");
+			swKits.setItem(5, brewer);
+			
+			player.openInventory(swKits);
+		}
+	}
+
+	@EventHandler
+	public void onIventoryClick(InventoryClickEvent event) {
+		Player p = (Player) event.getWhoClicked();
+		ItemStack item = event.getCurrentItem();
+		if (event.getWhoClicked() instanceof Player) {
+			if (event.getInventory().getTitle().equals(ChatColor.AQUA + "Sky Wars Maps")) {
+				if (event.isRightClick() || event.isLeftClick()) {
+					event.setCancelled(true);
+				}
+			}
+
+			if (event.getInventory().getTitle().equals(ChatColor.AQUA + "Map Pack 1: The Beggining")) {
+				if (event.isRightClick() || event.isLeftClick()) {
+					event.setCancelled(true);
+				}
+			}
+
+			if(item.getItemMeta().getDisplayName().contains("Kit: Warrior"))
+			{
+				warriors.add(p);
+				p.sendMessage(ChatColor.GREEN + "You have equiped kit: " + ChatColor.GOLD + "Warrior");
+				if(bowsmen.contains(p))
+				{
+					bowsmen.remove(p);
+				}
+				if(brewers.contains(p))
+				{
+					brewers.remove(p);
+				}
+				p.closeInventory();
+			}
+			if(item.getItemMeta().getDisplayName().contains("Kit: Bowsman"))
+			{
+				bowsmen.add(p);
+				p.sendMessage(ChatColor.GREEN + "You have equiped kit: " + ChatColor.GOLD + "Bowsman");
+				if(warriors.contains(p))
+				{
+					warriors.remove(p);
+				}
+				if(brewers.contains(p))
+				{
+					brewers.remove(p);
+				}
+				p.closeInventory();
+			}
+			if(item.getItemMeta().getDisplayName().contains("Kit: Brewer"))
+			{
+				brewers.add(p);
+				p.sendMessage(ChatColor.GREEN + "You have equiped kit: " + ChatColor.GOLD + "Brewer");
+				if(bowsmen.contains(p))
+				{
+					bowsmen.remove(p);
+				}
+				if(warriors.contains(p))
+				{
+					warriors.remove(p);
+				}
+				p.closeInventory();
+			}
+			
+			if (item.getItemMeta().getDisplayName().contains("Map Pack 1: The Beggining")) {
+				Inventory skyWarsMaps1INV = Bukkit.createInventory(null, 9,
+						ChatColor.AQUA + "Map Pack 1: The Beggining");
+
+				ItemStack OgresLair = createItemStack(Material.SLIME_BLOCK, 1,
+						ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Ogre's Lair", null, null, null, null, 0, null, 0,
+						null, 0, null, null, ChatColor.BLUE + "A muddy swamp gaurded by", ChatColor.BLUE + "an Ogre!");
+				skyWarsMaps1INV.setItem(0, OgresLair);
+
+				ItemStack DragonKeep = createItemStack(Material.DRAGON_EGG, 1,
+						ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Dragon's Keep", null, null, null, null, 0, null,
+						0, null, 0, null, null, ChatColor.YELLOW + "" + ChatColor.BOLD + "Coming Soon!");
+						//ChatColor.BLUE + "An abandoned castle that",
+						//ChatColor.BLUE + "hold the most dangerous", ChatColor.BLUE + "known to man. A Dragon!");
+				skyWarsMaps1INV.setItem(1, DragonKeep);
+
+				ItemStack Safari = createItemStack(Material.DEAD_BUSH, 1,
+						ChatColor.GOLD + "" + ChatColor.BOLD + "African Safari", ItemFlag.HIDE_ATTRIBUTES, null, null,
+						null, 0, null, 0, null, 0, null, null, ChatColor.BLUE + "Take a trip",
+						ChatColor.BLUE + "to an African Safari!");
+				skyWarsMaps1INV.setItem(2, Safari);
+
+				ItemStack SkyMine = createItemStack(Material.GOLD_PICKAXE, 1,
+						ChatColor.GOLD + "" + ChatColor.BOLD + "Sky Mine", ItemFlag.HIDE_ATTRIBUTES, null, null, null,
+						0, null, 0, null, 0, null, null, ChatColor.BLUE + "Inside a miners dream",
+						ChatColor.BLUE + "   ye shall find.", ChatColor.BLUE + "Tons of gold before ye",
+						ChatColor.BLUE + "   eyes!");
+				skyWarsMaps1INV.setItem(7, SkyMine);
+
+				ItemStack FrozenWonderland = createItemStack(Material.ICE, 1,
+						ChatColor.AQUA + "" + ChatColor.BOLD + "Frozen Wonderland", null, null, null, null, 0, null, 0,
+						null, 0, null, null, ChatColor.BLUE + "Travel to a wonderland",
+						ChatColor.BLUE + "polar bears along the way");
+				skyWarsMaps1INV.setItem(4, FrozenWonderland);
+
+				ItemStack JungleTreeHouse = createItemStack(Material.LEAVES, 1,
+						ChatColor.GREEN + "" + ChatColor.BOLD + "Jungle Treehouse", null, null, null, null, 0, null, 0,
+						null, 0, null, null, ChatColor.YELLOW + "" + ChatColor.BOLD + "Coming Soon!");
+				skyWarsMaps1INV.setItem(5, JungleTreeHouse);
+
+				ItemStack OasisParadise = createItemStack(Material.SAND, 1,
+						ChatColor.YELLOW + "" + ChatColor.BOLD + "Oasis Paradise", null, null, null, null, 0, null, 0,
+						null, 0, null, null, ChatColor.BLUE + "Yellow sand and clear",
+						ChatColor.BLUE + "   blue skies,", ChatColor.BLUE + "An oasis for a mans",
+						ChatColor.BLUE + "   aspire.");
+				skyWarsMaps1INV.setItem(6, OasisParadise);
+
+				ItemStack RomanEmpire = createItemStack(Material.STONE_SWORD, 1,
+						ChatColor.GRAY + "" + ChatColor.BOLD + "Roman Empire", ItemFlag.HIDE_ATTRIBUTES, null, null,
+						null, 0, null, 0, null, 0, null, null, ChatColor.BLUE + "Where the mighty gladiators",
+						ChatColor.BLUE + "   fought,", ChatColor.BLUE + "Is a priceless beauty that",
+						ChatColor.BLUE + "   can't be bought.");
+				skyWarsMaps1INV.setItem(3, RomanEmpire);
+
+				ItemStack SkyWarsBack1 = nameItem(new ItemStack(Material.BARRIER),
+						ChatColor.DARK_RED + "" + ChatColor.BOLD + "Back");
+				skyWarsMaps1INV.setItem(8, SkyWarsBack1);
+
+				p.openInventory(skyWarsMaps1INV);
+			}
+
+			if (item.getItemMeta().getDisplayName().contains("Back")) {
+				Inventory skyWarsMapsINV = Bukkit.createInventory(null, 9, ChatColor.AQUA + "Sky Wars Maps");
+				ItemStack skyWarsMapPack1 = nameItem(new ItemStack(Material.MAP),
+						ChatColor.GOLD + "" + ChatColor.BOLD + "Map Pack 1: The Beggining");
+				ItemMeta skyWarsMapPack1Meta = skyWarsMapPack1.getItemMeta();
+				ArrayList<String> hgLore = new ArrayList<String>();
+				skyWarsMapPack1Meta.setLore(hgLore);
+				skyWarsMapPack1.setItemMeta(skyWarsMapPack1Meta);
+				skyWarsMapsINV.setItem(4, skyWarsMapPack1);
+				p.openInventory(skyWarsMapsINV);
+			}
+		}
+	}
+
+	private static ItemStack nameItem(ItemStack item, String name) {
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(name);
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void portal(PlayerMoveEvent e) {
+		Player p = e.getPlayer();
+		World mainworld = Bukkit.getWorld("SkyWarsLobby");
+		World main = Bukkit.getWorld("CrimsonCentralLobby");
+		Location loc = new Location(main, 3.5, 35.0, 0.5, 90, 0);
+		Location loc2 = new Location(mainworld, -2525.5, 54, 744.5, -90, 0);
+
+		if (p.getLocation().getWorld().equals(mainworld)) {
+			if (p.getLocation().getBlockX() == -2568) {
+				if (p.getLocation().getZ() >= 742 && p.getLocation().getZ() <= 746) {
+					if (p.getLocation().getY() < 59) {
+						p.teleport(loc);
+						p.getInventory().setItem(1, null);
+						LobbyJoinListener.setupScoreboard(p);
+					}
+				}
+			}
+		}
+
+		if (p.getLocation().getWorld().equals(mainworld)) {
+			if (p.getLocation().getBlockX() == -2525) {
+				if (p.getLocation().getZ() >= 737 && p.getLocation().getZ() <= 751) {
+					if (p.getLocation().getY() < 69) {
+						Inventory skyWarsMapsINV = Bukkit.createInventory(null, 9, ChatColor.AQUA + "Sky Wars Maps");
+						ItemStack skyWarsMapPack1 = nameItem(new ItemStack(Material.MAP),
+								ChatColor.GOLD + "" + ChatColor.BOLD + "Map Pack 1: The Beggining");
+						ItemMeta skyWarsMapPack1Meta = skyWarsMapPack1.getItemMeta();
+						ArrayList<String> hgLore = new ArrayList<String>();
+						hgLore.add(ChatColor.BLUE + "Ogre's Lair, Safari");
+						hgLore.add(ChatColor.BLUE + "Sky Mine, Frozen Wonderland");
+						hgLore.add(ChatColor.BLUE + "Oasis Paradise, Roman Empire");
+						skyWarsMapPack1Meta.setLore(hgLore);
+						skyWarsMapPack1.setItemMeta(skyWarsMapPack1Meta);
+						skyWarsMapsINV.setItem(4, skyWarsMapPack1);
+
+						p.teleport(loc2);
+						p.openInventory(skyWarsMapsINV);
+						p.openInventory(skyWarsMapsINV);
+						p.openInventory(skyWarsMapsINV);
+					}
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent event) {
+		World reworld = Bukkit.getWorld("SkyWarsLobby");
+		Player p = event.getPlayer();
+		if (p.getLocation().getWorld().equals(reworld) && p.getGameMode() == GameMode.SURVIVAL) {
+			event.setCancelled(true);
+
+		}
+
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockPlace(BlockPlaceEvent event) {
+		World mainworld = Bukkit.getWorld("SkyWarsLobby");
+		Player p = event.getPlayer();
+		if (p.getLocation().getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL) {
+			event.setCancelled(true);
+
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void pickupItemEvent(PlayerPickupItemEvent e)
+	{
+		World mainworld = Bukkit.getWorld("SkyWarsLobby");
+		Player p = e.getPlayer();
+
+		if(p.getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL)
+		{
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void dropItemEvent(PlayerDropItemEvent e)
+	{
+		World mainworld = Bukkit.getWorld("SkyWarsLobby");
+		Player p = e.getPlayer();
+
+		if(p.getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL)
+		{
+			e.setCancelled(true);
+		}
+	}
+
+	public static ItemStack createItemStack(Material type, int amt, String name, ItemFlag itemFlag1, ItemFlag itemFlag2,
+			ItemFlag itemFlag3, Enchantment enc1, int lev1, Enchantment enc2, int lev2, Enchantment enc3, int lev3,
+			PotionType potion, DyeColor dy, String... lores) {
+		ItemStack stack = new ItemStack(type, amt);
+		ItemMeta im = stack.getItemMeta();
+		im.setDisplayName(name);
+		if (itemFlag1 != null) {
+			im.addItemFlags(itemFlag1);
+		}
+		if (itemFlag2 != null) {
+			im.addItemFlags(itemFlag2);
+		}
+		if (itemFlag3 != null) {
+			im.addItemFlags(itemFlag3);
+		}
+		if (enc1 != null) {
+			im.addEnchant(enc1, lev1, true);
+		}
+		if (enc2 != null) {
+			im.addEnchant(enc2, lev2, true);
+		}
+		if (enc3 != null) {
+			im.addEnchant(enc3, lev3, true);
+		}
+		if (potion != null) {
+			((PotionMeta) im).setBasePotionData(new PotionData(potion));
+		}
+		if (dy != null) {
+			((BannerMeta) im).setBaseColor(dy);
+		}
+		ArrayList<String> lore = new ArrayList<String>();
+		for (String str : lores) {
+			lore.add(str);
+		}
+		im.setLore(lore);
+		stack.setItemMeta(im);
+		return stack;
+	}
+}
