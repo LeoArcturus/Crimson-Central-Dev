@@ -1,0 +1,390 @@
+package com.crimsoncentral.main;
+
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.MushroomCow;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
+
+import com.crimsoncentral.util.PlayerConfig;
+
+import net.minecraft.server.v1_10_R1.EntityInsentient;
+import net.minecraft.server.v1_10_R1.PathEntity;
+
+public class Ranks implements Listener {
+	public static Permission owner = new Permission("owner");
+	public static Permission coowner = new Permission("coowner");
+	public static Permission admin = new Permission("admin");
+	public static Permission helper = new Permission("helper");
+	public static Permission guardian = new Permission("guardian");
+	public static Permission rogue = new Permission("Rogue");
+	public static Permission legend = new Permission("legend");
+	public static Permission mage = new Permission("mage");
+	public static Permission crimson = new Permission("crimson");
+	public static HashMap<UUID, PermissionAttachment> ranks = new HashMap<UUID, PermissionAttachment>();
+	public CrimsonCentralMain plugin = CrimsonCentralMain.plugin;
+	
+	public static ScoreboardManager sm = Bukkit.getScoreboardManager();
+	public static Scoreboard onJoin = sm.getNewScoreboard();
+	public static Objective o = onJoin.registerNewObjective("dash", "dummy");
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e) {
+		Player p = e.getPlayer();
+		PlayerConfig u = new PlayerConfig(p.getUniqueId());
+
+		u.createPlayerConfig();
+		u.createPlayerDefaults();
+		u.savePlayerConfig();
+
+		String rank = u.getRank();
+
+		if (rank.equalsIgnoreCase("Owner")) {
+			PermissionAttachment ownerAttachment = p.addAttachment(plugin);
+			ownerAttachment.setPermission(Ranks.owner, true);
+			Ranks.ranks.put(p.getUniqueId(), ownerAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		} else if (rank.equalsIgnoreCase("CoOwner")) {
+			PermissionAttachment coownerAttachment = p.addAttachment(plugin);
+			coownerAttachment.setPermission(Ranks.coowner, true);
+			Ranks.ranks.put(p.getUniqueId(), coownerAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		} else if (rank.equalsIgnoreCase("Admin")) {
+			PermissionAttachment adminAttachment = p.addAttachment(plugin);
+			adminAttachment.setPermission(Ranks.admin, true);
+			Ranks.ranks.put(p.getUniqueId(), adminAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		} else if (rank.equalsIgnoreCase("Helper")) {
+			PermissionAttachment helperAttachment = p.addAttachment(plugin);
+			helperAttachment.setPermission(Ranks.helper, true);
+			Ranks.ranks.put(p.getUniqueId(), helperAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		} else if (rank.equalsIgnoreCase("Guardian")) {
+			PermissionAttachment guardianAttachment = p.addAttachment(plugin);
+			guardianAttachment.setPermission(Ranks.guardian, true);
+			Ranks.ranks.put(p.getUniqueId(), guardianAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		} else if (rank.equalsIgnoreCase("Rogue")) {
+			PermissionAttachment rogueAttachment = p.addAttachment(plugin);
+			rogueAttachment.setPermission(Ranks.rogue, true);
+			Ranks.ranks.put(p.getUniqueId(), rogueAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		} else if (rank.equalsIgnoreCase("Legend")) {
+			PermissionAttachment legendAttachment = p.addAttachment(plugin);
+			legendAttachment.setPermission(Ranks.legend, true);
+			Ranks.ranks.put(p.getUniqueId(), legendAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		} else if (rank.equalsIgnoreCase("Mage")) {
+			PermissionAttachment mageAttachment = p.addAttachment(plugin);
+			mageAttachment.setPermission(Ranks.mage, true);
+			Ranks.ranks.put(p.getUniqueId(), mageAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		} else if (rank.equalsIgnoreCase("Crimson")) {
+			PermissionAttachment crimsonAttachment = p.addAttachment(plugin);
+			crimsonAttachment.setPermission(Ranks.crimson, true);
+			Ranks.ranks.put(p.getUniqueId(), crimsonAttachment);
+			p.setAllowFlight(true);
+			p.sendMessage(ChatColor.GREEN + "Flying is enabled");
+			
+		}
+		LobbyJoinListener.setupScoreboard(p);
+	}
+
+	@EventHandler
+	public void onChatEvent(AsyncPlayerChatEvent e) {
+		Player p = e.getPlayer();
+		String m = e.getMessage();
+
+		if (p.hasPermission(owner)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.GOLD + "" + ChatColor.MAGIC + "[" + ChatColor.RESET + ChatColor.DARK_GREEN
+							+ ChatColor.BOLD + "Owner" + ChatColor.RESET + ChatColor.GOLD + ChatColor.MAGIC + "]"
+							+ ChatColor.RESET + ChatColor.GREEN + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else if (p.hasPermission(coowner)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.MAGIC + "[" + ChatColor.RESET + ChatColor.AQUA
+							+ ChatColor.BOLD + "Co-Owner" + ChatColor.RESET + ChatColor.DARK_PURPLE + ChatColor.MAGIC
+							+ "]" + ChatColor.RESET + ChatColor.GOLD + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else if (p.hasPermission(admin)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.GOLD + "" + ChatColor.MAGIC + "[" + ChatColor.RESET + ChatColor.DARK_RED
+							+ ChatColor.BOLD + "Admin" + ChatColor.RESET + ChatColor.GOLD + ChatColor.MAGIC + "]"
+							+ ChatColor.RESET + ChatColor.RED + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else if (p.hasPermission(helper)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.GOLD + "" + ChatColor.MAGIC + "[" + ChatColor.RESET + ChatColor.DARK_AQUA
+							+ ChatColor.BOLD + "Helper" + ChatColor.RESET + ChatColor.GOLD + ChatColor.MAGIC + "]"
+							+ ChatColor.RESET + ChatColor.BLUE + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else if (p.hasPermission(guardian)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "[Gaurdian]" + ChatColor.RESET
+							+ ChatColor.AQUA + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else if (p.hasPermission(rogue)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Rogue]" + ChatColor.RESET
+							+ ChatColor.LIGHT_PURPLE + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else if (p.hasPermission(legend)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "[Legend]" + ChatColor.RESET
+							+ ChatColor.YELLOW + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else if (p.hasPermission(mage)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "[Mage]" + ChatColor.RESET
+							+ ChatColor.YELLOW + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else if (p.hasPermission(crimson)) {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "[Crimson]" + ChatColor.RESET
+							+ ChatColor.RED + " " + p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		} else {
+			e.setCancelled(true);
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				if (pl.getLocation().getWorld() == p.getLocation().getWorld()) {
+					pl.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "[No Rank] " + ChatColor.GRAY
+							+ p.getName() + ChatColor.RESET + ": " + m);
+				}
+			}
+		}
+	}
+	
+	public static void chickenPet(Player p)
+	{
+		Chicken chicken = p.getWorld().spawn(p.getLocation().add(0,1,0), Chicken.class);
+
+		chicken.setInvulnerable(true);
+		chicken.setCustomNameVisible(true);
+		chicken.setCustomName(ChatColor.BLUE + p.getName() + "\'s CHICKEN");
+		follow(p, chicken);
+	}
+	
+	public static void cowPet(Player p)
+	{
+		Cow cow = p.getWorld().spawn(p.getLocation().add(0,1,0), Cow.class);
+
+		cow.setInvulnerable(true);
+		cow.setCustomNameVisible(true);
+		cow.setCustomName(ChatColor.BLUE + p.getName() + "\'s COW");
+		follow(p, cow);
+	}
+	
+	public static void sheepPet(Player p)
+	{
+		Sheep sheep = p.getWorld().spawn(p.getLocation().add(0,1,0), Sheep.class);
+
+		sheep.setInvulnerable(true);
+		sheep.setCustomNameVisible(true);
+		sheep.setCustomName(ChatColor.RED + p.getName() + "\'s SHEEP");
+		follow(p, sheep);
+	}
+	
+	public static void pigPet(Player p)
+	{
+		Pig pig = p.getWorld().spawn(p.getLocation().add(0,1,0), Pig.class);
+
+		pig.setInvulnerable(true);
+		pig.setCustomNameVisible(true);
+		pig.setCustomName(ChatColor.RED + p.getName() + "\'s PIG");
+		follow(p, pig);
+	}
+	
+	public static void mooshroomPet(Player p)
+	{
+		MushroomCow mooshroom = p.getWorld().spawn(p.getLocation().add(0,1,0), MushroomCow.class);
+
+		mooshroom.setInvulnerable(true);
+		mooshroom.setCustomNameVisible(true);
+		mooshroom.setCustomName(ChatColor.RED + p.getName() + "\'s MOOSHROOM");
+		follow(p, mooshroom);
+	}
+	
+	public static void creeperPet(Player p)
+	{
+		Creeper creeper = p.getWorld().spawn(p.getLocation().add(0,1,0), Creeper.class);
+		
+		creeper.setInvulnerable(true);
+		creeper.setCustomNameVisible(true);
+		creeper.setCustomName(ChatColor.RED + p.getName() + "\'s CREEPER");
+		follow(p, creeper);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void follow(Player player, Entity pet) {
+		player.sendMessage("test1");
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				player.sendMessage("test2");
+				if(!pet.isValid()) {
+					this.cancel();
+					return;
+					
+				}
+		
+				if(!player.isOnline()) {
+					this.cancel();
+					pet.remove();
+					return;
+				}
+
+				Object petObject = ((CraftEntity) pet).getHandle();
+
+				Location loc = player.getLocation();
+
+				PathEntity path;
+				
+				path = ((EntityInsentient)petObject).getNavigation().a(loc.getX() + 1, loc.getY(), loc.getZ() +1);
+			
+				if(path != null) {
+					((EntityInsentient)petObject).getNavigation().a(path, 1.0D);
+					((EntityInsentient)petObject).getNavigation().a(2.0D);
+				}
+
+				int distance = (int) loc.distance(pet.getLocation());
+
+				if(distance > 10 && ! pet.isDead() && player.isOnGround()) {
+					pet.teleport(loc);
+				
+				}
+				player.sendMessage("test3");
+			}
+		};
+	}
+	
+	public static void setupTeams()
+	{
+		Team owner = onJoin.registerNewTeam("Owner");
+		Team coowner = onJoin.registerNewTeam("CoOwner");
+		Team admin = onJoin.registerNewTeam("Admin");
+		Team helper = onJoin.registerNewTeam("Helper");
+		Team guardian = onJoin.registerNewTeam("Gaurdian");
+		Team rogue = onJoin.registerNewTeam("Rogue");
+		Team legend = onJoin.registerNewTeam("Legend");
+		Team mage = onJoin.registerNewTeam("Mage");
+		Team crimson = onJoin.registerNewTeam("Crimson");
+		
+		owner.setPrefix(ChatColor.GOLD + "" + ChatColor.MAGIC + "[" + ChatColor.RESET + ChatColor.DARK_GREEN + ChatColor.BOLD + "Owner" + ChatColor.RESET + ChatColor.GOLD + ChatColor.MAGIC + "]");
+		coowner.setPrefix(ChatColor.DARK_PURPLE + "" + ChatColor.MAGIC + "[" + ChatColor.RESET + ChatColor.AQUA + ChatColor.BOLD + "Co-Owner" + ChatColor.RESET + ChatColor.DARK_PURPLE + ChatColor.MAGIC + "]");
+		admin.setPrefix(ChatColor.GOLD + "" + ChatColor.MAGIC + "[" + ChatColor.RESET + ChatColor.DARK_RED + ChatColor.BOLD + "Admin" + ChatColor.RESET + ChatColor.GOLD + ChatColor.MAGIC + "]");
+		helper.setPrefix(ChatColor.GOLD + "" + ChatColor.MAGIC + "[" + ChatColor.RESET + ChatColor.DARK_AQUA + ChatColor.BOLD + "Helper" + ChatColor.RESET + ChatColor.GOLD + ChatColor.MAGIC + "]");
+		guardian.setPrefix(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "[Gaurdian]");
+		rogue.setPrefix(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[Rogue]");
+		legend.setPrefix(ChatColor.DARK_RED + "" + ChatColor.BOLD + "[Legend]");
+		mage.setPrefix(ChatColor.GOLD + "" + ChatColor.BOLD + "[Mage]");
+		crimson.setPrefix(ChatColor.RED + "" + ChatColor.BOLD + "[Crimson]");
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void playerNameScoreboard(Player p)
+	{	
+		PlayerConfig u = new PlayerConfig(p.getUniqueId());
+
+		u.createPlayerConfig();
+		u.createPlayerDefaults();
+		u.savePlayerConfig();
+
+		String rank = u.getRank();
+		
+		if (rank.equalsIgnoreCase("Owner")) {
+			Team owner = onJoin.getTeam("Owner");
+			owner.addPlayer(p);
+		} else if (rank.equalsIgnoreCase("CoOwner")) {
+			Team coowner = onJoin.getTeam("CoOwner");
+			coowner.addPlayer(p);
+		} else if (rank.equalsIgnoreCase("Admin")) {
+			Team admin = onJoin.getTeam("Admin");
+			admin.addPlayer(p);
+		} else if (rank.equalsIgnoreCase("Helper")) {
+			Team helper = onJoin.getTeam("Helper");
+			helper.addPlayer(p);
+		} else if (rank.equalsIgnoreCase("Guardian")) {
+			Team guardian = onJoin.getTeam("Guardian");
+			guardian.addPlayer(p);
+		} else if (rank.equalsIgnoreCase("Rogue")) {
+			Team rogue = onJoin.getTeam("Rogue");
+			rogue.addPlayer(p);
+		} else if (rank.equalsIgnoreCase("Legend")) {
+			Team legend = onJoin.getTeam("Legend");
+			legend.addPlayer(p);
+		} else if (rank.equalsIgnoreCase("Mage")) {
+			Team mage = onJoin.getTeam("Mage");
+			mage.addPlayer(p);
+		} else if (rank.equalsIgnoreCase("Crimson")) {
+			Team crimson = onJoin.getTeam("Crimson");
+			crimson.addPlayer(p);
+		}
+		p.setScoreboard(onJoin);
+	}
+	
+}
