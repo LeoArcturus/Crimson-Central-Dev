@@ -1,0 +1,473 @@
+package com.crimsoncentral.main;
+
+import java.util.ArrayList;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+
+import com.crimsoncentral.util.PlayerConfig;
+
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutTitle;
+
+public class LobbyJoinListener implements Listener {
+
+	public static CrimsonCentralMain plugin;
+	
+	
+	public LobbyJoinListener(CrimsonCentralMain plugin) {
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+
+	}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e) {
+		Player p = e.getPlayer();
+		String pn = p.getName();
+		ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+		ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+		ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+		ItemStack lobbySelector = nameItem(new ItemStack(Material.NETHER_STAR), ChatColor.GOLD + "Lobby Selector (Coming Soon)");
+		ItemMeta lobbySelectorMeta = lobbySelector.getItemMeta();
+		ArrayList<String> lsLore = new ArrayList<String>();
+		lsLore.add(ChatColor.YELLOW + "Coming Soon!");
+		lobbySelectorMeta.setLore(lsLore);
+		lobbySelector.setItemMeta(lobbySelectorMeta);
+		ItemStack cosmetics = nameItem(new ItemStack(Material.CHEST), ChatColor.YELLOW + "Cosmetics");
+
+		if (p.getName().equalsIgnoreCase("creeper1111111")) {
+			Bukkit.broadcastMessage("§6§l[Attention] " + "§4§lOwner " + "§a§lCreeper1111111 " + "§4§lhas just logged in!");
+			e.setJoinMessage(null);
+			teleport(p);
+			sendTitle(p);
+			p.playSound(p.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
+			sendFirework(p);
+			sendFirework(p);
+			sendFirework1(p);
+			sendFirework1(p);
+			sendChat(p);
+			p.getPlayer().getWorld().strikeLightningEffect(p.getLocation());
+			p.getInventory().clear();
+			p.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			skullMeta.setDisplayName(pn);
+			p.getPlayer().getInventory().setItem(7, profile);
+			p.getPlayer().getInventory().setItem(3, hidePlayers);
+			p.getPlayer().getInventory().setItem(5, serverRadio);
+			p.getPlayer().getInventory().setItem(8, lobbySelector);
+			p.getPlayer().getInventory().setItem(4, cosmetics);
+			p.setHealth(20.0);
+            p.setFoodLevel(20);
+			setupScoreboard(p);
+			MainLobby.shown.add(p);
+			for(Player pl : MainLobby.hidden)
+			{
+				p.hidePlayer(pl);
+				pl.hidePlayer(p);
+			}
+//			p.setBanned(true);
+//			p.kickPlayer("For being a Scrub");
+			return;
+		}
+		if (p.getName().equalsIgnoreCase("MrGreenCreeperYT")) {
+			Bukkit.broadcastMessage("§6§l[Attention] " + "§4§lOwner " + "§a§lMrGreenCreeperYT " + "§4§lhas just logged in!");
+			e.setJoinMessage(null);
+			teleport(p);
+			sendTitle(p);
+			p.playSound(p.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
+			sendFirework(p);
+			sendFirework(p);
+			sendFirework1(p);
+			sendFirework1(p);
+			sendChat(p);
+			p.getPlayer().getWorld().strikeLightningEffect(p.getLocation());
+			p.getInventory().clear();
+			p.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			skullMeta.setDisplayName(pn);
+			p.getPlayer().getInventory().setItem(7, profile);
+			p.getPlayer().getInventory().setItem(3, hidePlayers);
+			p.getPlayer().getInventory().setItem(5, serverRadio);
+			p.getPlayer().getInventory().setItem(8, lobbySelector);
+			p.getPlayer().getInventory().setItem(4, cosmetics);
+			p.setHealth(20.0);
+            p.setFoodLevel(20);
+			setupScoreboard(p);
+			MainLobby.shown.add(p);
+			for(Player pl : MainLobby.hidden)
+			{
+				p.hidePlayer(pl);
+				pl.hidePlayer(p);
+			}
+//			p.setBanned(true);
+//			p.kickPlayer("For being a Scrub");
+			return;
+		}
+		if (p.getName().equalsIgnoreCase("eragonisboss")) {
+			Bukkit.broadcastMessage(
+					"§6§l[Attention] " + "§4§lAdmin " + "§5§lEragonisboss " + "§4§lhas just logged in!");
+			e.setJoinMessage(null);
+			teleport(p);
+			sendTitle(p);
+			p.playSound(p.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
+			sendFirework(p);
+			sendFirework(p);
+			sendFirework1(p);
+			sendFirework1(p);
+			sendChat(p);
+			p.getPlayer().getWorld().strikeLightningEffect(p.getLocation());
+			p.getInventory().clear();
+			p.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			skullMeta.setDisplayName(pn);
+			p.getPlayer().getInventory().setItem(7, profile);
+			p.getPlayer().getInventory().setItem(3, hidePlayers);
+			p.getPlayer().getInventory().setItem(5, serverRadio);
+			p.getPlayer().getInventory().setItem(8, lobbySelector);
+			p.getPlayer().getInventory().setItem(4, cosmetics);
+			p.setHealth(20.0);
+            p.setFoodLevel(20);
+			setupScoreboard(p);
+			MainLobby.shown.add(p);
+//			p.setBanned(true);
+//			p.kickPlayer("For being a Scrub");
+			for(Player pl : MainLobby.hidden)
+			{
+				p.hidePlayer(pl);
+				pl.hidePlayer(p);
+			}
+			return;
+		}
+		if (p.getName().equalsIgnoreCase("MrGamingLion66")) {
+			Bukkit.broadcastMessage(
+					"§6§l[Attention] " + "§b§lCo-owner " + "§a§lMrGamingLion66 " + "§b§lhas just logged in!");
+			e.setJoinMessage(null);
+			teleport(p);
+			sendTitle(p);
+			p.playSound(p.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
+			sendFirework(p);
+			sendFirework(p);
+			sendFirework1(p);
+			sendFirework1(p);
+			sendChat(p);
+			p.getPlayer().getWorld().strikeLightningEffect(p.getLocation());
+			p.getInventory().clear();
+			p.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			skullMeta.setDisplayName(pn);
+			p.getPlayer().getInventory().setItem(7, profile);
+			p.getPlayer().getInventory().setItem(3, hidePlayers);
+			p.getPlayer().getInventory().setItem(5, serverRadio);
+			p.getPlayer().getInventory().setItem(8, lobbySelector);
+			p.getPlayer().getInventory().setItem(4, cosmetics);
+			p.setHealth(20.0);
+            p.setFoodLevel(20);
+			setupScoreboard(p);
+			MainLobby.shown.add(p);
+			for(Player pl : MainLobby.hidden)
+			{
+				p.hidePlayer(pl);
+				pl.hidePlayer(p);
+			}
+			return;
+		}
+		if (p.getName().equalsIgnoreCase("Quarrell3")) {
+			Bukkit.broadcastMessage(
+					"§6§l[Attention] " + "§4§lAdmin " + "§5§lQuarrell3 " + "§4§lhas just logged in!");
+			e.setJoinMessage(null);
+			teleport(p);
+			sendTitle(p);
+			p.playSound(p.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
+			sendFirework(p);
+			sendFirework(p);
+			sendFirework1(p);
+			sendFirework1(p);
+			sendChat(p);
+			p.getPlayer().getWorld().strikeLightningEffect(p.getLocation());
+			p.getInventory().clear();
+			p.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			skullMeta.setDisplayName(pn);
+			p.getPlayer().getInventory().setItem(7, profile);
+			p.getPlayer().getInventory().setItem(3, hidePlayers);
+			p.getPlayer().getInventory().setItem(5, serverRadio);
+			p.getPlayer().getInventory().setItem(8, lobbySelector);
+			p.getPlayer().getInventory().setItem(4, cosmetics);
+			p.setHealth(20.0);
+	        p.setFoodLevel(20);
+			setupScoreboard(p);
+			MainLobby.shown.add(p);
+			for(Player pl : MainLobby.hidden)
+			{
+				p.hidePlayer(pl);
+				pl.hidePlayer(p);
+			}
+			return;
+		} else {
+			e.setJoinMessage(null);
+			teleport(p);
+			sendTitle(p);
+			p.playSound(p.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
+			sendFirework(p);
+			sendFirework(p);
+			sendFirework1(p);
+			sendFirework1(p);
+			sendChat(p);
+			p.getPlayer().getWorld().strikeLightningEffect(p.getLocation());
+			p.getInventory().clear();
+			p.getPlayer().getInventory().setItem(0, gameMenu);
+			ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+			skullMeta.setOwner(pn);
+			skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+			profile.setItemMeta(skullMeta);
+			skullMeta.setDisplayName(pn);
+			p.getPlayer().getInventory().setItem(7, profile);
+			p.getPlayer().getInventory().setItem(3, hidePlayers);
+			p.getPlayer().getInventory().setItem(5, serverRadio);
+			p.getPlayer().getInventory().setItem(8, lobbySelector);
+			p.getPlayer().getInventory().setItem(4, cosmetics);
+			p.setHealth(20.0);
+            p.setFoodLevel(20);
+			setupScoreboard(p);
+			MainLobby.shown.add(p);
+			for(Player pl : MainLobby.hidden)
+			{
+				p.hidePlayer(pl);
+				pl.hidePlayer(p);
+			}
+		}
+	}
+
+	private void sendChat(Player p) {
+		p.getPlayer().sendMessage(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH + ">-----------------------------------------<");
+		p.getPlayer().sendMessage("§6§lWelcome " + p.getName() + " to " + "§c§lCRIMSON CENTRAL");
+		p.getPlayer().sendMessage("");
+
+		TextComponent message = new TextComponent("§e§lOur Website:" + " §b§lcrimsoncentral.com");
+		message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "http://crimsoncentral.weebly.com"));
+		p.spigot().sendMessage(message);
+
+		p.getPlayer().sendMessage("");
+
+		TextComponent message1 = new TextComponent("§2§l1 Open Mini-Game! " + "§2§l(Click Here for More Details)");
+		message1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/games"));
+		p.spigot().sendMessage(message1);
+
+		p.getPlayer().sendMessage("");
+
+		TextComponent message2 = new TextComponent("§e§lRules " + "§d§l(Click to View)");
+		message2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rules"));
+		p.spigot().sendMessage(message2);
+		p.getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH +">-----------------------------------------<");
+
+	}
+
+	private void sendTitle(Player p) {
+		IChatBaseComponent chatTitle = ChatSerializer.a("{\"text\":\"§6§l*Welcome to*\"}");
+		PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title);
+
+		IChatBaseComponent chatSubTitle = ChatSerializer.a("{\"text\": \"§c§l*Crimson Central*\"}");
+		PacketPlayOutTitle subtitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, chatSubTitle);
+		((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(subtitle);
+	}
+
+	private void sendFirework(Player p) {
+		Firework f = (Firework) p.getPlayer().getWorld().spawnEntity(Location(p.getWorld(), -47, 33, 15),
+				EntityType.FIREWORK);
+
+		FireworkMeta fm = f.getFireworkMeta();
+		fm.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BALL_LARGE)
+				.withColor(Color.RED).withFade(Color.WHITE).build());
+		fm.setPower(2);
+		f.setFireworkMeta(fm);
+	}
+
+	private void sendFirework1(Player p) {
+		Firework f = (Firework) p.getPlayer().getWorld().spawnEntity(Location1(p.getWorld(), -47, 33, -15),
+				EntityType.FIREWORK);
+
+		FireworkMeta fm = f.getFireworkMeta();
+		fm.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(FireworkEffect.Type.BALL_LARGE)
+				.withColor(Color.RED).withFade(Color.WHITE).build());
+		fm.setPower(2);
+		f.setFireworkMeta(fm);
+	}
+
+	public Location Location(World world, int x, int y, int z) {
+
+		return new Location(world, -47, 33, 15);
+	}
+
+	public Location Location1(World world, int x, int y, int z) {
+
+		return new Location(world, -47, 33, -15);
+	}
+
+	public <Yaw, Pitch> Location Location2(World CentralLobby, double x, double y, double z, Yaw yrot, Pitch xrot) {
+
+		return new Location(CentralLobby, 3.5, 35.0, 0.5, 90, 0);
+	}
+
+	private void teleport(Player p) {
+		p.teleport(Location2(Bukkit.getWorld("CrimsonCentralLobby"), 3.5, 35.0, 0.5, 90, 0));
+	}
+
+	public static void setupScoreboard(Player p) {
+		ScoreboardManager sm = Bukkit.getScoreboardManager();
+		Scoreboard onJoin = sm.getNewScoreboard();
+		Objective o = onJoin.registerNewObjective("dash", "dummy");
+		PlayerConfig u = new PlayerConfig(p.getUniqueId());
+
+		o.setDisplaySlot(DisplaySlot.SIDEBAR);
+		o.setDisplayName(ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH + "" + ChatColor.BOLD +">--------------------<");
+
+		Score title = null;
+
+		Score spacer = null;
+
+		Score nameTitle = null;
+		Score name = null;
+
+		Score spacer2 = null;
+
+		Score ipTitle = null;
+		Score ip = null;
+
+		Score spacer3 = null;
+
+		Score coinsTitle = null;
+		Score coins = null;
+
+		Score spacer4 = null;
+
+		Score rankTitle = null;
+		Score rank = null;
+
+		Score cutOff = null;
+
+		try {
+
+			title = o.getScore(ChatColor.RED + "" + ChatColor.BOLD + "Crimson " + ChatColor.GOLD + "" + ChatColor.BOLD
+					+ "Central");
+			title.setScore(14);
+
+			spacer = o.getScore((ChatColor.AQUA + ""));
+			spacer.setScore(13);
+
+			nameTitle = o.getScore(ChatColor.DARK_RED + "Name:");
+			nameTitle.setScore(12);
+
+			name = o.getScore(ChatColor.GREEN + p.getName());
+			name.setScore(11);
+
+			spacer2 = o.getScore(ChatColor.RED + "");
+			spacer2.setScore(10);
+
+			ipTitle = o.getScore(ChatColor.BLUE + "IP: ");
+			ipTitle.setScore(9);
+
+			ip = o.getScore(ChatColor.RED + "crimson-central.com");
+			ip.setScore(8);
+
+			spacer3 = o.getScore(ChatColor.GRAY + "");
+			spacer3.setScore(7);
+
+			coinsTitle = o.getScore(ChatColor.GOLD + "Gold Coins: ");
+			coinsTitle.setScore(6);
+
+			coins = o.getScore(ChatColor.GREEN + "" + u.getMoney());
+			coins.setScore(5);
+
+			spacer4 = o.getScore(ChatColor.AQUA + "");
+			spacer4.setScore(4);
+
+			rankTitle = o.getScore(ChatColor.RED + "Rank: ");
+			rankTitle.setScore(3);
+
+			rank = o.getScore(ChatColor.YELLOW + u.getRank());
+			rank.setScore(2);
+
+			cutOff = o.getScore(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + "" + ChatColor.BOLD + ">-------------------<");
+			cutOff.setScore(1);
+
+			p.setScoreboard(onJoin);
+
+		} catch (Exception ex) {
+			System.out.println("ex");
+		}
+	}
+
+	private static ItemStack nameItem(ItemStack item, String name) {
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(name);
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	@EventHandler
+	public void quitEvent(PlayerQuitEvent e) {
+		Player p = e.getPlayer();
+		e.setQuitMessage(null);
+		p.getInventory().clear();
+		teleport(p);
+	}
+
+	@EventHandler
+	public void deathEvent(PlayerDeathEvent d, Player p) {
+		ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+		p.getPlayer().getInventory().addItem(gameMenu);
+		World world = Bukkit.getWorld("CentralLobby");
+		Location loc1 = new Location(world, 0, 5, 0);
+		p.teleport(loc1);
+	}
+}
