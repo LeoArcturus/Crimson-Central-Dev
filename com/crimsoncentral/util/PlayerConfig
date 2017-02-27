@@ -1,0 +1,104 @@
+package com.crimsoncentral.util;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
+public class PlayerConfig {
+
+	public UUID u;
+	public File pData;
+	public FileConfiguration pDataConfig;
+	
+	public PlayerConfig(UUID u)
+	{
+		this.u = u;
+		
+		pData = new File("plugins/CrimsonCentralv1/playerdata/" + u + ".yml");
+		pDataConfig = YamlConfiguration.loadConfiguration(pData); 
+	}
+	
+	public void createPlayerConfig()
+	{
+		try{
+			pData.createNewFile();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void createPlayerDefaults()
+	{
+		Player pDataPlayer = Bukkit.getPlayer(u);
+		if(pData.length() <= 0)
+		{
+			pDataConfig.set("Name", pDataPlayer.getName());
+		}
+		if(pData.length() <=23)
+		{
+			pDataConfig.set("Money", 0);
+		}
+		if(pData.length() <= 37)
+		{
+			pDataConfig.set("Rank", "No Rank");
+		}
+		confirmPlayerName();
+	}
+	
+	public FileConfiguration getPlayerConfig()
+	{
+		return pDataConfig;
+	}
+	
+	public void savePlayerConfig()
+	{
+		try{
+			getPlayerConfig().save(pData);
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void confirmPlayerName()
+	{
+		Player pDataPlayer = Bukkit.getPlayer(u);
+		pDataConfig.set("Name", pDataPlayer.getName());
+	}
+	
+	public int getMoney()
+	{
+		return pDataConfig.getInt("Money");
+	}
+	
+	public void setMoney(int amount)
+	{
+		pDataConfig.set("Money", amount);
+		savePlayerConfig();
+	}
+	
+	public void takeMoney(int amount)
+	{
+		pDataConfig.set("Money", getMoney() - amount);
+		savePlayerConfig();
+	}
+	
+	public void giveMoney(int amount)
+	{
+		pDataConfig.set("Money", getMoney() + amount);
+		savePlayerConfig();
+	}
+	public String getRank()
+	{
+		return pDataConfig.getString("Rank");
+	}
+	public void setRank(String rank)
+	{
+		pDataConfig.set("Rank", rank);
+		savePlayerConfig();
+	}
+}
