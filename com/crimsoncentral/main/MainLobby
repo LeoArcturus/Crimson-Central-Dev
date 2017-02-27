@@ -1,0 +1,860 @@
+package com.crimsoncentral.main;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Effect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+
+import net.minecraft.server.v1_10_R1.IChatBaseComponent;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutTitle;
+
+public class MainLobby implements Listener {
+	public static CrimsonCentralMain plugin;
+	public static List<Player> hidden = new ArrayList<Player>();
+	public static List<Player> shown = new ArrayList<Player>();
+	
+	@EventHandler
+	public void onPlayerCommandExecuted(PlayerCommandPreprocessEvent e)
+	{
+		Player p = e.getPlayer();
+		 String command = e.getMessage();
+		 command = command.toLowerCase();
+		 
+		 if(command.startsWith("/tp"))
+		 {
+			 if(p.getName().equalsIgnoreCase("MrGamingLion66") || p.getName().equalsIgnoreCase("creeper1111111") || p.getName().equalsIgnoreCase("MrGreenCreeperYT"))
+			 {
+				 if(p.getLocation().getWorld().equals("Safari"))
+				 {
+				 	e.setCancelled(true);
+				 }
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.RED + "For the saftey of the server this command has been disabled by the Crimson Central Staff, Sorry!");
+			 }
+		 }else if(command.startsWith("/gamemode")){
+			 if (p.getName().equalsIgnoreCase("MrGamingLion66") || p.getName().equalsIgnoreCase("creeper1111111") || p.getName().equalsIgnoreCase("MrGreenCreeperYT")){
+				 e.setCancelled(false);
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.RED + "For the saftey of the server this command has been disabled by the Crimson Central Staff, Sorry!");
+			 }
+		 }else if(command.startsWith("/mv")){
+			 if (p.getName().equalsIgnoreCase("MrGamingLion66") || p.getName().equalsIgnoreCase("creeper1111111") || p.getName().equalsIgnoreCase("MrGreenCreeperYT") || p.getName().equalsIgnoreCase("Quarrell3")){
+				 e.setCancelled(false);
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.RED + "For the saftey of the server this command has been disabled by the Crimson Central Staff, Sorry!");
+			 }
+		 }else if(command.startsWith("/me")){
+			 e.setCancelled(true);
+			 p.sendMessage(ChatColor.RED + "For the saftey of the server this command has been disabled by the Crimson Central Staff, Sorry!");
+		 }else if(command.startsWith("/effect")){
+			 if (p.getName().equalsIgnoreCase("MrGamingLion66") || p.getName().equalsIgnoreCase("creeper1111111") || p.getName().equalsIgnoreCase("MrGreenCreeperYT")){
+				 e.setCancelled(false);
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.RED + "For the saftey of the server this command has been disabled by the Crimson Central Staff, Sorry!");
+			 }
+		 }else if(command.startsWith("/give")){
+			 if (p.getName().equalsIgnoreCase("MrGamingLion66") || p.getName().equalsIgnoreCase("creeper1111111") || p.getName().equalsIgnoreCase("MrGreenCreeperYT")){
+				 e.setCancelled(false);
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.RED + "For the saftey of the server this command has been disabled by the Crimson Central Staff, Sorry!");
+			 }
+		 }else if(command.startsWith("/kill")){
+			 if (p.getName().equalsIgnoreCase("MrGamingLion66") || p.getName().equalsIgnoreCase("creeper1111111") || p.getName().equalsIgnoreCase("MrGreenCreeperYT")){
+				 e.setCancelled(false);
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.RED + "For the saftey of the server this command has been disabled by the Crimson Central Staff, Sorry!");
+			 }
+		 }else if(command.startsWith("/clear")){
+			 if (p.getName().equalsIgnoreCase("MrGamingLion66") || p.getName().equalsIgnoreCase("creeper1111111") || p.getName().equalsIgnoreCase("MrGreenCreeperYT")){
+				 e.setCancelled(false);
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.RED + "For the saftey of the server this command has been disabled by the Crimson Central Staff, Sorry!");
+			 }
+		 }else if(command.startsWith("/plugins")){
+			 if (p.isOp() == true){
+				 e.setCancelled(false);
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Sorry! You may not see our plugins list! They are mostly custom and not for public use!");
+			 }
+		 }else if(command.startsWith("/help")){
+			 if (p.isOp() == true){
+				 e.setCancelled(false);
+			 }else{
+				 e.setCancelled(true);
+				 p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "You must be a rank helper or above to use this command!");
+			 }
+		 }else if(command.startsWith("/ccr")){
+			 if (p.getName().equalsIgnoreCase("MrGamingLion66") || p.getName().equalsIgnoreCase("creeper1111111") || p.getName().equalsIgnoreCase("MrGreenCreeperYT")){
+				 e.setCancelled(false);
+			 }else{
+				 p.sendMessage(ChatColor.RED + "You are not allowed to use this command!");
+			 }
+		 }
+		 if(command.startsWith("/ban MrGamingLion66")){
+			 Bukkit.broadcastMessage("test");
+			 e.setCancelled(true);
+			 Bukkit.broadcastMessage(ChatColor.RED + p.getName() + "has attempted to mess with the developer. Now banning " + p.getName());
+			 //p.setBanned(true);
+		 }
+//		 else if(command.startsWith("/kick MrGamingLion66")){
+//			 e.setCancelled(false);
+//			 Bukkit.broadcastMessage(ChatColor.RED + p.getName() + "has attempted to mess with the developer. Now banning " + p.getName());
+//		 	p.kickPlayer(p.getName());
+//		 }
+//		 else if(command.startsWith("/deop MrGamingLion66")){
+//			 e.setCancelled(false);
+//			 Bukkit.broadcastMessage(ChatColor.RED + p.getName() + "has attempted to mess with the developer. Now banning " + p.getName());
+//			 p.kickPlayer(p.getName());
+//		 }
+		 
+	}
+	
+	@SuppressWarnings({ "unused", "deprecation" })
+	@EventHandler
+	public void onPunch(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		ItemStack item = event.getItem();
+
+		if (player.getItemInHand().getItemMeta().getDisplayName().contains("Game Menu")) {
+
+			Inventory inv = Bukkit.createInventory(null, 45, ChatColor.RED + "Game Menu");
+
+			ItemStack skyWars = createItemStack(Material.BOW, 1,
+					ChatColor.AQUA + "" + ChatColor.BOLD + "Sky Wars " + ChatColor.YELLOW + "(Popular)",
+					ItemFlag.HIDE_ENCHANTS, null, null, Enchantment.ARROW_INFINITE, 1, null, 0, null, 0,
+					null, null, "", "Be the last man standing in an ", "epic Sky Battle! Go solo",
+					"or team up", "", "4 Maps Open: Oasis Paradise, Sky Mine,", " Frozen and Roman Empire");
+			inv.setItem(13, skyWars);
+
+			ItemStack hungerGames = createItemStack(Material.CHEST, 1,
+					ChatColor.DARK_RED + "" + ChatColor.BOLD + "Hunger Games", null, null, null, null, 0,
+					null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(12, hungerGames);
+
+			ItemStack captureTheFlag = createItemStack(Material.BANNER, 1,
+					ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "Capture the Flag", null, null, null, null,
+					0, null, 0, null, 0, null, DyeColor.BLUE, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(14, captureTheFlag);
+
+			ItemStack theWalls = createItemStack(Material.COBBLE_WALL, 1,
+					ChatColor.GREEN + "" + ChatColor.BOLD + "The Walls", null, null, null, null, 0, null, 0,
+					null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(21, theWalls);
+
+			ItemStack spleef = createItemStack(Material.GOLD_SPADE, 1,
+					ChatColor.DARK_RED + "" + ChatColor.BOLD + "Spleef", ItemFlag.HIDE_ATTRIBUTES, null,
+					null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(22, spleef);
+
+			ItemStack rogueWars = createItemStack(Material.IRON_SWORD, 1,
+					ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Rogue Wars", ItemFlag.HIDE_ATTRIBUTES,
+					ItemFlag.HIDE_ENCHANTS, null, Enchantment.FIRE_ASPECT, 1, null, 0, null, 0, null, null,
+					ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(23, rogueWars);
+
+			ItemStack apocalypse = createItemStack(Material.STONE_AXE, 1,
+					ChatColor.GREEN + "" + ChatColor.BOLD + "Apocalypse", ItemFlag.HIDE_ATTRIBUTES, null,
+					null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(30, apocalypse);
+
+			ItemStack oneInTheChamber = createItemStack(Material.TIPPED_ARROW, 1,
+					ChatColor.DARK_RED + "" + ChatColor.BOLD + "One In The Chamber",
+					ItemFlag.HIDE_POTION_EFFECTS, null, null, null, 0, null, 0, null, 0,
+					PotionType.FIRE_RESISTANCE, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(31, oneInTheChamber);
+
+			ItemStack survival = createItemStack(Material.GRASS, 1,
+					ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Survival", null, null, null, null, 0,
+					null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(32, survival);
+
+			ItemStack Back = nameItem(new ItemStack(Material.BED),
+					ChatColor.DARK_RED + "" + ChatColor.BOLD + "Main Lobby");
+			inv.setItem(9, Back);
+
+			ItemStack testServer = createItemStack(Material.FIREWORK, 1,
+					ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Test Server", ItemFlag.HIDE_ATTRIBUTES,
+					null, null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(18, testServer);
+
+			ItemStack leveling = createItemStack(Material.EXP_BOTTLE, 1,
+					ChatColor.GREEN + "" + ChatColor.BOLD + "Leveling", null, null, null, null, 0, null, 0,
+					null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+			inv.setItem(27, leveling);
+
+			player.openInventory(inv);
+		}else if (player.getItemInHand().getItemMeta().getDisplayName().contains("Profile")) {
+			Inventory cosinv = Bukkit.createInventory(null, 27, ChatColor.GOLD + "Profile");
+			ItemStack cosmetics = nameItem(new ItemStack(Material.BARRIER),
+					ChatColor.YELLOW + "" + ChatColor.BOLD + "Cosmetics (Coming Soon!)");
+			ItemStack stats = nameItem(new ItemStack(Material.DIAMOND_SWORD), ChatColor.GREEN + "Game Stats (Coming Soon)");
+			ItemMeta statsMeta = stats.getItemMeta();
+			statsMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			stats.setItemMeta(statsMeta);
+			ItemStack staff = nameItem(new ItemStack(Material.BLAZE_POWDER), ChatColor.RED + "Staff Tools");
+			cosinv.setItem(12, cosmetics);
+			cosinv.setItem(14, stats);
+			if(player.isOp() == true)
+			{
+				cosinv.setItem(13, staff);
+			}
+			player.openInventory(cosinv);
+		}else if (player.getItemInHand().getItemMeta().getDisplayName().contains("Server Radio")) {
+			ItemStack musicOff = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Music Off");
+
+			Bukkit.dispatchCommand(player, "music radio");
+			player.getPlayer().getInventory().setItem(5, musicOff);
+		} else if (player.getItemInHand().getItemMeta().getDisplayName().contains("Music Off")) {
+			ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+
+			Bukkit.dispatchCommand(player, "music off");
+			player.getPlayer().getInventory().setItem(5, serverRadio);
+		}else if (player.getItemInHand().getItemMeta().getDisplayName().contains("Hide Players")){
+			ItemStack showPlayers = nameItem(new ItemStack(351, 1, (short) 1), ChatColor.RED + "Show Players");
+			for(Player p : Bukkit.getOnlinePlayers())
+			{
+				player.hidePlayer(p);
+				p.hidePlayer(player);
+			}
+			player.getInventory().setItem(3, showPlayers);
+			player.sendMessage(ChatColor.RED + "Players Hidden");
+			shown.remove(player);
+			hidden.add(player);
+		}else if (player.getItemInHand().getItemMeta().getDisplayName().contains("Show Players")){
+			ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+			for(Player p : Bukkit.getOnlinePlayers())
+			{
+				if(shown.contains(p))
+				{
+					player.showPlayer(p);
+					p.showPlayer(player);
+				}
+			}
+			player.getInventory().setItem(3, hidePlayers);
+			player.sendMessage(ChatColor.GREEN + "Players Shown");
+			hidden.remove(player);
+			shown.add(player);
+		}else if (player.getItemInHand().getItemMeta().getDisplayName().contains("Cosmetics")){
+			ItemStack is = nameItem(new ItemStack(Material.BARRIER), ChatColor.GOLD + "Cosmetics Coming Soon");
+			if(player.getName().equalsIgnoreCase("creeper1111111") || player.getName().equalsIgnoreCase("MrGamingLion66"))
+			{
+				cosGUI(player);
+			}else{
+				Inventory ive = Bukkit.createInventory(null, 9, ChatColor.YELLOW + "Cosmetics");
+				ive.setItem(4, is);
+			}
+		}
+	}
+
+	@SuppressWarnings({ "deprecation", "unused" })
+	@EventHandler
+	public void onIventoryClick(InventoryClickEvent event) {
+		World mainworld = Bukkit.getWorld("CrimsonCentralLobby");
+		World skywarslobby = Bukkit.getWorld("SkyWarsLobby");
+
+		if (event.getWhoClicked() instanceof Player) {
+			Player p = (Player) event.getWhoClicked();
+			String pn = p.getName();
+			ItemStack item = event.getCurrentItem();
+
+			if (event.getInventory().getTitle().equals(ChatColor.RED + "Game Menu")) {
+				if (event.isRightClick() || event.isLeftClick()) {
+					event.setCancelled(true);
+				}
+			}
+			if (event.getInventory().getTitle().equals(ChatColor.GOLD + "Cosmetics Menu")) {
+				if (event.isRightClick() || event.isLeftClick()) {
+					event.setCancelled(true);
+				}
+			}
+
+			if (p.getLocation().getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL) {
+				if (event.isRightClick() || event.isLeftClick()) {
+					event.setCancelled(true);
+				}
+			} else if (p.getLocation().getWorld().equals(skywarslobby) && p.getGameMode() == GameMode.SURVIVAL) {
+				if (event.isRightClick() || event.isLeftClick()) {
+					event.setCancelled(true);
+				}
+			}
+
+			if (item.getItemMeta().getDisplayName().contains("Sky Wars")) {
+				ItemStack skyWarsMapMenu = nameItem(new ItemStack(Material.MAP),
+						ChatColor.AQUA + "" + ChatColor.BOLD + "Select Game");
+				
+				ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+				ItemStack cosmetics = nameItem(new ItemStack(Material.CHEST), ChatColor.YELLOW + "Cosmetics");
+				ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+				ItemMeta hidePlayersMeta = hidePlayers.getItemMeta();
+				ArrayList<String> hpLore = new ArrayList<String>();
+				hpLore.add(ChatColor.YELLOW + "Coming Soon!");
+				hidePlayersMeta.setLore(hpLore);
+				hidePlayers.setItemMeta(hidePlayersMeta);
+				ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+				ItemStack lobbySelector = nameItem(new ItemStack(Material.NETHER_STAR), ChatColor.GOLD + "Lobby Selector (Coming Soon)");
+				ItemMeta lobbySelectorMeta = lobbySelector.getItemMeta();
+				ArrayList<String> lsLore = new ArrayList<String>();
+				lsLore.add(ChatColor.YELLOW + "Coming Soon!");
+				lobbySelectorMeta.setLore(lsLore);
+				lobbySelector.setItemMeta(lobbySelectorMeta);
+				
+				World world = Bukkit.getWorld("SkyWarsLobby");
+				p.getPlayer().getWorld().createExplosion(p.getLocation(), 0.0F);
+				Location loc = new Location(world, -2561.5, 52, 744.5, -90, 0);
+				p.getPlayer().getInventory().addItem(skyWarsMapMenu);
+				p.teleport(loc);
+
+				IChatBaseComponent chatTitle = ChatSerializer.a("{\"text\":\"§b§l*Sky Wars*\"}");
+				PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+				((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title);
+
+				IChatBaseComponent chatSubTitle = ChatSerializer.a("{\"text\": \"§6§l*On Crimson Central*\"}");
+				PacketPlayOutTitle subtitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE,
+						chatSubTitle);
+				((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(subtitle);
+
+				p.playSound(p.getPlayer().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F);
+				p.getPlayer().getWorld().createExplosion(loc, 0.0F);
+				p.getPlayer().getInventory().setItem(0, gameMenu);
+				ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+				SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+				skullMeta.setOwner(pn);
+				skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+				profile.setItemMeta(skullMeta);
+				skullMeta.setDisplayName(pn);
+				p.getPlayer().getInventory().setItem(7, profile);
+				p.getPlayer().getInventory().setItem(3, hidePlayers);
+				p.getPlayer().getInventory().setItem(5, serverRadio);
+				p.getPlayer().getInventory().setItem(8, lobbySelector);
+				p.getPlayer().getInventory().setItem(4, cosmetics);
+				
+				setupScoreboard1(p);
+			}
+
+			if (item.getItemMeta().getDisplayName().contains("Main Lobby")) {
+				World mainLobby = Bukkit.getWorld("CrimsonCentralLobby");
+				Location loc = new Location(mainLobby, 3.5, 35.0, 0.5, 90, 0);
+				
+				ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+				ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+				ItemMeta hidePlayersMeta = hidePlayers.getItemMeta();
+				ArrayList<String> hpLore = new ArrayList<String>();
+				hpLore.add(ChatColor.YELLOW + "Coming Soon!");
+				hidePlayersMeta.setLore(hpLore);
+				hidePlayers.setItemMeta(hidePlayersMeta);
+				ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+				ItemStack lobbySelector = nameItem(new ItemStack(Material.NETHER_STAR), ChatColor.GOLD + "Lobby Selector (Coming Soon)");
+				ItemMeta lobbySelectorMeta = lobbySelector.getItemMeta();
+				ArrayList<String> lsLore = new ArrayList<String>();
+				lsLore.add(ChatColor.YELLOW + "Coming Soon!");
+				lobbySelectorMeta.setLore(lsLore);
+				lobbySelector.setItemMeta(lobbySelectorMeta);
+				ItemStack cosmetics = nameItem(new ItemStack(Material.CHEST), ChatColor.YELLOW + "Cosmetics");
+				p.getInventory().clear();
+				p.getPlayer().getInventory().setItem(0, gameMenu);
+				ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+				SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+				skullMeta.setOwner(pn);
+				skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+				profile.setItemMeta(skullMeta);
+				skullMeta.setDisplayName(pn);
+				p.getPlayer().getInventory().setItem(4, profile);
+				p.getPlayer().getInventory().setItem(3, hidePlayers);
+				p.getPlayer().getInventory().setItem(5, serverRadio);
+				p.getPlayer().getInventory().setItem(8, lobbySelector);
+				p.getPlayer().getInventory().setItem(7, profile);
+				LobbyJoinListener.setupScoreboard(p);
+				p.teleport(loc);
+				if(p.hasPermission(Ranks.owner) || p.hasPermission(Ranks.coowner) || p.hasPermission(Ranks.admin) || p.hasPermission(Ranks.helper) || p.hasPermission(Ranks.guardian) || p.hasPermission(Ranks.rogue) || p.hasPermission(Ranks.legend) || p.hasPermission(Ranks.mage) || p.hasPermission(Ranks.crimson))
+				{
+					p.setAllowFlight(true);
+				}
+			}else if (item.getItemMeta().getDisplayName().contains("Staff Tools")) {
+				Inventory staff = Bukkit.createInventory(null, 27, ChatColor.RED + "Staff Tools");
+				ItemStack toggleFlight = nameItem(new ItemStack(Material.FEATHER), ChatColor.GRAY + "Toggle Flight");
+				ItemStack teleport = nameItem(new ItemStack(Material.ENDER_PEARL), ChatColor.DARK_AQUA + "Teleport");
+				ItemStack toggleVisible = nameItem(new ItemStack(Material.EYE_OF_ENDER), ChatColor.RED + "Toggle Visibility");
+				if(p.getGameMode() == GameMode.SURVIVAL){
+					ItemStack toggleGamemode = nameItem(new ItemStack(Material.GRASS), ChatColor.GREEN + "Toggle Gamemode");
+					staff.setItem(11, toggleGamemode);
+				}else if(p.getGameMode() == GameMode.CREATIVE){
+					ItemStack toggleGamemode = nameItem(new ItemStack(Material.DIAMOND_BLOCK), ChatColor.GREEN + "Toggle Gamemode");
+					staff.setItem(11, toggleGamemode);
+				}else if(p.getGameMode() == GameMode.ADVENTURE){
+					ItemStack toggleGamemode = nameItem(new ItemStack(Material.EMPTY_MAP), ChatColor.GREEN + "Toggle Gamemode");
+					staff.setItem(11, toggleGamemode);
+				}else if(p.getGameMode() == GameMode.SPECTATOR){
+					ItemStack toggleGamemode = nameItem(new ItemStack(Material.FEATHER), ChatColor.GREEN + "Toggle Gamemode");
+					staff.setItem(11, toggleGamemode);
+				}
+				staff.setItem(10, toggleFlight);
+				staff.setItem(12, teleport);
+				//staff.setItem(13, toggleVisible);
+				p.openInventory(staff);
+			}else if (item.getItemMeta().getDisplayName().contains("Toggle Flight")){
+				if(p.getAllowFlight() == false)
+				{
+					p.setAllowFlight(true);
+					p.closeInventory();
+					p.sendMessage(ChatColor.GREEN + "Flight has been enabled");
+				}else if(p.getAllowFlight() == true)
+				{
+					p.setAllowFlight(false);
+					p.closeInventory();
+					p.sendMessage(ChatColor.RED + "Flight has been disabled");
+				}
+			}else if (item.getItemMeta().getDisplayName().contains("Toggle Gamemode")){
+				Inventory gamemode = Bukkit.createInventory(null, 9, ChatColor.GREEN + "Toggle Gamemode");
+				ItemStack toggleGamemode0 = nameItem(new ItemStack(Material.GRASS), ChatColor.GREEN + "Survival");
+				ItemStack toggleGamemode1 = nameItem(new ItemStack(Material.DIAMOND_BLOCK), ChatColor.GOLD + "Creative");
+				ItemStack toggleGamemode2 = nameItem(new ItemStack(Material.EMPTY_MAP), ChatColor.YELLOW + "Adventure");
+				ItemStack toggleGamemode3 = nameItem(new ItemStack(Material.FEATHER), ChatColor.BLUE + "Spectator");
+				gamemode.setItem(1, toggleGamemode0);
+				gamemode.setItem(2, toggleGamemode1);
+				gamemode.setItem(3, toggleGamemode2);
+				gamemode.setItem(4, toggleGamemode3);
+				p.openInventory(gamemode);
+			}else if (item.getItemMeta().getDisplayName().contains("Survival")){
+				p.setGameMode(GameMode.SURVIVAL);
+				p.sendMessage(ChatColor.GREEN + "Gamemode has been updated to survival mode");
+				p.closeInventory();
+			}else if (item.getItemMeta().getDisplayName().contains("Creative")){
+				p.setGameMode(GameMode.CREATIVE);
+				p.sendMessage(ChatColor.GREEN + "Gamemode has been updated to creative mode");
+				p.closeInventory();
+			}else if (item.getItemMeta().getDisplayName().contains("Adventure")){
+				p.setGameMode(GameMode.ADVENTURE);
+				p.sendMessage(ChatColor.GREEN + "Gamemode has been updated to adventure mode");
+				p.closeInventory();
+			}else if (item.getItemMeta().getDisplayName().contains("Spectator")){
+				p.setGameMode(GameMode.SPECTATOR);
+				p.sendMessage(ChatColor.GREEN + "Gamemode has been updated to spectator mode");
+				p.closeInventory();
+			}else if (item.getItemMeta().getDisplayName().contains("Teleport")){
+				Inventory teleport = Bukkit.createInventory(null, 54, ChatColor.DARK_AQUA + "Teleport");
+				for(World w : Bukkit.getWorlds())
+				{
+					String s = w.getName();
+					
+					ItemStack world = nameItem(new ItemStack(Material.GRASS), ChatColor.GOLD + s);
+					teleport.addItem(world);	
+				}
+				p.openInventory(teleport);
+			}else if (item.getItemMeta().getDisplayName().contains("Toggle Visibility")){
+//				Bukkit.broadcastMessage("test");
+//				if(shown.contains(p))
+//				{
+//					hidden.add(p);
+//					shown.remove(p);
+//					p.closeInventory();
+//					p.sendMessage("You are now hidden");
+//					for(Player pl : Bukkit.getOnlinePlayers())
+//					{
+//						pl.hidePlayer(p);
+//					}
+//				}else if(hidden.contains(p))
+//				{
+//					shown.add(p);
+//					hidden.remove(p);
+//					p.closeInventory();
+//					p.sendMessage("You are no longer hidden");
+//					for(Player pl : Bukkit.getOnlinePlayers())
+//					{
+//						pl.showPlayer(p);
+//					}
+//				}
+			}
+			
+			String s = null;
+			
+			for(World w : Bukkit.getWorlds())
+			{
+				s = w.getName();
+				if(item.getItemMeta().getDisplayName().equals(ChatColor.GOLD + s)){
+					World w1 = Bukkit.getWorld(s);
+					Location l = new Location(w1, 0, 156, 0);
+					p.teleport(w1.getSpawnLocation());
+					p.setGameMode(GameMode.CREATIVE);
+				}
+			}
+			return;
+		}
+	}
+
+	public Location Location(World world, int x, int y, int z) {
+
+		return new Location(world, -47, 71, 6);
+	}
+
+	private static ItemStack nameItem(ItemStack item, String name) {
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(name);
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent event) {
+		World mainworld = Bukkit.getWorld("CrimsonCentralLobby");
+		World skywarslobby = Bukkit.getWorld("SkyWarsLobby");
+		Player p = event.getPlayer();
+		if (p.getLocation().getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL) {
+			event.setCancelled(true);
+		} else if (p.getLocation().getWorld().equals(skywarslobby) && p.getGameMode() == GameMode.SURVIVAL) {
+			event.setCancelled(true);
+		}
+
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockPlace(BlockPlaceEvent event) {
+		World mainworld = Bukkit.getWorld("CrimsonCentralLobby");
+		World skywarslobby = Bukkit.getWorld("SkyWarsLobby");
+		Player p = event.getPlayer();
+		if (p.getLocation().getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL) {
+			event.setCancelled(true);
+		} else if (p.getLocation().getWorld().equals(skywarslobby) && p.getGameMode() == GameMode.SURVIVAL) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerDamage(EntityDamageEvent e) {
+		World mainworld = Bukkit.getWorld("CrimsonCentralLobby");
+		World skywarslobby = Bukkit.getWorld("SkyWarsLobby");
+		Player p = (Player) e.getEntity();
+		if (p.getLocation().getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL) {
+			e.setCancelled(true);
+
+		} else if (p.getLocation().getWorld().equals(skywarslobby) && p.getGameMode() == GameMode.SURVIVAL) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerFoodLevelChange(FoodLevelChangeEvent e) {
+		World mainworld = Bukkit.getWorld("CrimsonCentralLobby");
+		World skywarslobby = Bukkit.getWorld("SkyWarsLobby");
+		Player p = (Player) e.getEntity();
+		if (p.getLocation().getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL) {
+			e.setCancelled(true);
+		} else if (p.getLocation().getWorld().equals(skywarslobby) && p.getGameMode() == GameMode.SURVIVAL) {
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent e) {
+		if(e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK) {
+			e.getTo().getBlock().getWorld().playSound(e.getPlayer().getLocation(), Sound.ENTITY_WITHER_BREAK_BLOCK, 1, 1);
+			e.getTo().getBlock().getWorld().playEffect(e.getPlayer().getLocation(), Effect.MOBSPAWNER_FLAMES, 3);
+			
+			e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(4).setY(1));
+		}	
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void pickupItemEvent(PlayerPickupItemEvent e)
+	{
+		World mainworld = Bukkit.getWorld("CrimsonCentralLobby");
+		Player p = e.getPlayer();
+
+		if(p.getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL)
+		{
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void dropItemEvent(PlayerDropItemEvent e)
+	{
+		World mainworld = Bukkit.getWorld("CrimsonCentralLobby");
+		Player p = e.getPlayer();
+
+		if(p.getWorld().equals(mainworld) && p.getGameMode() == GameMode.SURVIVAL)
+		{
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void portal(PlayerMoveEvent e) {
+		Player p = e.getPlayer();
+		World mainworld = Bukkit.getWorld("CrimsonCentralLobby");
+		Location loc = new Location(mainworld, -45.5, 36.0, 0.5, 90, 0);
+
+		if (p.getLocation().getWorld().equals(mainworld)) {
+			if (p.getLocation().getBlockX() == -47) {
+				if (p.getLocation().getZ() >= -6 && p.getLocation().getZ() <= 6) {
+					if (p.getLocation().getY() < 51) {
+						Inventory inv = Bukkit.createInventory(null, 45, ChatColor.RED + "Game Menu");
+
+						ItemStack skyWars = createItemStack(Material.BOW, 1,
+								ChatColor.AQUA + "" + ChatColor.BOLD + "Sky Wars " + ChatColor.YELLOW + "(Popular)",
+								ItemFlag.HIDE_ENCHANTS, null, null, Enchantment.ARROW_INFINITE, 1, null, 0, null, 0,
+								null, null, "", "Be the last man standing in an ", "epic Sky Battle! Go solo",
+								"or team up", "", "4 Maps Open: Oasis Paradise, Sky Mine,", " Frozen and Roman Empire");
+						inv.setItem(13, skyWars);
+
+						ItemStack hungerGames = createItemStack(Material.CHEST, 1,
+								ChatColor.DARK_RED + "" + ChatColor.BOLD + "Hunger Games", null, null, null, null, 0,
+								null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(12, hungerGames);
+
+						ItemStack captureTheFlag = createItemStack(Material.BANNER, 1,
+								ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "Capture the Flag", null, null, null, null,
+								0, null, 0, null, 0, null, DyeColor.BLUE, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(14, captureTheFlag);
+
+						ItemStack theWalls = createItemStack(Material.COBBLE_WALL, 1,
+								ChatColor.GREEN + "" + ChatColor.BOLD + "The Walls", null, null, null, null, 0, null, 0,
+								null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(21, theWalls);
+
+						ItemStack spleef = createItemStack(Material.GOLD_SPADE, 1,
+								ChatColor.DARK_RED + "" + ChatColor.BOLD + "Spleef", ItemFlag.HIDE_ATTRIBUTES, null,
+								null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(22, spleef);
+
+						ItemStack rogueWars = createItemStack(Material.IRON_SWORD, 1,
+								ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Rogue Wars", ItemFlag.HIDE_ATTRIBUTES,
+								ItemFlag.HIDE_ENCHANTS, null, Enchantment.FIRE_ASPECT, 1, null, 0, null, 0, null, null,
+								ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(23, rogueWars);
+
+						ItemStack apocalypse = createItemStack(Material.STONE_AXE, 1,
+								ChatColor.GREEN + "" + ChatColor.BOLD + "Apocalypse", ItemFlag.HIDE_ATTRIBUTES, null,
+								null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(30, apocalypse);
+
+						ItemStack oneInTheChamber = createItemStack(Material.TIPPED_ARROW, 1,
+								ChatColor.DARK_RED + "" + ChatColor.BOLD + "One In The Chamber",
+								ItemFlag.HIDE_POTION_EFFECTS, null, null, null, 0, null, 0, null, 0,
+								PotionType.FIRE_RESISTANCE, null, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(31, oneInTheChamber);
+
+						ItemStack survival = createItemStack(Material.GRASS, 1,
+								ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Survival", null, null, null, null, 0,
+								null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(32, survival);
+
+						ItemStack Back = nameItem(new ItemStack(Material.BED),
+								ChatColor.DARK_RED + "" + ChatColor.BOLD + "Main Lobby");
+						inv.setItem(9, Back);
+
+						ItemStack testServer = createItemStack(Material.FIREWORK, 1,
+								ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Test Server", ItemFlag.HIDE_ATTRIBUTES,
+								null, null, null, 0, null, 0, null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(18, testServer);
+
+						ItemStack leveling = createItemStack(Material.EXP_BOTTLE, 1,
+								ChatColor.GREEN + "" + ChatColor.BOLD + "Leveling", null, null, null, null, 0, null, 0,
+								null, 0, null, null, ChatColor.YELLOW + "Coming Soon!");
+						inv.setItem(27, leveling);
+
+						p.teleport(loc);
+
+						p.openInventory(inv);
+						p.openInventory(inv);
+						p.openInventory(inv);
+					}
+				}
+			}
+		}
+	}
+	
+	public static void setupScoreboard1(Player p) {
+		ScoreboardManager sm = Bukkit.getScoreboardManager();
+		Scoreboard skyWars = sm.getNewScoreboard();
+		Objective o = skyWars.registerNewObjective("dash", "dummy");
+
+		o.setDisplaySlot(DisplaySlot.SIDEBAR);
+		o.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Sky Wars");
+		
+		Score nameTitle = null;
+		Score name = null;
+
+		Score spacer2 = null;
+
+		Score soloKills = null;
+		Score soloWins = null;
+
+		Score spacer3 = null;
+
+		Score teamKills = null;
+		Score teamWins = null;
+
+		try {
+			nameTitle = o.getScore(ChatColor.GOLD + "Name:");
+			nameTitle.setScore(8);
+
+			name = o.getScore(ChatColor.AQUA + p.getName());
+			name.setScore(7);
+
+			spacer2 = o.getScore(ChatColor.RED + "");
+			spacer2.setScore(6);
+
+			soloKills = o.getScore(ChatColor.AQUA + "Solo Kills: " + ChatColor.GOLD + "(cs)");
+			soloKills.setScore(5);
+
+			soloWins = o.getScore(ChatColor.AQUA + "Solo Wins: " + ChatColor.GOLD + "(cs)");
+			soloWins.setScore(4);
+
+			spacer3 = o.getScore(ChatColor.GRAY + "");
+			spacer3.setScore(3);
+
+			teamKills = o.getScore(ChatColor.AQUA + "Team Kills: " + ChatColor.GOLD + "(cs)");
+			teamKills.setScore(2);
+			
+			teamWins = o.getScore(ChatColor.AQUA + "Team Wins: " + ChatColor.GOLD + "(cs)");
+			teamWins.setScore(1);
+
+			p.setScoreboard(skyWars);
+
+		} catch (Exception ex) {
+			System.out.println("ex");
+		}
+	}
+	
+	public void cosGUI(Player p)
+	{
+		Inventory inv = Bukkit.createInventory(null, 36, ChatColor.YELLOW + "Cosmetics");
+		
+		ItemStack trails = nameItem(new ItemStack(Material.BLAZE_POWDER), ChatColor.RED + "Particle Trails");
+		ItemStack effects = nameItem(new ItemStack(Material.BLAZE_ROD), ChatColor.GOLD + "Particle Effects");
+		ItemStack pets = nameItem(new ItemStack(Material.MONSTER_EGG), ChatColor.YELLOW + "Pets");
+		ItemStack rides = nameItem(new ItemStack(Material.SADDLE), ChatColor.GREEN + "Mounts");
+		ItemStack suits = createItemStack(Material.LEATHER_CHESTPLATE, 1, ChatColor.AQUA + "Suits", ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, null, Enchantment.PROTECTION_ENVIRONMENTAL, 0, null, 0, null, 0, null, null);
+		ItemStack morphs = nameItem(new ItemStack(Material.LEATHER), ChatColor.BLUE + "Morphs");
+		
+		inv.setItem(0, trails);
+		inv.setItem(4, effects);
+		inv.setItem(8, pets);
+		inv.setItem(18, rides);
+		inv.setItem(22, suits);
+		inv.setItem(26, morphs);
+		
+		p.openInventory(inv);
+	}
+	
+	public static ItemStack createItemStack(Material type, int amt, String name, ItemFlag itemFlag1, ItemFlag itemFlag2,
+			ItemFlag itemFlag3, Enchantment enc1, int lev1, Enchantment enc2, int lev2, Enchantment enc3, int lev3,
+			PotionType potion, DyeColor dy) {
+		ItemStack stack = new ItemStack(type, amt);
+		ItemMeta im = stack.getItemMeta();
+		im.setDisplayName(name);
+		if (itemFlag1 != null) {
+			im.addItemFlags(itemFlag1);
+		}
+		if (itemFlag2 != null) {
+			im.addItemFlags(itemFlag2);
+		}
+		if (itemFlag3 != null) {
+			im.addItemFlags(itemFlag3);
+		}
+		if (enc1 != null) {
+			im.addEnchant(enc1, lev1, true);
+		}
+		if (enc2 != null) {
+			im.addEnchant(enc2, lev2, true);
+		}
+		if (enc3 != null) {
+			im.addEnchant(enc3, lev3, true);
+		}
+		if (potion != null) {
+			((PotionMeta) im).setBasePotionData(new PotionData(potion));
+		}
+		if (dy != null) {
+			((BannerMeta) im).setBaseColor(dy);
+		}
+		stack.setItemMeta(im);
+		return stack;
+	}
+
+	public static ItemStack createItemStack(Material type, int amt, String name, ItemFlag itemFlag1, ItemFlag itemFlag2,
+			ItemFlag itemFlag3, Enchantment enc1, int lev1, Enchantment enc2, int lev2, Enchantment enc3, int lev3,
+			PotionType potion, DyeColor dy, String... lores) {
+		ItemStack stack = new ItemStack(type, amt);
+		ItemMeta im = stack.getItemMeta();
+		im.setDisplayName(name);
+		if (itemFlag1 != null) {
+			im.addItemFlags(itemFlag1);
+		}
+		if (itemFlag2 != null) {
+			im.addItemFlags(itemFlag2);
+		}
+		if (itemFlag3 != null) {
+			im.addItemFlags(itemFlag3);
+		}
+		if (enc1 != null) {
+			im.addEnchant(enc1, lev1, true);
+		}
+		if (enc2 != null) {
+			im.addEnchant(enc2, lev2, true);
+		}
+		if (enc3 != null) {
+			im.addEnchant(enc3, lev3, true);
+		}
+		if (potion != null) {
+			((PotionMeta) im).setBasePotionData(new PotionData(potion));
+		}
+		if (dy != null) {
+			((BannerMeta) im).setBaseColor(dy);
+		}
+		ArrayList<String> lore = new ArrayList<String>();
+		for (String str : lores) {
+			lore.add(str);
+		}
+		im.setLore(lore);
+		stack.setItemMeta(im);
+		return stack;
+	}
+}
