@@ -1,0 +1,216 @@
+package com.crimsoncentral.util;
+
+import java.util.HashMap;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Chest;
+import org.bukkit.inventory.ItemStack;
+
+public class ChestManagerAPI {
+	/**
+	 * ChestManagerAPI Created by MrGamingLion66, Crimson Central Developer
+	 */
+
+	public static HashMap<Chest, Location> chests;
+
+	public ChestManagerAPI() {
+		chests = new HashMap<Chest, Location>();
+	}
+
+	public Location getChestLocation(Chest c) {
+		return c.getLocation();
+	}
+
+	public Chest getChest(Location loc) {
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			return (Chest) loc.getBlock();
+		}
+		return null;
+	}
+
+	public void clearChest(Location loc) {
+		Chest chest = (Chest) chests.get(loc);
+		if (loc.getBlock().getState().getType() != Material.CHEST) {
+			chest.getInventory().clear();
+		} else {
+			System.out.println("This chest doesn't exists");
+		}
+	}
+
+	public void createChest(Location loc) {
+		if (chests.containsKey(loc)) {
+			System.out.println("This chest already exists");
+		} else {
+			Chest chest = (Chest) loc.getBlock().getState();
+			loc.getBlock().setType(Material.CHEST);
+			chests.put(chest, loc);
+		}
+	}
+
+	public void addChestItem(Location loc, boolean newChest, ItemStack... itemStack) {
+		Chest chest = (Chest) chests.get(loc);
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		for (ItemStack im : itemStack) {
+			chest.getInventory().addItem(im);
+		}
+	}
+
+	public void setChestItem(Location loc, boolean newChest, ItemStack itemStack, int itemSlot) {
+		Chest chest = (Chest) loc.getBlock().getState();
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			chest.getInventory().setItem(itemSlot, itemStack);
+			chest.getInventory().setItem(itemSlot, itemStack);
+		} else {
+			System.out.println("This chest deosn't exist");
+		}
+	}
+
+	public void setChestItem(Location loc, boolean newChest, ItemStack itemStack, int itemSlot, ItemStack itemStack2,
+			int itemSlot2) {
+		Chest chest = (Chest) loc.getBlock().getState();
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			chest.getInventory().setItem(itemSlot, itemStack);
+			chest.getInventory().setItem(itemSlot2, itemStack2);
+		} else {
+			System.out.println("This chest deosn't exist");
+		}
+	}
+
+	public void setChestItem(Location loc, boolean newChest, ItemStack itemStack, int itemSlot, ItemStack itemStack2,
+			int itemSlot2, ItemStack itemStack3, int itemSlot3) {
+		Chest chest = (Chest) loc.getBlock().getState();
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			chest.getInventory().setItem(itemSlot, itemStack);
+			chest.getInventory().setItem(itemSlot2, itemStack2);
+			chest.getInventory().setItem(itemSlot3, itemStack3);
+		} else {
+			System.out.println("This chest deosn't exist");
+		}
+	}
+
+	public void setChestItem(Location loc, boolean newChest, ItemStack itemStack, int itemSlot, ItemStack itemStack2,
+			int itemSlot2, ItemStack itemStack3, int itemSlot3, ItemStack itemStack4, int itemSlot4) {
+		Chest chest = (Chest) loc.getBlock().getState();
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			chest.getInventory().setItem(itemSlot, itemStack);
+			chest.getInventory().setItem(itemSlot2, itemStack2);
+			chest.getInventory().setItem(itemSlot3, itemStack3);
+			chest.getInventory().setItem(itemSlot4, itemStack4);
+		} else {
+			System.out.println("This chest deosn't exist");
+		}
+	}
+
+	public void setChestItem(Location loc, boolean newChest, ItemStack itemStack, int itemSlot, ItemStack itemStack2,
+			int itemSlot2, ItemStack itemStack3, int itemSlot3, ItemStack itemStack4, int itemSlot4,
+			ItemStack itemStack5, int itemSlot5) {
+		Chest chest = (Chest) loc.getBlock().getState();
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			chest.getInventory().setItem(itemSlot, itemStack);
+			chest.getInventory().setItem(itemSlot2, itemStack2);
+			chest.getInventory().setItem(itemSlot3, itemStack3);
+			chest.getInventory().setItem(itemSlot4, itemStack4);
+			chest.getInventory().setItem(itemSlot5, itemStack5);
+		} else {
+			System.out.println("This chest deosn't exist");
+		}
+	}
+
+	public void setChestItem(Location loc, boolean newChest, ItemStack itemStack, int itemSlot, ItemStack itemStack2,
+			int itemSlot2, ItemStack itemStack3, int itemSlot3, ItemStack itemStack4, int itemSlot4,
+			ItemStack itemStack5, int itemSlot5, ItemStack itemStack6, int itemSlot6) {
+		Chest chest = (Chest) loc.getBlock().getState();
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			chest.getInventory().setItem(itemSlot, itemStack);
+			chest.getInventory().setItem(itemSlot2, itemStack2);
+			chest.getInventory().setItem(itemSlot3, itemStack3);
+			chest.getInventory().setItem(itemSlot4, itemStack4);
+			chest.getInventory().setItem(itemSlot5, itemStack5);
+			chest.getInventory().setItem(itemSlot6, itemStack6);
+		} else {
+			System.out.println("This chest deosn't exist");
+		}
+	}
+
+	public void setChestItem(Location loc, boolean newChest, ItemStack itemStack, int itemSlot, ItemStack itemStack2,
+			int itemSlot2, ItemStack itemStack3, int itemSlot3, ItemStack itemStack4, int itemSlot4,
+			ItemStack itemStack5, int itemSlot5, ItemStack itemStack6, int itemSlot6, ItemStack itemStack7,
+			int itemSlot7) {
+		Chest chest = (Chest) loc.getBlock().getState();
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			chest.getInventory().setItem(itemSlot, itemStack);
+			chest.getInventory().setItem(itemSlot2, itemStack2);
+			chest.getInventory().setItem(itemSlot3, itemStack3);
+			chest.getInventory().setItem(itemSlot4, itemStack4);
+			chest.getInventory().setItem(itemSlot5, itemStack5);
+			chest.getInventory().setItem(itemSlot6, itemStack6);
+			chest.getInventory().setItem(itemSlot7, itemStack7);
+		} else {
+			System.out.println("This chest deosn't exist");
+		}
+	}
+
+	public void setChestItem(Location loc, boolean newChest, ItemStack itemStack, int itemSlot, ItemStack itemStack2,
+			int itemSlot2, ItemStack itemStack3, int itemSlot3, ItemStack itemStack4, int itemSlot4,
+			ItemStack itemStack5, int itemSlot5, ItemStack itemStack6, int itemSlot6, ItemStack itemStack7,
+			int itemSlot7, ItemStack itemStack8, int itemSlot8) {
+		Chest chest = (Chest) loc.getBlock().getState();
+		if (newChest == true) {
+			if (loc.getBlock().getState().getType() != Material.CHEST) {
+				loc.getBlock().setType(Material.CHEST);
+			}
+		}
+		if (loc.getBlock().getState().getType() == Material.CHEST) {
+			chest.getInventory().setItem(itemSlot, itemStack);
+			chest.getInventory().setItem(itemSlot2, itemStack2);
+			chest.getInventory().setItem(itemSlot3, itemStack3);
+			chest.getInventory().setItem(itemSlot4, itemStack4);
+			chest.getInventory().setItem(itemSlot5, itemStack5);
+			chest.getInventory().setItem(itemSlot6, itemStack6);
+			chest.getInventory().setItem(itemSlot7, itemStack7);
+			chest.getInventory().setItem(itemSlot8, itemStack8);
+		} else {
+			System.out.println("This chest deosn't exist");
+		}
+	}
+}
