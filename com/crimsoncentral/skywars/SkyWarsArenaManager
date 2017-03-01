@@ -1,0 +1,8 @@
+package com.crimsoncentral.skywars.SkyWarsArenaManager
+
+public class SkyWarsArenaManager implements Listener
+{
+    public static ArrayList<Player> warriors = new ArrayList<PLayer>();
+    public static ArrayList<Player> bowsman = new ArrayList<PLayer>();
+    public static ArrayList<Player> brewer = new ArrayList<PLayer>();
+}
