@@ -79,16 +79,16 @@ public class SkyWarsArena
     public void giveSkyWarsItems(Player p)
     {
         ItemStack mainlobby = nameItem(new ItemStack(Material.BED), ChatColor.DARK_RED + "" + ChatColor.BOLD + "Main Lobby");
-		ItemStack skyWarsLobby = nameItem(new ItemStack(Material.BARRIER), ChatColor.AQUA + "" + ChatColor.BOLD + "Sky Wars Lobby");
-		ItemMeta swlMeta = skyWarsLobby.getItemMeta();
-		swlMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		skyWarsLobby.setItemMeta(swlMeta);
-		ItemStack skyWarsKits = nameItem(new ItemStack(Material.EYE_OF_ENDER), ChatColor.GOLD + "" + ChatColor.BOLD + "Sky Wars Kits");
+	ItemStack skyWarsLobby = nameItem(new ItemStack(Material.BARRIER), ChatColor.AQUA + "" + ChatColor.BOLD + "Sky Wars Lobby");
+	ItemMeta swlMeta = skyWarsLobby.getItemMeta();
+	swlMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+	skyWarsLobby.setItemMeta(swlMeta);
+	ItemStack skyWarsKits = nameItem(new ItemStack(Material.EYE_OF_ENDER), ChatColor.GOLD + "" + ChatColor.BOLD + "Sky Wars Kits");
         
         p.getInventory().clear();
-		p.getInventory().setItem(7, mainlobby);
-		p.getInventory().setItem(8, skyWarsLobby);
-		p.getInventory().setItem(4, skyWarsKits);
+	p.getInventory().setItem(7, mainlobby);
+	p.getInventory().setItem(8, skyWarsLobby);
+	p.getInventory().setItem(4, skyWarsKits);
     }
     
     public void resetPlayerConditions(Player p)
