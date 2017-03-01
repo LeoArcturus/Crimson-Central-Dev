@@ -16,6 +16,7 @@ public class SkyWarsArena
     List<Location> chestLocations = new ArrayList<Location>();
     public boolean weather;
     public int time;
+    public int gameStage;
     
     List<Player> players = new ArrayList<Player>();
     
@@ -44,16 +45,62 @@ public class SkyWarsArena
         return this.players;
     }
     
+    public int getGameStage()
+    {
+        return this.gameStage;
+    }
+    
     public SkyWarsArena()
     {
         
     }
     
-    public void sortPlayers()
+    public void sortPlayer(Player p)
     {
         switch(players.getSize())
         {
             case 0:
+                this.players.add(p);
+                resetPlayerConditions(p);
+                giveSkyWarsItems(p);
+                sendWorldMessage(this.world, ChatColor.GREEN + p.getName + " has joined the game, " + ChatColor.GOLD + players.getSize() + "/12");
+                
+        }
+    }
+    
+    public void sendWorldMessage(World w, String s)
+    {
+        for(Player p : w.getPlayers)
+        {
+            p.sendMessage(s);
+        }
+    }
+    
+    public void giveSkyWarsItems(Player p)
+    {
+        ItemStack mainlobby = nameItem(new ItemStack(Material.BED), ChatColor.DARK_RED + "" + ChatColor.BOLD + "Main Lobby");
+		ItemStack skyWarsLobby = nameItem(new ItemStack(Material.BARRIER), ChatColor.AQUA + "" + ChatColor.BOLD + "Sky Wars Lobby");
+		ItemMeta swlMeta = skyWarsLobby.getItemMeta();
+		swlMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		skyWarsLobby.setItemMeta(swlMeta);
+		ItemStack skyWarsKits = nameItem(new ItemStack(Material.EYE_OF_ENDER), ChatColor.GOLD + "" + ChatColor.BOLD + "Sky Wars Kits");
+        
+        p.getInventory().clear();
+		p.getInventory().setItem(7, mainlobby);
+		p.getInventory().setItem(8, skyWarsLobby);
+		p.getInventory().setItem(4, skyWarsKits);
+    }
+    
+    public void resetPlayerConditions(Player p)
+    {
+        p.setHealth(20.0);
+        p.setFoodLevel(20);
+        p.setAllowFlight(false);
+        
+        for(Player pl : Bukkit.getServer().getOnlinePlayers())
+		{
+        	p.showPlayer(pl);
+			pl.showPlayer(p);
         }
     }
 }
