@@ -13,10 +13,14 @@ public class SkyWarsArena
     public int id;
     public World world;
     List<Location> spawnLocations = new ArrayList<Location>();
-    List<Location> chestLocations = new ArrayList<Location>();
+    List<Location> podLocations = new ArrayList<Location>();
+    List<Location> playerChestLocations = new ArrayList<Location>();
+    List<Location> midChestLocations = new ArrayList<Location>();
+    List<Location> centerChestLocations = new ArrayList<Location>();
     public boolean weather;
     public int time;
     public int gameStage;
+    public int gameTimer;
     
     List<Player> players = new ArrayList<Player>();
     
@@ -55,17 +59,114 @@ public class SkyWarsArena
         
     }
     
+    public void runGame(Player p)
+    {
+    	Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
+	    @Override
+	    public void run()
+	    {
+	    	if(gameStage != 0)
+		{
+		    this.world.setTime(time);
+		    this.world.setStorm(weather);
+		    this.world.setAutoSave(false);
+		}
+		
+	    	if(this.gameStage == 1)
+		{
+		    if(this.gameTimer == 0 && this.players.size() >= 3)
+		    {
+		    	this.gameTimer = 15;
+			this.gameStage = 2;
+		    	sendWorldMessage(this.w, ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "15 " + ChatColor.GREEN + "Seconds"));
+		    }else if(this.gameTimer == 0 && this.players.size() < 3){
+		    	this.gameTimer = 15;
+			sendWorldMessage(this.w, ChatColor.DARK_RED + "Not Enough Players to Start the Game");
+		    }else if(this.players.size() == 12){
+		    	this.gameTimer = 15;
+			this.gameStage = 2;
+			sendWorldMessage(this.w, ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "15 " + ChatColor.GREEN + "Seconds"));
+		    }else{
+		    	this.gameTimer -= 1;
+		    }
+		}else if(this.gameStage == 2){
+		    switch(this.gameTimer)
+		    {
+			case 10:
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "10 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 9:
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "9 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 8:
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "8 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 7:
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "7 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 6:
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "6 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 5:
+			    sendWorldTitle(this.w, "§c§l*5*");
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "5 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 4:
+			    sendWorldTitle(this.w, "§6§l*4*");
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "4 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 3:
+			    sendWorldTitle(this.w, "§c§l*3*");
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "3 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 2:
+			    sendWorldTitle(this.w, "§6§l*2*");
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "2 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 1:
+			    sendWorldTitle(this.w, "§c§l*1*");
+			    sendWorldMessage(ChatColor.GREEN + "Game Starting in " +  ChatColor.GOLD + "1 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 0:
+			    sendWorldTitle(this.w, "§b§l*Sky Wars*");
+			    sendWorldSubTitle(this.w, "§6§l*On Crimson Central*");
+			    sendWorldMessage(ChatColor.GREEN + "Game has started");
+			    this.gameStage = 3;
+			    this.gameTimer = 600;
+			    for(Player p : this.players())
+			    {
+			        p.getInventory().clear();
+				SkyWarsArenaManager.giveKit(p);
+			    }
+			    for(Location l : playerChestLocations)
+			    {
+			    	generateRandomPlayerChestContents(l);
+			    }
+			    for(Location l : midChestLocations)
+			    {
+			    	generateRandomMidChestContents(l);
+			    }
+			    for(Location l : centerChestLocations)
+			    {
+			    	generateRandomCenterChestContents(l);
+			    }
+			    break;
+			case default:
+			   gameTimer -= 1;
+			   break;
+		     }
+		}
+	    }
+	}, 0, 20);
+    }
+    
     public void sortPlayer(Player p)
     {
-        switch(players.getSize())
-        {
-            case 0:
-                this.players.add(p);
-                resetPlayerConditions(p);
-                giveSkyWarsItems(p);
-                sendWorldMessage(this.world, ChatColor.GREEN + p.getName + " has joined the game, " + ChatColor.GOLD + players.getSize() + "/12");
-                
-        }
+	this.players.add(p);
+	resetPlayerConditions(p);
+	giveSkyWarsItems(p);
+	sendWorldMessage(this.world, ChatColor.GREEN + p.getName + " has joined the game, " + ChatColor.GOLD + players.getSize() + "/12");
+        p.teleport(loc);
     }
     
     public void sendWorldMessage(World w, String s)
@@ -73,6 +174,26 @@ public class SkyWarsArena
         for(Player p : w.getPlayers)
         {
             p.sendMessage(s);
+        }
+    }
+    
+    public void sendWorldTitle(World w, String s)
+    {
+        IChatBaseComponent chatTitle = ChatSerializer.a(s);
+	PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+        for(Player p : w.getPlayers)
+        {
+            ((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(title);
+        }
+    }
+    
+    public void sendWorldSubTitle(World w, String s)
+    {
+        IChatBaseComponent chatSubTitle = ChatSerializer.a(s);
+	PacketPlayOutTitle subTitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUB_TITLE, chatSubTitle);
+        for(Player p : w.getPlayers)
+        {
+            ((CraftPlayer) p.getPlayer()).getHandle().playerConnection.sendPacket(subTitle);
         }
     }
     
