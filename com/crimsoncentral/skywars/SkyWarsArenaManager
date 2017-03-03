@@ -2,47 +2,5 @@ package com.crimsoncentral.skywars.SkyWarsArenaManager
 
 public class SkyWarsArenaManager implements Listener
 {
-    public static ArrayList<Player> warriors = new ArrayList<PLayer>();
-    public static ArrayList<Player> bowsman = new ArrayList<PLayer>();
-    public static ArrayList<Player> brewer = new ArrayList<PLayer>();\
     
-    public void giveSkyWarsKit(Player p)
-    {
-    	if(warriors.contains(p))
-	{
-		ItemStack leatherHelm = new ItemStack(Material.LEATHER_HELMET, 1);
-		ItemStack leatherChest = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-		ItemStack leatherLeg = new ItemStack(Material.LEATHER_LEGGINGS, 1);
-		ItemStack leatherBoots = new ItemStack(Material.LEATHER_BOOTS, 1);
-		ItemStack stoneSword = new ItemStack(Material.STONE_SWORD, 1);
-		ItemStack wood = new ItemStack(Material.WOOD, 16);
-		
-		p.getInventory().setHelmet(leatherHelm);
-		p.getInventory().setChestplate(leatherChest);
-		p.getInventory().setLeggings(leatherLeg);
-		p.getInventory().setBoots(leatherBoots);
-		p.getInventory().addItem(stoneSword);
-		p.getInventory().addItem(wood);
-	}else if(bowsmen.contains(p)){
-		ItemStack bow = new ItemStack(Material.BOW, 1);
-		ItemStack arrows = new ItemStack(Material.ARROW, 16);
-		
-		p.getInventory().addItem(bow);
-		p.getInventory().addItem(arrows);
-	}else if(brewers.contains(p)){
-		ItemStack splashhe = new ItemStack(Material.SPLASH_POTION);
-		ItemMeta splashhemeta = (PotionMeta) splashhe.getItemMeta();
-		((PotionMeta) splashhemeta).setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
-		splashhe.setItemMeta(splashhemeta);
-		ItemStack splashha = new ItemStack(Material.SPLASH_POTION);
-		ItemMeta splashhameta = (PotionMeta) splashha.getItemMeta();
-		((PotionMeta) splashhameta).setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
-		splashha.setItemMeta(splashhameta);
-		
-		p.getInventory().addItem(splashhe);
-		p.getInventory().addItem(splashhe);
-		p.getInventory().addItem(splashha);
-		p.getInventory().addItem(splashha);
-	}
-    }
 }
