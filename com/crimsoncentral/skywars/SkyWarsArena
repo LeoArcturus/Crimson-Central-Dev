@@ -155,6 +155,103 @@ public class SkyWarsArena
 			   gameTimer -= 1;
 			   break;
 		     }
+		}else if(this.gameStage == 3){
+		    switch(this.gameTimer)
+		    {
+		    	case 430:
+			    sendWorldMessage(ChatColor.GREEN + "Chests are refilling in 10 seconds");
+			    break;
+			case 420:
+			    for(Location l : playerChestLocations)
+			    {
+			    	generateRandomPlayerChestContents(l);
+			    }
+			    for(Location l : midChestLocations)
+			    {
+			    	generateRandomMidChestContents(l);
+			    }
+			    for(Location l : centerChestLocations)
+			    {
+			    	generateRandomCenterChestContents(l);
+			    }
+			    break;
+			case 250:
+			    sendWorldMessage(ChatColor.GREEN + "Chests are refilling in 10 seconds");
+			    break;
+			case 240:
+			    for(Location l : playerChestLocations)
+			    {
+			    	generateRandomPlayerChestContents(l);
+			    }
+			    for(Location l : midChestLocations)
+			    {
+			    	generateRandomMidChestContents(l);
+			    }
+			    for(Location l : centerChestLocations)
+			    {
+			    	generateRandomCenterChestContents(l);
+			    }
+			    break;
+			case 60:
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "1 " + ChatColor.GREEN + "Minute");
+			    break;
+			case 10:
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "10 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 9:
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "9 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 8:
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "8 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 7:
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "7 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 6:
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "6 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 5:
+			    sendWorldTitle(this.w, "§c§l*5*");
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "5 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 4:
+			    sendWorldTitle(this.w, "§6§l*4*");
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "4 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 3:
+			    sendWorldTitle(this.w, "§c§l*3*");
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "3 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 2:
+			    sendWorldTitle(this.w, "§6§l*2*");
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "2 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 1
+			    sendWorldTitle(this.w, "§c§l*2*");
+			    sendWorldMessage(ChatColor.GREEN + "Game is ending in " +  ChatColor.GOLD + "1 " + ChatColor.GREEN + "Seconds");
+			    break;
+			case 0:
+			    sendWorldTitle(this.w, "§6§l*Tie*");
+			    sendWorldMessage(ChatColor.GREEN + "Game has ended");
+			    this.gameStage = 4;
+			    this.gameTimer = 10;
+			    break;
+		    }
+		}else if(this.gameStage == 4){
+		    --this.gameTimer;
+		    if(this.gameTimer == 0)
+		    {
+		        World world = Bukkit.getWorld("SkyWarsLobby");
+			Location loc = new Location(world, -2561.5, 52, 744.5, -90, 0);
+			
+			for(Player p : this.players)
+			{
+			    p.teleport(loc);
+			    giveSkyWarsLobbyItems(p);
+			    setLobbyConditions(p);
+			    players.clear();
+			}
+		    }
 		}
 	    }
 	}, 0, 20);
@@ -212,6 +309,48 @@ public class SkyWarsArena
 	p.getInventory().setItem(4, skyWarsKits);
     }
     
+    public void giveSkyWarsLobbyItems(Player p)
+    {
+     	ItemStack skyWarsMapMenu = nameItem(new ItemStack(Material.MAP), ChatColor.AQUA + "" + ChatColor.BOLD + "Select Game");
+        ItemStack gameMenu = nameItem(new ItemStack(Material.COMPASS), ChatColor.DARK_RED + "Game Menu");
+	ItemStack cosmetics = nameItem(new ItemStack(Material.CHEST), ChatColor.YELLOW + "Cosmetics");
+	ItemStack hidePlayers = nameItem(new ItemStack(351, 1, (short) 10), ChatColor.DARK_GREEN + "Hide Players");
+	ItemStack showPlayers = nameItem(new ItemStack(351, 1, (short) 1), ChatColor.RED + "Show Players");
+	ItemMeta hidePlayersMeta = hidePlayers.getItemMeta();
+	ArrayList<String> hpLore = new ArrayList<String>();
+	hpLore.add(ChatColor.YELLOW + "Coming Soon!");
+	hidePlayersMeta.setLore(hpLore);
+	hidePlayers.setItemMeta(hidePlayersMeta);
+	ItemStack serverRadio = nameItem(new ItemStack(Material.NOTE_BLOCK), ChatColor.AQUA + "Server Radio");
+	ItemStack lobbySelector = nameItem(new ItemStack(Material.NETHER_STAR), ChatColor.GOLD + "Lobby Selector (Coming Soon)");
+	ItemMeta lobbySelectorMeta = lobbySelector.getItemMeta();
+	ArrayList<String> lsLore = new ArrayList<String>();
+	lsLore.add(ChatColor.YELLOW + "Coming Soon!");
+	lobbySelectorMeta.setLore(lsLore);
+	lobbySelector.setItemMeta(lobbySelectorMeta);
+	
+	String pn = p.getName();
+	
+	p.getPlayer().getInventory().setItem(0, gameMenu);
+	p.getPlayer().getInventory().setItem(1, skyWarsMapMenu);
+	ItemStack profile = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+	SkullMeta skullMeta = (SkullMeta) profile.getItemMeta();
+	skullMeta.setOwner(pn);
+	skullMeta.setDisplayName(ChatColor.GOLD + "Profile");
+	profile.setItemMeta(skullMeta);
+	skullMeta.setDisplayName(pn);
+	p.getPlayer().getInventory().setItem(7, profile);
+	p.getPlayer().getInventory().setItem(5, serverRadio);
+	p.getPlayer().getInventory().setItem(8, lobbySelector);
+	p.getPlayer().getInventory().setItem(4, cosmetics);
+	if(MainLobby.shown(p))
+	{
+	    p.getPlayer().getInventory().setItem(3, hidePlayers);
+	}else if(MainLobby.hidden(p)){
+	    p.getPlayer().getInventory().setItem(3, showPlayers);
+	}
+    }
+    
     public void resetPlayerConditions(Player p)
     {
         p.setHealth(20.0);
@@ -219,9 +358,28 @@ public class SkyWarsArena
         p.setAllowFlight(false);
         
         for(Player pl : Bukkit.getServer().getOnlinePlayers())
-		{
+	{
         	p.showPlayer(pl);
-			pl.showPlayer(p);
+		pl.showPlayer(p);
+        }
+    }
+    
+    public void setLobbyConditions(Player p)
+    {
+        p.setHealth(20.0);
+        p.setFoodLevel(20);
+        p.setAllowFlight(false);
+        
+        for(Player pl : Bukkit.getServer().getOnlinePlayers())
+	{
+	    if(MainLobby.shown.contians(p))
+	    {
+        	p.showPlayer(pl);
+		pl.showPlayer(p);
+	    }else{
+	        p.hidePlayer(pl);
+		pl.hidePlayer(p);
+	    }
         }
     }
 }
