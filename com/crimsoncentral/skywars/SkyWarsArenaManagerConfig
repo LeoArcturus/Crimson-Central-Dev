@@ -1,0 +1,23 @@
+package com.crimsoncentral.skywars.SkyWarsArenaConfig
+
+public class SkyWarsArenaManagerConfig
+{
+    public File tagData;
+    public FileConfiguration tagConfiguration;
+    
+    public SkyWarsArenaManagerConfig()
+    {
+        tagData = new File("plugins/CrimsonCentralv1/SkyWars/MapData/ArenaTags.yml");
+        tagConfiguration = YamalConfiguration.loadConfinguration(tagData);
+    }
+    
+    public int getTotalArenas()
+    {
+        return tagConfiguration.getString("Number of Arenas");
+    }
+    
+    public string getArenaTag(String i)
+    {
+        return tagConfiguration.getInt(i);
+    }
+}
