@@ -11,6 +11,15 @@ public class SkyWarsArenaManagerConfig
         tagConfiguration = YamalConfiguration.loadConfinguration(tagData);
     }
     
+    public void createArenaManagerConfig()
+	  {
+		    try{
+			      arenaData.createNewFile();
+		    }catch(IOException e){
+			      e.printStackTrace();
+		    }
+	  }
+    
     public int getTotalArenas()
     {
         return tagConfiguration.getString("Number of Arenas");
@@ -20,4 +29,3 @@ public class SkyWarsArenaManagerConfig
     {
         return tagConfiguration.getInt(i);
     }
-}
