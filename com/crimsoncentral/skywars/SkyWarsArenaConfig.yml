@@ -1,0 +1,56 @@
+package com.crimsoncentral.skywars.SkyWarsArenaConfig;
+
+public class SkyWarsArenaConfig
+{
+    public File arenaData;
+    public FileConfiguration arenaConfiguration;
+    
+    public SkyWarsArenaConfig(String tag)
+    {
+        arenaData = new File("plugins/CrimsonCentralv1/SkyWars/MapData/" + tag + ".yml");
+        arenaConfiguration = YamlConfiguration.loadConfiguration(arenaData);
+    }
+    
+    public void createDefaults(World w, int id, String tag, ArrayList<Location> podLocations, ArrayList<Location> chestLocations)
+    {
+        arenaConfiguration.set("World Tag", tag);
+        arenaConfiguration.set("Item Tag", 0);
+        arenaConfiguration.set("Item Tag 2", 0);
+        arenaConfiguration.set("World Name", w);
+        arenaConfiguration.set("World Time", 0);
+        arenaConfiguration.set("World Weather", false);
+        arenaConfiguration.set("Spawn Location 1", null);
+        arenaConfiguration.set("Spawn Location 2", null);
+        arenaConfiguration.set("Spawn Location 3", null);
+        arenaConfiguration.set("Spawn Location 4", null);
+        arenaConfiguration.set("Spawn Location 5", null);
+        arenaConfiguration.set("Spawn Location 6", null);
+        arenaConfiguration.set("Spawn Location 7", null);
+        arenaConfiguration.set("Spawn Location 8", null);
+        arenaConfiguration.set("Spawn Location 9", null);
+        arenaConfiguration.set("Spawn Location 10", null);
+        arenaConfiguration.set("Spawn Location 11", null);
+        arenaConfiguration.set("Spawn Location 12", null);
+        int x = 0;
+        for(Location l : podLocations)
+        {
+            ++x;
+            arenaConfiguration.set("Pod Location " + x, null);
+        }
+        int y = 0;
+        for(Location l : chestLocations)
+        {
+            ++y;
+            arenaConfiguration.set("Pod Location " + y, null);
+        }
+    }
+    
+    public void arenaConfig()
+	  {
+		    try{
+			      arenaData.createNewFile();
+		    }catch(IOException e){
+			      e.printStackTrace();
+		    }
+	  }
+}
