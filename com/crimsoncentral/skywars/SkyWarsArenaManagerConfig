@@ -29,3 +29,4 @@ public class SkyWarsArenaManagerConfig
     {
         return tagConfiguration.getInt(i);
     }
+}
