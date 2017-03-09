@@ -12,13 +12,13 @@ public class SkyWarsArenaManagerConfig
     }
     
     public void createArenaManagerConfig()
-	  {
-		    try{
-			      arenaData.createNewFile();
-		    }catch(IOException e){
-			      e.printStackTrace();
-		    }
-	  }
+    {
+	try{
+	    tagData.createNewFile();
+	}catch(IOException e){
+	    e.printStackTrace();
+	}
+    }
     
     public int getTotalArenas()
     {
