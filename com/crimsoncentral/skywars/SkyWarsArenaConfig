@@ -46,11 +46,169 @@ public class SkyWarsArenaConfig
     }
     
     public void arenaConfig()
-	  {
-		    try{
-			      arenaData.createNewFile();
-		    }catch(IOException e){
-			      e.printStackTrace();
-		    }
-	  }
+    {
+	try{
+	    arenaData.createNewFile();
+	}catch(IOException e){
+	    e.printStackTrace();
+	}
+    }
+    
+    public World getWorld()
+    {
+        String s = arenaConfiguration.getString("World Name");
+        return Bukkit.getWorld(s);
+    }
+    
+    public String getTag()
+    {
+        return arenaConfiguration.getString("World Tag");
+    }
+    
+    public int getItemID()
+    {
+        return arenaConfiguration.getInt("Item Tag");
+    }
+    
+    public int getAlternateItemID()
+    {
+        return arenaConfiguration.getInt("Item Tag 2");
+    }
+    
+    public int getTime()
+    {
+        return arenaConfiguration.getInt("World Time");
+    }
+    
+    public boolean getWeather()
+    {
+        return arenaConfiguration.getInt("World Weather");
+    }
+    
+    public List<Location> getSpawns()
+    {
+        ArrayList<String> keys = new ArrayList<String>();
+	ArrayList<Location> locs = new ArrayList<Location>();
+    	for(String s : arenaConfiguration.getKeys(true))
+	{
+	    if(s.startsWith("Spawn"))
+	    {
+	    	keys.add(arenaConfiguration.getString(s));
+	    }
+	}
+	for(String s : keys)
+	{
+	    Location loc;
+	    StringTokenizer st = new StringTokenizer(s);
+	    loc.setX(st.nextToken());
+	    loc.setY(st.nextToken());
+	    loc.setZ(st.nextToken());
+	    loc.setYaw(st.nextToken());
+	    loc.setPitch(st.nextToken());
+	    loc.add(locs);
+	}
+        return this.locs;
+    }
+    
+    public List<Location> getPodLocations()
+    {
+        ArrayList<String> keys = new ArrayList<String>();
+	ArrayList<Location> locs = new ArrayList<Location>();
+    	for(String s : arenaConfiguration.getKeys(true))
+	{
+	    if(s.startsWith("Pod"))
+	    {
+	    	keys.add(arenaConfiguration.getString(s));
+	    }
+	}
+	for(String s : keys)
+	{
+	    Location loc;
+	    StringTokenizer st = new StringTokenizer(s);
+	    loc.setX(st.nextToken());
+	    loc.setY(st.nextToken());
+	    loc.setZ(st.nextToken());
+	    loc.add(locs);
+	}
+        return this.locs;
+    }
+    
+    public List<Location> playerChestLocations()
+    {
+        ArrayList<String> keys = new ArrayList<String>();
+	ArrayList<Location> locs = new ArrayList<Location>();
+    	for(String s : arenaConfiguration.getKeys(true))
+	{
+	    if(s.startsWith("Player"))
+	    {
+	    	keys.add(arenaConfiguration.getString(s));
+	    }
+	}
+	for(String s : keys)
+	{
+	    Location loc;
+	    StringTokenizer st = new StringTokenizer(s);
+	    loc.setX(st.nextToken());
+	    loc.setY(st.nextToken());
+	    loc.setZ(st.nextToken());
+	    loc.add(locs);
+	}
+        return this.locs;
+    }
+    
+    public List<Location> midChestLocations()
+    {
+        ArrayList<String> keys = new ArrayList<String>();
+	ArrayList<Location> locs = new ArrayList<Location>();
+    	for(String s : arenaConfiguration.getKeys(true))
+	{
+	    if(s.startsWith("Middle"))
+	    {
+	    	keys.add(arenaConfiguration.getString(s));
+	    }
+	}
+	for(String s : keys)
+	{
+	    Location loc;
+	    StringTokenizer st = new StringTokenizer(s);
+	    loc.setX(st.nextToken());
+	    loc.setY(st.nextToken());
+	    loc.setZ(st.nextToken());
+	    loc.add(locs);
+	}
+        return this.locs;
+    }
+    
+    public List<Location> centerChestLocations()
+    {
+        ArrayList<String> keys = new ArrayList<String>();
+	ArrayList<Location> locs = new ArrayList<Location>();
+    	for(String s : arenaConfiguration.getKeys(true))
+	{
+	    if(s.startsWith("Center"))
+	    {
+	    	keys.add(arenaConfiguration.getString(s));
+	    }
+	}
+	for(String s : keys)
+	{
+	    Location loc;
+	    StringTokenizer st = new StringTokenizer(s);
+	    loc.setX(st.nextToken());
+	    loc.setY(st.nextToken());
+	    loc.setZ(st.nextToken());
+	    loc.add(locs);
+	}
+        return this.locs;
+    }
+    
+    public List<PLayer> getPlayers()
+    {
+        return this.players;
+    }
+    
+    public int getGameStage()
+    {
+        return this.gameStage;
+    }
 }
