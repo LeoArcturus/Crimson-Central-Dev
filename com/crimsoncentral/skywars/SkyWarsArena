@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 public class SkyWarsArena
 {
-    public CrimsonCentralMain plugin;
-
     public int id;
     public World world;
+    public String tag;
+    public int itemID;
+    public int alternateItemID;
     List<Location> spawnLocations = new ArrayList<Location>();
     List<Location> podLocations = new ArrayList<Location>();
     List<Location> playerChestLocations = new ArrayList<Location>();
@@ -34,14 +35,44 @@ public class SkyWarsArena
         return this.world;
     }
     
+    public String getTag()
+    {
+        return this.tag;
+    }
+    
+    public int getItemID()
+    {
+        return this.itemID;
+    }
+    
+    public int getAlternateItemID()
+    {
+        return this.alternateItemID;
+    }
+    
     public List<Location> getSpawns()
     {
         return this.spawnLocations;
     }
     
-    public List<Location> getChestLocations()
+    public List<Location> getPodLocations()
     {
-        return this.chestLocations;
+        return this.podLocations;
+    }
+    
+    public List<Location> playerChestLocations()
+    {
+        return this.playerChestLocations;
+    }
+    
+    public List<Location> midChestLocations()
+    {
+        return this.midChestLocations;
+    }
+    
+    public List<Location> centerChestLocations()
+    {
+        return this.centerChestLocations;
     }
     
     public List<PLayer> getPlayers()
@@ -54,9 +85,20 @@ public class SkyWarsArena
         return this.gameStage;
     }
     
-    public SkyWarsArena()
+    public SkyWarsArena(World world, String tag, int itemID, int alternateItemID, int time, boolean weather, ArrayList<Location> spawnLocations, ArrayList<Location> podLocations, ArrayList<Location> playerChestLocations, ArrayList<Location> midChestLocations, ArrayList<Location> centerChestLocations)
     {
-        
+        this.id = SkyWarsArenaManager.skyWarsArena().size() + 1;
+        this.world = world;
+	this.tag = tag;
+	this.itemID = itemID;
+	this.alternateItemID = alternateItemID;
+	this.time = time;
+	this.weather = weather;
+	this.spawnLocations = spawnLocations;
+	this.podLocations = podLocations;
+	this.playerChestLocations = playerChestLocations;
+	this.midChestLocations = midChestLocations;
+	this.centerChestLocations = centerChestLocations;
     }
     
     public void runGame(Player p)
