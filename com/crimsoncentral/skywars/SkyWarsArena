@@ -87,7 +87,7 @@ public class SkyWarsArena
     
     public SkyWarsArena(World world, String tag, int itemID, int alternateItemID, int time, boolean weather, ArrayList<Location> spawnLocations, ArrayList<Location> podLocations, ArrayList<Location> playerChestLocations, ArrayList<Location> midChestLocations, ArrayList<Location> centerChestLocations)
     {
-        this.id = SkyWarsArenaManager.skyWarsArena().size() + 1;
+        this.id = SkyWarsArenaManager.skyWarsArenas().size() + 1;
         this.world = world;
 	this.tag = tag;
 	this.itemID = itemID;
