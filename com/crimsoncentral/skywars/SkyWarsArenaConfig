@@ -7,7 +7,7 @@ public class SkyWarsArenaConfig
     
     public SkyWarsArenaConfig(String tag)
     {
-        arenaData = new File("plugins/CrimsonCentralv1/SkyWars/MapData/" + tag + ".yml");
+        arenaData = new File("plugins/CrimsonCentralv1/SkyWars/MapData/ArenaTags.yml");
         arenaConfiguration = YamlConfiguration.loadConfiguration(arenaData);
     }
     
