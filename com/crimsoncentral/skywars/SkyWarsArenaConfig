@@ -16,6 +16,7 @@ public class SkyWarsArenaConfig
         arenaConfiguration.set("World Tag", tag);
         arenaConfiguration.set("Item Tag", 0);
         arenaConfiguration.set("Item Tag 2", 0);
+	arenaConfiguration.set("Map Pack", 1);
         arenaConfiguration.set("World Name", w);
         arenaConfiguration.set("World Time", 0);
         arenaConfiguration.set("World Weather", false);
@@ -73,6 +74,11 @@ public class SkyWarsArenaConfig
     public int getAlternateItemID()
     {
         return arenaConfiguration.getInt("Item Tag 2");
+    }
+    
+    public int getMapPack()
+    {
+    	return arenaConfiguration.getInt("Map Pack");
     }
     
     public int getTime()
