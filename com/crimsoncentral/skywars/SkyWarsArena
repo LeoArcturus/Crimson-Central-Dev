@@ -13,6 +13,7 @@ public class SkyWarsArena
     public String tag;
     public int itemID;
     public int alternateItemID;
+    public int mapPack;
     List<Location> spawnLocations = new ArrayList<Location>();
     List<Location> podLocations = new ArrayList<Location>();
     List<Location> playerChestLocations = new ArrayList<Location>();
@@ -50,6 +51,11 @@ public class SkyWarsArena
         return this.alternateItemID;
     }
     
+    public int getMapPack()
+    {
+    	return this.mapPack;
+    }
+    
     public List<Location> getSpawns()
     {
         return this.spawnLocations;
@@ -85,13 +91,14 @@ public class SkyWarsArena
         return this.gameStage;
     }
     
-    public SkyWarsArena(World world, String tag, int itemID, int alternateItemID, int time, boolean weather, ArrayList<Location> spawnLocations, ArrayList<Location> podLocations, ArrayList<Location> playerChestLocations, ArrayList<Location> midChestLocations, ArrayList<Location> centerChestLocations)
+    public SkyWarsArena(World world, String tag, int itemID, int alternateItemID, int mapPack, int time, boolean weather, ArrayList<Location> spawnLocations, ArrayList<Location> podLocations, ArrayList<Location> playerChestLocations, ArrayList<Location> midChestLocations, ArrayList<Location> centerChestLocations)
     {
         this.id = SkyWarsArenaManager.skyWarsArenas().size() + 1;
         this.world = world;
 	this.tag = tag;
 	this.itemID = itemID;
 	this.alternateItemID = alternateItemID;
+	this.mapPack = mapPack;
 	this.time = time;
 	this.weather = weather;
 	this.spawnLocations = spawnLocations;
