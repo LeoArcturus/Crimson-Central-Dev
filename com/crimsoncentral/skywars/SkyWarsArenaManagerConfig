@@ -29,4 +29,17 @@ public class SkyWarsArenaManagerConfig
     {
         return tagConfiguration.getInt(i);
     }
+    
+    public ArrayList<String> getArenaTags()
+    {
+    	ArrayList<String> keys = new ArrayList<String>();
+    	for(String s : arenaConfiguration.getKeys(true))
+	{
+	    if(!s.startsWith("Number"))
+	    {
+	    	keys.add(arenaConfiguration.getString(s));
+	    }
+	}
+	return keys;
+    }
 }
