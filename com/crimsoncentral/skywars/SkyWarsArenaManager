@@ -2,5 +2,49 @@ package com.crimsoncentral.skywars.SkyWarsArenaManager
 
 public class SkyWarsArenaManager implements Listener
 {
+    public static ArrayList<SkyWarsArena> skyWarsArenas = new ArrayList<SkyWarsArena>();
     
+    public SkyWarsUtil = new SkyWarsUtil();
+    public SkyWarsAreanManagerConfig swm = new SkyWarsArenaManagerConfig();
+    
+    public void createRandomNewArena()
+    {
+        int randomNum = ThreadLocalRandom.current().nextInt(1, swm.getTotalArenas + 1);
+        SkyWarsArenaConfig swc = new SkyWarsArenaConfig(swc.getArenaTag(randomNum));
+        File sourceFolder = swc.getWorld().getWorldFolder();
+        World world = this.getServer().createWorld(new WorldCreator("SkyWars" + ++skyWarsArena.size()));
+        File targetFolder = world.getWorldFolder();
+        copyWorld(sourceFolder, targetFolder);
+        SkyWarsArena swa = new SkyWarsArena(world, swc.getTag(), swc.getItemID(), swc.getAlternateItemID(), swc.getTime(), swc.getWeather(), swc.getSpawns(), swc.getPodLocations(), swc.playerChestLocations(), swc.middleChestLocations(), swc.centerChestLocations());
+        skyWarsArenas.add(swa);
+    }
+    
+    public void copyWorld(File source, File target){
+        try {
+            ArrayList<String> ignore = new ArrayList<String>(Arrays.asList("uid.dat", "session.dat"));
+            if(!ignore.contains(source.getName())) {
+                if(source.isDirectory()) {
+                    if(!target.exists())
+                    target.mkdirs();
+                    String files[] = source.list();
+                    for (String file : files) {
+                        File srcFile = new File(source, file);
+                        File destFile = new File(target, file);
+                        copyWorld(srcFile, destFile);
+                    }
+                } else {
+                    InputStream in = new FileInputStream(source);
+                    OutputStream out = new FileOutputStream(target);
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = in.read(buffer)) > 0)
+                        out.write(buffer, 0, length);
+                    in.close();
+                    out.close();
+                }
+            }
+        } catch (IOException e) {
+
+        }
+    }
 }
