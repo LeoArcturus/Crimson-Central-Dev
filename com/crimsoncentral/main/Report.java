@@ -6,11 +6,11 @@ public class Report
     public List<String> discriptions = new ArrayList<String>();
     pulbic List<Player> accusers = new ArrayList<Player>();
     
-    public Report(Player p, String message)
+    public Report(Player p, Player accuser, String message)
     {
          this.player = p
          this.discriptions.add(message);
-         this.accusers.add(p);
+         this.accusers.add(accuser);
          ReportManager.reports.add(this);
     }
     
