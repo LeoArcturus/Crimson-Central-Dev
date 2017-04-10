@@ -11,6 +11,7 @@ public class Report
          this.player = p
          this.discriptions.add(message);
          this.accusers.add(p);
+         ReportManager.reports.add(this);
     }
     
     public void addAccusation(Player p, String message)
