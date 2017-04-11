@@ -31,6 +31,7 @@ public ReportManager implements CommandSender, Listener
                             switch(args.length())
                                 case 2:
                                     Report r = new Report(plr, player, args[1]);
+				    reports.add(r);
                                 case 3:
                                     Report r = new Report(plr, player, args[1] + args[2]);
                                 case 4:
