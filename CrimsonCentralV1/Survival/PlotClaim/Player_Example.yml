@@ -4,7 +4,12 @@ Claim 1:
     Blocks:
     Pos 1:
     Pos 2:
+    Trusts:
+        example_player
+        example_player_2
 Claim 2:
     Blocks:
     Pos 1:
     Pos 2:
+    Trusts:
+        null
