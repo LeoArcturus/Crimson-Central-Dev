@@ -1,0 +1,30 @@
+package com.crimsoncentral.survival;
+
+public class RegionSelection
+{
+    public Player p;
+    public World w;
+    public Location pos1;
+    public Location pos2;
+    
+    public RegionSelection(Player p, World w)
+    {
+        this.p = p;
+        this.w = w;
+    }
+    
+    public RegionSelection(Player p, World w, Location pos1)
+    {
+        this.p = p;
+        this.w = w;
+        this.pos1 = pos1;
+    }
+    
+    public RegionSelection(Player p, World w, Location pos1, Location pos2)
+    {
+        this.p = p;
+        this.w = w;
+        this.pos1 = pos1;
+        this.pos2 = pos2;
+    }
+}
