@@ -10,6 +10,25 @@ public class AdminClaimConfim
         plotConfig = new File("plugins/CrimsonCentralv1/Survival/PlotClaim/Server_Claim.yml");
         plotData = YamlConfiguration.loadConfiguration(plotConfig);
     }
+	
+    public int getPlotQuantity()
+    {
+        int highest = 0;
+        for(String s : arenaConfiguration.getKeys(true))
+	      {
+            if(s.startsWith(Claim))
+            {
+                StringTokenizer st = new StringTokenizer(s);
+                st.nextToken();
+                int i = Integer.parseInt(st.nextToken());
+                if(i > highest)
+                {
+                    i = highest;
+                }
+            }
+	      }
+        return highest;
+    }
     
     public World getPlotWorld()
     {
