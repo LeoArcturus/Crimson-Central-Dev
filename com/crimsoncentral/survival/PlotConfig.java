@@ -116,15 +116,15 @@ public class PlotConfig
         return highest;
     }
     
-    public World getPlotWorld()
+    public World getPlotWorld(int i)
     {
-        String s = plotData.getString("World");
+        String s = plotData.getString("Claim" + i + ".World");
         return Bukkit.getWorld(s);
     }
     
-    public void setPlotWorld(World w)
+    public void setPlotWorld(int i World w)
     {
-        plotData.set("World", w.getName());
+        plotData.set("Claim" + i + ".World", w.getName());
     }
     
     public Location getPos1(int i)
