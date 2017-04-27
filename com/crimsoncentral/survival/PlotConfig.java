@@ -122,7 +122,7 @@ public class PlotConfig
         return Bukkit.getWorld(s);
     }
     
-    public void setPlotWorld(int i World w)
+    public void setPlotWorld(int i, World w)
     {
         plotData.set("Claim" + i + ".World", w.getName());
     }
