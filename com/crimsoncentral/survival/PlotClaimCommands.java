@@ -98,6 +98,46 @@ public class PlotClaimCommands implements CommandExecutor
                 }else{
                     p.sendMessage(ChatColor.RED + "Your region selection overlaps another plot and cannot be claimed!");
                 }
+            }else if(args[0] = "trust")
+            {
+                if(Bukkit.getPlayer(args[1]) != null)
+                {
+                    Player plr = Bukkit.getPlayer(args[1]);
+                    PlotConfig pc = new PlotConfig(p.getUniqueID());
+                    ArrayList<RegionSelection> plots = new ArrayList<RegionSelection>();
+                    HashMap<Integer, RegionSelection> plotNumbers = new HashMap<Integer, RegionSelection>();
+                    RegionSelection playerRegion = null;
+                    boolean b;
+                    for(int i; i <= pc.getPlotQuantity; i++)
+                    {
+                        RegionSelection rs = new RegionSelection(p, pc.getWorld(i), pc.getPos1(i), pc.getPos2(i));
+                        plots.add(rs);
+                    }
+                    for(RegionSelection rs : plots)
+                    {
+                        if(checkPlotContainsLocation(rs, p.getLocation()) == true)
+                        {
+                            rs = playerRegion;
+                        }
+                    }
+                    if(playerRegion != null)
+                    {
+                        int i = plotNumbers.get(playerRegion);
+                        for(Player player : pc.getTrusts)
+                        {
+                            if(player != plr)
+                            {
+                                pc.addTrust(plr);
+                            }else{
+                                p.sendMessage(ChatColor.RED + "That player is already trusted to this plot!");
+                            }
+                        }
+                    }else{
+                        p.sendMessage(ChatColor.RED + "You must stand inside one of your plots for this to work!");
+                    }
+                }else{
+                    p.sendMessage(ChatColor.RED + args[1] + " is not a valid player!");
+                }
             }
         }
     }
