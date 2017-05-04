@@ -11,6 +11,15 @@ public class AdminClaimConfim
         plotData = YamlConfiguration.loadConfiguration(plotConfig);
     }
 	
+    public void createClaimDefaults(World w, Location loc1, Location loc2)
+    {
+	int i = getPlotQuantity() + 1;
+        plotData.set("Claim" + i + ".World", w.getName());
+        plotData.set("Claim" + i + ".Pos 1", pos1.getX() + ", " + pos1.getY() + ", " + pos1.getZ());
+        plotData.set("Claim" + i + ".Pos 2", pos2.getX() + ", " + pos2.getY() + ", " + pos2.getZ());
+        plotData.set("Claim" + i + ".Trusts", null);    
+    }
+	
     public int getPlotQuantity()
     {
         int highest = 0;
