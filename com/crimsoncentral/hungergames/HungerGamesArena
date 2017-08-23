@@ -1,0 +1,22 @@
+package com.crimsoncentral.hungergames;
+
+public class HungerGamesArena
+{
+    public int id;
+    public World world;
+    public String tag;
+    public int itemID;
+    public int alternateItemID;
+    public int mapPack;
+    
+    List<Location> spawnLocations = new ArrayList<Location>();
+    List<Location> normalChestLocations = new ArrayList<Location>();
+    List<Location> betterChestLocations = new ArrayList<Location>();
+    List<Location> bestChestLocations = new ArrayList<Location>();
+    List<Location> victorChestLocations = new ArrayList<Location>();
+    
+    public boolean weather;
+    public int time;
+    public int gameStage;
+    public int gameTimer;
+}
