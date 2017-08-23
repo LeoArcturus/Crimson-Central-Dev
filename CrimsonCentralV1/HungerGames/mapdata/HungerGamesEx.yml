@@ -1,3 +1,9 @@
+world-tag:
+world-name:
+world-time:
+world-weather:
+item-id:
+alternate-item-id:
 player-spawn-1:
 player-spawn-24:
 world-border-1:
@@ -8,3 +14,4 @@ normal-chest-1:
 better-chest-1:
 best-chest-1:
 vitcor-chest-1:
+mutt-spawn-1:
